@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuecoEdit - Versão Responsiva</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        @font-face {
+            font-family: 'Valentine Baby';
+            src: url('https://fonts.cdnfonts.com/s/72225/Valentine Baby.woff') format('woff');
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            color: white;
+            padding: 4rem 1rem;
+            text-align: center;
+            border-bottom-left-radius: 2rem;
+            border-bottom-right-radius: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+
+        .container-wrapper {
+            max-width: 100%;
+            padding: 1rem;
+        }
+        
+        /* Estilos do Editor de Imagens (copiados do arquivo anterior) */
+        .container {
+            max-width: 960px;
+        }
+        .file-input-label {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .file-input-label:hover {
+            background-color: #2563eb;
+        }
+        .editor-container {
+            position: relative;
+            user-select: none;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f3f4f6;
+        }
+        .crop-box {
+            position: absolute;
+            border: 2px dashed white;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+            cursor: move;
+        }
+        .handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 1px solid #3b82f6;
+            border-radius: 50%;
+        }
+        .handle-tl { top: -6px; left: -6px; cursor: nwse-resize; }
+        .handle-tr { top: -6px; right: -6px; cursor: nesw-resize; }
+        .handle-bl { bottom: -6px; left: -6px; cursor: nesw-resize; }
+        .handle-br { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+        .preview-canvas-wrapper {
+            position: relative;
+            user-select: none;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            margin: 1rem;
+        }
+        .preview-zoom-indicator {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            max-width: 960px;
+            margin: 0 auto 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+        }
+        .carousel-slide-wrapper {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .carousel-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            padding: 2rem;
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 1rem;
+        }
+        .carousel-dot {
+            height: 10px;
+            width: 10px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+        .active-dot {
+            background-color: #717171;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Full Preview Area for Horizontal Scrolling */
+        #full-preview-area {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        #full-preview-area .preview-page {
+            flex-shrink: 0;
+            width: 90%; /* Ajuste para melhor visualização em tela cheia */
+            max-width: 900px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="hero-section">
+        <h1 class="text-white">Bem-vindo ao SuecoEdit!</h1>
+        <p class="text-white">A sua ferramenta online para editar fotos e gerar PDFs rapidamente.</p>
+    </div>
+
+    <!-- Carousel de Dicas -->
+    <div class="carousel-container">
+        <div id="carousel-slides" class="carousel-slide-wrapper">
+            <!-- Slides are dynamically generated by JavaScript -->
+        </div>
+        <div id="carousel-dots" class="flex justify-center mt-4 space-x-2">
+            <!-- Dots are dynamically generated -->
+        </div>
+    </div>
+
+    <div class="container-wrapper flex items-center justify-center">
+        <!-- Início do código da aplicação SuecoEdit -->
+        <div class="container bg-white shadow-xl rounded-2xl p-6 sm:p-10 w-full">
+            <!-- Título -->
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-blue-600 mb-6 text-center hover:scale-105 transition-transform duration-300">SuecoEdit</h1>
+            <p class="text-center text-gray-600 mb-8">Arraste e solte fotos para criar um documento PDF com uma grade de 2x4.</p>
+
+            <!-- Seção de Upload -->
+            <div id="upload-section" class="mb-8 p-6 border-2 border-dashed border-gray-300 rounded-xl text-center">
+                <label for="image-upload" class="file-input-label bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                    <span>Selecionar Imagens</span>
+                    <input type="file" id="image-upload" accept="image/*" multiple class="hidden">
+                </label>
+                <p class="text-sm text-gray-500 mt-2">Arraste e solte arquivos aqui ou clique para selecionar.</p>
+            </div>
+
+            <!-- Controles do layout de imagens -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                <h2 class="text-2xl font-bold">Imagens Carregadas</h2>
+                <button id="clear-all-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors transform hover:scale-105 w-full sm:w-auto">
+                    Limpar Tudo
+                </button>
+            </div>
+
+            <!-- Galeria de miniaturas de imagens -->
+            <div id="image-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+                <!-- As miniaturas serão adicionadas aqui via JavaScript -->
+            </div>
+
+            <!-- Controles e Opções -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="p-6 bg-gray-50 rounded-xl shadow-inner">
+                    <h2 class="text-lg font-bold mb-4">Opções de Layout</h2>
+                    <div class="flex flex-col space-y-4">
+                        <p class="text-gray-700">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento de 40px na horizontal e 60px na vertical.</p>
+                    </div>
+                </div>
+
+                <!-- Visualização da Folha A4 em Mosaico -->
+                <div class="p-6 bg-gray-50 rounded-xl shadow-inner">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold">Pré-visualização (Mosaico)</h2>
+                        <span class="text-sm font-semibold text-blue-600">Zoom: 100%</span>
+                    </div>
+                    <div id="preview-gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- O mosaico de pré-visualizações será adicionado aqui via JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Exportar e Pré-visualização -->
+            <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8">
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button id="export-portrait-btn" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg text-base shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                        Gerar PDF (Retrato)
+                    </button>
+                    <button id="export-portrait-jpg-btn" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg text-base shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                        Gerar JPG (Retrato)
+                    </button>
+                </div>
+                <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                    Pré-visualização de Exportação
+                </button>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button id="export-landscape-btn" class="bg-blue-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                        Gerar PDF
+                    </button>
+                    <button id="export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                        Gerar JPG
+                    </button>
+                </div>
+            </div>
+            <div id="status-message" class="mt-4 text-center text-gray-600 font-medium"></div>
+        </div>
+
+        <!-- Modal de Edição -->
+        <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
+                <!-- Área Principal de Edição e Painel de Ferramentas -->
+                <div class="flex-1 flex flex-col lg:flex-row overflow-hidden p-2 sm:p-0">
+                    <!-- Área Principal do Canvas -->
+                    <div class="flex-1 flex items-center justify-center relative min-h-[30vh] lg:min-h-96">
+                        <div id="editor-area" class="editor-container w-full h-full relative">
+                            <canvas id="editor-canvas" class="w-full h-full"></canvas>
+                            <div id="crop-box" class="crop-box hidden">
+                                <div class="handle handle-tl"></div>
+                                <div class="handle handle-tr"></div>
+                                <div class="handle handle-bl"></div>
+                                <div class="handle handle-br"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Painel de Controles da Ferramenta -->
+                    <div id="tool-controls-container" class="w-full lg:w-96 flex-shrink-0 lg:ml-6 mt-4 lg:mt-0 p-2 border-t lg:border-t-0 lg:border-l border-gray-200 overflow-y-auto">
+                        <!-- Controles da Ferramenta de Recorte -->
+                        <div id="crop-controls" class="hidden">
+                            <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Recorte</h3>
+                            <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Arraste a caixa para selecionar a área de interesse.</p>
+                            <div class="flex justify-center lg:justify-end space-x-4 mt-4">
+                                <button id="discard-crop-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                                    Descartar Alterações
+                                </button>
+                                <button id="save-crop-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Controles da Ferramenta de Legenda -->
+                        <div id="caption-controls" class="hidden">
+                            <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Legenda</h3>
+                            <div class="flex flex-wrap -mx-2 mb-4">
+                                <div class="px-2 w-full mb-4">
+                                    <label class="block">
+                                        <span class="text-gray-700">Texto:</span>
+                                        <input type="text" id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                    </label>
+                                </div>
+                                <div class="px-2 w-1/2 mb-4">
+                                    <label class="block">
+                                        <span class="text-gray-700">Cor:</span>
+                                        <input type="color" id="caption-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300">
+                                    </label>
+                                </div>
+                                <div class="px-2 w-1/2 mb-4">
+                                    <label class="block">
+                                        <span class="text-gray-700">Contorno:</span>
+                                        <input type="color" id="caption-outline-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300">
+                                    </label>
+                                </div>
+                                <div class="px-2 w-full mb-4">
+                                    <label class="block">
+                                        <span class="text-gray-700">Tamanho da Fonte:</span>
+                                        <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500">
+                                        <p class="text-right text-sm text-gray-500" id="caption-size-value">20 px</p>
+                                    </label>
+                                </div>
+                                <div class="px-2 w-full mb-4">
+                                    <label class="block">
+                                        <span class="text-gray-700">Espessura do Contorno:</span>
+                                        <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500">
+                                        <p class="text-right text-sm text-gray-500" id="caption-stroke-value">0 px</p>
+                                    </label>
+                                </div>
+                                <div class="px-2 w-full mb-4">
+                                    <label class="block">
+                                        <span class="text-gray-700">Fonte:</span>
+                                        <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                            <option value="Valentine Baby, sans-serif">Valentine Baby</option>
+                                            <option value="Inter, sans-serif">Inter</option>
+                                            <option value="Arial, sans-serif">Arial</option>
+                                            <option value="Verdana, sans-serif">Verdana</option>
+                                            <option value="Times New Roman, serif">Times New Roman</option>
+                                            <option value="Courier New, monospace">Courier New</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="flex justify-center lg:justify-end space-x-4 mt-4">
+                                <button id="discard-caption-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                                    Descartar Alterações
+                                </button>
+                                <button id="save-caption-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Controles de Edição de Fundo -->
+                        <div id="background-controls" class="hidden">
+                            <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Editar Fundo</h3>
+                            <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Ajuste o desfoque e o redimensionamento do fundo da imagem.</p>
+                            <label class="block mb-4">
+                                <span class="text-gray-700">Intensidade do Desfoque:</span>
+                                <input type="range" id="blur-slider" min="0" max="250" value="15" class="mt-1 w-full accent-indigo-500">
+                                <p class="text-right text-sm text-gray-500" id="blur-value">15 px</p>
+                            </label>
+                            <label class="block mb-4">
+                                <span class="text-gray-700">Redimensionar Fundo (%):</span>
+                                <input type="range" id="background-size-slider" min="100" max="500" value="100" class="mt-1 w-full accent-indigo-500">
+                                <p class="text-right text-sm text-gray-500" id="background-size-value">100 %</p>
+                            </label>
+                            <div class="flex justify-center lg:justify-end space-x-4 mt-4">
+                                <button id="discard-background-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                                    Descartar Alterações
+                                </button>
+                                <button id="save-background-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação do Modal - Fundo do painel de edição -->
+                <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4 mt-6 border-t pt-4 border-gray-200">
+                    <button id="back-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto">
+                        Voltar
+                    </button>
+                    <div class="flex flex-wrap justify-center lg:justify-end gap-2 w-full lg:w-auto">
+                        <button id="tool-crop-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                            Recortar
+                        </button>
+                        <button id="tool-caption-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                            Adicionar Legenda
+                        </button>
+                        <button id="tool-background-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                            Editar Fundo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Novo Modal de Pré-visualização de Exportação -->
+        <div id="full-preview-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold">Pré-visualização de Exportação</h2>
+                    <button id="close-preview-btn" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                        Fechar
+                    </button>
+                </div>
+
+                <!-- Controles de navegação do carrossel -->
+                <div id="full-preview-nav" class="flex justify-between items-center mb-4">
+                    <button id="prev-page-btn" class="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <span id="page-indicator" class="text-xl font-bold text-gray-700"></span>
+                    <button id="next-page-btn" class="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="full-preview-area" class="flex-1 flex items-center justify-start relative flex-col overflow-y-auto">
+                    <!-- O canvas ou imagem de pré-visualização será renderizado aqui -->
+                </div>
+                <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8 border-t pt-4">
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button id="modal-export-portrait-btn" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg text-base shadow-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            Gerar PDF (Retrato)
+                        </button>
+                        <button id="modal-export-portrait-jpg-btn" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg text-base shadow-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            Gerar JPG (Retrato)
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button id="modal-export-landscape-btn" class="bg-blue-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            Gerar PDF
+                        </button>
+                        <button id="modal-export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            Gerar JPG
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fim do código da aplicação SuecoEdit -->
+    </div>
+
+    <script>
+        // Main application script
+        window.onload = function() {
+            const { jsPDF } = window.jspdf;
+
+            const imageUpload = document.getElementById('image-upload');
+            const imageGallery = document.getElementById('image-gallery');
+            const clearAllBtn = document.getElementById('clear-all-btn');
+            const exportLandscapeBtn = document.getElementById('export-landscape-btn');
+            const exportLandscapeJpgBtn = document.getElementById('export-landscape-jpg-btn');
+            const exportPortraitBtn = document.getElementById('export-portrait-btn');
+            const exportPortraitJpgBtn = document.getElementById('export-portrait-jpg-btn');
+            const statusMessage = document.getElementById('status-message');
+            const previewGallery = document.getElementById('preview-gallery');
+            const editModal = document.getElementById('edit-modal');
+            const backBtn = document.getElementById('back-btn');
+            const editorCanvas = document.getElementById('editor-canvas');
+            const toolCropBtn = document.getElementById('tool-crop-btn');
+            const toolCaptionBtn = document.getElementById('tool-caption-btn');
+            const toolBackgroundBtn = document.getElementById('tool-background-btn');
+            const cropControls = document.getElementById('crop-controls');
+            const captionControls = document.getElementById('caption-controls');
+            const backgroundControls = document.getElementById('background-controls');
+            const cropBox = document.getElementById('crop-box');
+            const blurSlider = document.getElementById('blur-slider');
+            const blurValueText = document.getElementById('blur-value');
+            const backgroundSizeSlider = document.getElementById('background-size-slider');
+            const backgroundSizeValueText = document.getElementById('background-size-value');
+            const captionTextInput = document.getElementById('caption-text-input');
+            const captionColorInput = document.getElementById('caption-color-input');
+            const captionOutlineColorInput = document.getElementById('caption-outline-color-input');
+            const captionSizeSlider = document.getElementById('caption-size-slider');
+            const captionSizeValueText = document.getElementById('caption-size-value');
+            const captionStrokeSlider = document.getElementById('caption-stroke-slider');
+            const captionStrokeValueText = document.getElementById('caption-stroke-value');
+            const captionFontSelect = document.getElementById('caption-font-select');
+            const editorArea = document.getElementById('editor-area');
+            const uploadSection = document.getElementById('upload-section');
+
+            // Novos botões e modais de pré-visualização
+            const fullPreviewBtn = document.getElementById('full-preview-btn');
+            const fullPreviewModal = document.getElementById('full-preview-modal');
+            const closePreviewBtn = document.getElementById('close-preview-btn');
+            const fullPreviewArea = document.getElementById('full-preview-area');
+            const modalExportPortraitBtn = document.getElementById('modal-export-portrait-btn');
+            const modalExportPortraitJpgBtn = document.getElementById('modal-export-portrait-jpg-btn');
+            const modalExportLandscapeBtn = document.getElementById('modal-export-landscape-btn');
+            const modalExportLandscapeJpgBtn = document.getElementById('modal-export-landscape-jpg-btn');
+            
+            // Novos elementos de navegação
+            const fullPreviewNav = document.getElementById('full-preview-nav');
+            const prevPageBtn = document.getElementById('prev-page-btn');
+            const nextPageBtn = document.getElementById('next-page-btn');
+            const pageIndicator = document.getElementById('page-indicator');
+            let currentPageIndex = 0;
+
+
+            // New save/discard buttons for each tool
+            const saveCropBtn = document.getElementById('save-crop-btn');
+            const discardCropBtn = document.getElementById('discard-crop-btn');
+            const saveCaptionBtn = document.getElementById('save-caption-btn');
+            const discardCaptionBtn = document.getElementById('discard-caption-btn');
+            const saveBackgroundBtn = document.getElementById('save-background-btn');
+            const discardBackgroundBtn = document.getElementById('discard-background-btn');
+
+            const editorCtx = editorCanvas.getContext('2d');
+
+            let uploadedImages = [];
+            let currentImageIndex = -1;
+            let currentTool = null;
+            let dragTarget = null;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let isDragging = false;
+            let initialCanvasSize = { width: 0, height: 0 };
+
+            const DEFAULT_BLUR = 15; // Default blur value
+            const DEFAULT_BG_SIZE = 170; // Novo valor padrão de redimensionamento de fundo
+            const BLUR_PADDING = 250; // Padding to prevent white borders on blurred images
+
+            // Dimensões da folha A4 em 300 DPI
+            const A4_WIDTH_PX_PORTRAIT = 2480;
+            const A4_HEIGHT_PX_PORTRAIT = 3508;
+            const A4_WIDTH_PX_LANDSCAPE = 3508;
+            const A4_HEIGHT_PX_LANDSCAPE = 2480;
+            
+            // Dimensões de cada foto na grade, com base no feedback do usuário
+            const IMAGE_WIDTH_PX = 832.32;
+            const IMAGE_HEIGHT_PX = 1177.2;
+
+            // Espaçamentos calculados para o layout
+            const HORIZONTAL_SPACING_PX = (A4_WIDTH_PX_LANDSCAPE - (4 * IMAGE_WIDTH_PX)) / 5;
+            const VERTICAL_SPACING_PX = (A4_HEIGHT_PX_LANDSCAPE - (2 * IMAGE_HEIGHT_PX)) / 3;
+
+            // Helper to get proportional image dimensions for drawing (object-fit: contain)
+            const getProportionalContainDimensions = (imgWidth, imgHeight, boxWidth, boxHeight) => {
+                const imageAspect = imgWidth / imgHeight;
+                const boxAspect = boxWidth / boxHeight;
+                let drawWidth, drawHeight, offsetX, offsetY;
+                if (imageAspect > boxAspect) {
+                    drawWidth = boxWidth;
+                    drawHeight = boxWidth / imageAspect;
+                    offsetX = 0;
+                    offsetY = (boxHeight - drawHeight) / 2;
+                } else {
+                    drawHeight = boxHeight;
+                    drawWidth = boxHeight * imageAspect;
+                    offsetX = (boxWidth - drawWidth) / 2;
+                    offsetY = 0;
+                }
+                return { drawWidth, drawHeight, offsetX, offsetY };
+            };
+            
+            // Helper to get proportional image dimensions for drawing (object-fit: cover)
+            const getProportionalCoverDimensions = (imgWidth, imgHeight, boxWidth, boxHeight) => {
+                const imageAspect = imgWidth / imgHeight;
+                const boxAspect = boxWidth / boxHeight;
+                let drawWidth, drawHeight, offsetX, offsetY;
+                if (imageAspect > boxAspect) {
+                    drawHeight = boxHeight;
+                    drawWidth = boxHeight * imageAspect;
+                    offsetX = (boxWidth - drawWidth) / 2;
+                    offsetY = 0;
+                } else {
+                    drawWidth = boxWidth;
+                    drawHeight = boxHeight * imageAspect;
+                    offsetX = 0;
+                    offsetY = (boxHeight - drawHeight) / 2;
+                }
+                return { drawWidth, drawHeight, offsetX, offsetY };
+            };
+
+            // Renders the image gallery with thumbnails and buttons
+            const renderImages = () => {
+                imageGallery.innerHTML = '';
+                uploadedImages.forEach((image, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'relative group w-full aspect-square rounded-xl overflow-hidden shadow-md border-2 border-gray-200';
+                    // Alterado para sempre usar 'object-contain' no thumbnail
+                    card.innerHTML = `
+                        <img src="${image.croppedUrl}" alt="Thumbnail" class="w-full h-full object-contain">
+                        <div class="absolute inset-0 flex items-start justify-between p-2">
+                            <!-- Ícone de Editar (canto superior esquerdo) -->
+                            <button class="edit-btn bg-white/70 p-2 rounded-full shadow-md hover:bg-white transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-3.832 2.832l-3.35 3.35a2 2 0 00-.594 1.157l-.022.259a.5.5 0 00.174.457l1.242 1.242a.5.5 0 00.457.174l.259-.022c.433-.04.852-.164 1.242-.457l3.35-3.35-2.828-2.828z" />
+                                </svg>
+                            </button>
+                            <!-- Ícone de Excluir (canto superior direito) -->
+                            <button class="remove-btn bg-white/70 p-2 rounded-full shadow-md hover:bg-white transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-800" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 10-2 0v6a1 1 0 102 0V8z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                    card.querySelector('.edit-btn').addEventListener('click', () => {
+                        currentImageIndex = index;
+                        openEditModal(image);
+                    });
+                    card.querySelector('.remove-btn').addEventListener('click', () => {
+                        uploadedImages.splice(index, 1);
+                        renderImages();
+                        updateExportButtonState();
+                    });
+                    imageGallery.appendChild(card);
+                });
+                
+                // Adicionar o cartão para adicionar novas fotos
+                const addCard = document.createElement('div');
+                addCard.className = 'w-full aspect-square rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors';
+                addCard.innerHTML = `
+                    <span class="text-gray-400 text-6xl font-light">+</span>
+                `;
+                addCard.addEventListener('click', () => {
+                    imageUpload.click();
+                });
+                imageGallery.appendChild(addCard);
+
+                renderPreviewGallery('landscape');
+            };
+
+            // Update the state of the export button
+            const updateExportButtonState = () => {
+                const hasImages = uploadedImages.length > 0;
+                exportLandscapeBtn.disabled = !hasImages;
+                exportLandscapeJpgBtn.disabled = !hasImages;
+                exportPortraitBtn.disabled = !hasImages;
+                exportPortraitJpgBtn.disabled = !hasImages;
+                fullPreviewBtn.disabled = !hasImages;
+                
+                modalExportPortraitBtn.disabled = !hasImages;
+                modalExportPortraitJpgBtn.disabled = !hasImages;
+                modalExportLandscapeBtn.disabled = !hasImages;
+                modalExportLandscapeJpgBtn.disabled = !hasImages;
+
+                renderPreviewGallery('landscape');
+
+                // Oculta a seção de upload se houver imagens
+                if (hasImages) {
+                    uploadSection.classList.add('hidden');
+                } else {
+                    uploadSection.classList.remove('hidden');
+                }
+            };
+
+            // Renders the A4 page preview gallery
+            const renderPreviewGallery = (orientation) => {
+                previewGallery.innerHTML = '';
+                if (uploadedImages.length === 0) return;
+
+                const gridCols = orientation === 'landscape' ? 4 : 3;
+                const gridRows = orientation === 'landscape' ? 2 : 5;
+                const IMAGES_PER_PAGE = gridCols * gridRows;
+                const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
+
+                for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+                    const canvasWrapper = document.createElement('div');
+                    canvasWrapper.className = 'preview-canvas-wrapper aspect-[1.414/1] relative';
+                    const canvas = document.createElement('canvas');
+                    const scale = 10;
+                    const pageTotalWidth = orientation === 'landscape' ? A4_WIDTH_PX_LANDSCAPE : A4_HEIGHT_PX_PORTRAIT;
+                    const pageTotalHeight = orientation === 'landscape' ? A4_HEIGHT_PX_LANDSCAPE : A4_WIDTH_PX_PORTRAIT;
+                    canvas.width = pageTotalWidth / scale;
+                    canvas.height = pageTotalHeight / scale;
+
+                    const zoomIndicator = document.createElement('div');
+                    zoomIndicator.className = 'preview-zoom-indicator';
+                    zoomIndicator.textContent = 'Zoom: 100%';
+                    canvasWrapper.appendChild(canvas);
+                    canvasWrapper.appendChild(zoomIndicator);
+                    previewGallery.appendChild(canvasWrapper);
+
+                    drawPageToCanvas(canvas, pageIndex, orientation);
+                }
+            };
+
+            // Draws a single page to a given canvas
+            const drawPageToCanvas = (canvas, pageIndex, orientation) => {
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const gridCols = orientation === 'landscape' ? 4 : 3;
+                const gridRows = orientation === 'landscape' ? 2 : 5;
+                const IMAGES_PER_PAGE = gridCols * gridRows;
+
+                const pageTotalWidth = orientation === 'landscape' ? A4_WIDTH_PX_LANDSCAPE : A4_HEIGHT_PX_PORTRAIT;
+                const pageTotalHeight = orientation === 'landscape' ? A4_HEIGHT_PX_LANDSCAPE : A4_WIDTH_PX_PORTRAIT;
+                const scaleFactor = canvas.width / pageTotalWidth;
+                
+                // Dimensões e espaçamentos dinâmicos para o layout Retrato
+                const portraitMargin = (A4_HEIGHT_PX_PORTRAIT - (3 * IMAGE_WIDTH_PX)) / 4;
+                const portraitSpacing = (A4_WIDTH_PX_PORTRAIT - (5 * IMAGE_HEIGHT_PX)) / 6;
+
+
+                const startImageIndex = pageIndex * IMAGES_PER_PAGE;
+                const endImageIndex = Math.min(startImageIndex + IMAGES_PER_PAGE, uploadedImages.length);
+                const imagesToDraw = uploadedImages.slice(startImageIndex, endImageIndex);
+
+                let imagePromiseChain = Promise.resolve();
+                imagesToDraw.forEach((image, i) => {
+                    imagePromiseChain = imagePromiseChain.then(() => {
+                        const col = i % gridCols;
+                        const row = Math.floor(i / gridCols);
+                        
+                        let xPos, yPos;
+                        if (orientation === 'landscape') {
+                             xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
+                             yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
+                        } else { // portrait
+                            xPos = portraitMargin + col * (IMAGE_WIDTH_PX + portraitMargin);
+                            yPos = portraitSpacing + row * (IMAGE_HEIGHT_PX + portraitSpacing);
+                        }
+
+                        // Cria um canvas temporário que funciona como a "máscara"
+                        const compositeCanvas = document.createElement('canvas');
+                        compositeCanvas.width = IMAGE_WIDTH_PX;
+                        compositeCanvas.height = IMAGE_HEIGHT_PX;
+                        const compositeCtx = compositeCanvas.getContext('2d');
+
+                        return drawCompositeImage(compositeCtx, image)
+                            .then(() => {
+                                ctx.drawImage(compositeCanvas, xPos * scaleFactor, yPos * scaleFactor, IMAGE_WIDTH_PX * scaleFactor, IMAGE_HEIGHT_PX * scaleFactor);
+                            });
+                    });
+                });
+            };
+
+            // Draws a single image, its background and captions on a canvas
+            const drawCompositeImage = (ctx, imageObject) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = imageObject.croppedUrl;
+
+                    const bgImg = new Image();
+                    bgImg.src = imageObject.blurredUrl;
+                    
+                    let imagesLoaded = 0;
+                    const totalImages = (imageObject.blurredUrl && imageObject.blurRadius > 0) ? 2 : 1;
+
+                    const checkReady = () => {
+                        imagesLoaded++;
+                        if (imagesLoaded === totalImages) {
+                            // Draw background if it exists, using 'cover' logic to fill the box completely
+                            if (imageObject.blurredUrl && imageObject.blurRadius > 0) {
+                                const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalCoverDimensions(bgImg.width, bgImg.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
+                                const bgScale = imageObject.backgroundSize / 100;
+                                const finalBgWidth = drawWidth * bgScale;
+                                const finalBgHeight = drawHeight * bgScale;
+                                const finalBgOffsetX = offsetX - (finalBgWidth - drawWidth) / 2;
+                                const finalBgOffsetY = offsetY - (finalBgHeight - drawHeight) / 2;
+                                ctx.drawImage(bgImg, finalBgOffsetX, finalBgOffsetY, finalBgWidth, finalBgHeight);
+                            }
+
+                            // Draw foreground image using 'contain' logic to prevent cropping
+                            const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(img.width, img.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
+                            ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+
+                            // Draw captions
+                            drawCaptionsOnCanvas(ctx, imageObject.captions, 0, 0, 1);
+                            resolve();
+                        }
+                    };
+
+                    img.onload = checkReady;
+                    img.onerror = resolve; // Resolve even on error to continue the process
+                    if (totalImages === 2) {
+                        bgImg.onload = checkReady;
+                        bgImg.onerror = resolve; // Resolve even on error
+                    } else {
+                        checkReady();
+                    }
+                });
+            };
+
+            // Function to open the main edit modal
+            const openEditModal = (image) => {
+                editModal.classList.remove('hidden');
+
+                // Load existing captions and blur data
+                const existingCaptions = image.captions || [];
+                image.tempCaptions = JSON.parse(JSON.stringify(existingCaptions));
+                image.tempBlurRadius = image.blurRadius;
+                image.tempBackgroundSize = image.backgroundSize;
+                image.tempCrop = JSON.parse(JSON.stringify(image.crop));
+
+                blurSlider.value = image.tempBlurRadius;
+                blurValueText.textContent = `${image.tempBlurRadius} px`;
+                backgroundSizeSlider.value = image.tempBackgroundSize;
+                backgroundSizeValueText.textContent = `${image.tempBackgroundSize} %`;
+
+                initialCanvasSize = { width: image.imgElement.width, height: image.imgElement.height };
+
+                // Resize and draw canvas based on container
+                resizeCanvasAndDraw();
+
+                // Listen for window resize to make the canvas responsive
+                window.addEventListener('resize', resizeCanvasAndDraw);
+            };
+
+            // Resizes the canvas to fit its container while maintaining aspect ratio
+            const resizeCanvasAndDraw = () => {
+                const containerRect = editorArea.getBoundingClientRect();
+                const containerWidth = containerRect.width;
+                const containerHeight = containerRect.height;
+                const image = uploadedImages[currentImageIndex].imgElement;
+
+                let canvasWidth, canvasHeight;
+                const imageAspect = image.width / image.height;
+                const containerAspect = containerWidth / containerHeight;
+
+                if (containerAspect > imageAspect) {
+                    canvasHeight = containerHeight;
+                    canvasWidth = canvasHeight * imageAspect;
+                } else {
+                    canvasWidth = containerWidth;
+                    canvasHeight = canvasWidth / imageAspect;
+                }
+
+                editorCanvas.width = canvasWidth;
+                editorCanvas.height = canvasHeight;
+
+                // Redraw canvas with temp data
+                redrawEditorCanvas();
+
+                if (currentTool === 'crop') {
+                    // Recalculate crop box position
+                    const image = uploadedImages[currentImageIndex];
+                    const storedCrop = image.tempCrop;
+                    const scale = editorCanvas.width / initialCanvasSize.width;
+                    cropBox.style.width = `${storedCrop.width * scale}px`;
+                    cropBox.style.height = `${storedCrop.height * scale}px`;
+                    cropBox.style.left = `${storedCrop.x * scale}px`;
+                    cropBox.style.top = `${storedCrop.y * scale}px`;
+                }
+            };
+
+            // Redraws the editing canvas based on current state
+            const redrawEditorCanvas = () => {
+                editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
+                const image = uploadedImages[currentImageIndex];
+
+                // Lógica de visualização para a ferramenta de "Editar Fundo"
+                if (currentTool === 'background' && image.blurredUrl) {
+                    const blurredImg = new Image();
+                    blurredImg.src = image.blurredUrl;
+                    blurredImg.onload = () => {
+                        // Calcula as dimensões para a imagem de fundo com base no redimensionamento temporário
+                        const bgScale = image.tempBackgroundSize / 100;
+                        const bgWidth = editorCanvas.width * bgScale;
+                        const bgHeight = editorCanvas.height * bgScale;
+                        const bgOffsetX = (editorCanvas.width - bgWidth) / 2;
+                        const bgOffsetY = (editorCanvas.height - bgHeight) / 2;
+
+                        // Desenha APENAS a imagem de fundo
+                        editorCtx.drawImage(blurredImg, bgOffsetX, bgOffsetY, bgWidth, bgHeight);
+                    };
+                } else {
+                    // Para outras ferramentas, desenha a imagem principal e as legendas temporárias
+                    editorCtx.drawImage(image.imgElement, 0, 0, editorCanvas.width, editorCanvas.height);
+                    drawCaptionsOnCanvas(editorCtx, image.tempCaptions, 0, 0, 1);
+                }
+            };
+
+            // Draws captions on a given canvas
+            const drawCaptionsOnCanvas = (ctx, captions, xOffset = 0, yOffset = 0, scale = 1) => {
+                captions.forEach(caption => {
+                    ctx.font = `${caption.size * scale}px "${caption.font}"`;
+                    ctx.fillStyle = caption.color;
+                    ctx.strokeStyle = caption.outlineColor;
+                    ctx.lineWidth = caption.strokeWidth * scale;
+                    ctx.lineJoin = 'round';
+                    // Para o contorno, usamos strokeText
+                    ctx.strokeText(caption.text, xOffset + caption.x * scale, yOffset + caption.y * scale);
+                    // Para o preenchimento, usamos fillText
+                    ctx.fillText(caption.text, xOffset + caption.x * scale, yOffset + caption.y * scale);
+                });
+            };
+
+            // Handles tool selection
+            const setTool = (toolName) => {
+                currentTool = toolName;
+                cropControls.classList.add('hidden');
+                captionControls.classList.add('hidden');
+                backgroundControls.classList.add('hidden');
+                cropBox.classList.add('hidden');
+
+                document.querySelectorAll('.tool-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+
+                const image = uploadedImages[currentImageIndex];
+
+                if (toolName === 'crop') {
+                    cropControls.classList.remove('hidden');
+                    cropBox.classList.remove('hidden');
+                    toolCropBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    toolCropBtn.classList.add('bg-blue-500', 'text-white');
+                    initCropperInteraction();
+                } else if (toolName === 'caption') {
+                    captionControls.classList.remove('hidden');
+                    toolCaptionBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    toolCaptionBtn.classList.add('bg-blue-500', 'text-white');
+
+                    if (image.tempCaptions.length === 0) {
+                        image.tempCaptions.push({
+                            text: 'Sua Legenda',
+                            x: 50,
+                            y: initialCanvasSize.height - 50,
+                            color: '#000000',
+                            outlineColor: '#FFFFFF',
+                            size: 20,
+                            strokeWidth: 0,
+                            font: 'Valentine Baby, sans-serif'
+                        });
+                    }
+                    captionTextInput.value = image.tempCaptions[0].text;
+                    captionColorInput.value = image.tempCaptions[0].color;
+                    captionOutlineColorInput.value = image.tempCaptions[0].outlineColor;
+                    captionSizeSlider.value = image.tempCaptions[0].size;
+                    captionSizeValueText.textContent = `${image.tempCaptions[0].size} px`;
+                    captionStrokeSlider.value = image.tempCaptions[0].strokeWidth;
+                    captionStrokeValueText.textContent = `${image.tempCaptions[0].strokeWidth} px`;
+                    captionFontSelect.value = image.tempCaptions[0].font;
+                    redrawEditorCanvas();
+                } else if (toolName === 'background') {
+                    backgroundControls.classList.remove('hidden');
+                    toolBackgroundBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    toolBackgroundBtn.classList.add('bg-blue-500', 'text-white');
+                    redrawEditorCanvas();
+                }
+            };
+
+            toolCropBtn.addEventListener('click', () => setTool('crop'));
+            toolCaptionBtn.addEventListener('click', () => setTool('caption'));
+            toolBackgroundBtn.addEventListener('click', () => setTool('background'));
+
+
+            // Cropper interaction
+            const initCropperInteraction = () => {
+                const image = uploadedImages[currentImageIndex];
+                const storedCrop = image.tempCrop;
+                const scale = editorCanvas.width / initialCanvasSize.width;
+                cropBox.style.width = `${storedCrop.width * scale}px`;
+                cropBox.style.height = `${storedCrop.height * scale}px`;
+                cropBox.style.left = `${storedCrop.x * scale}px`;
+                cropBox.style.top = `${storedCrop.y * scale}px`;
+
+                let isResizing = false;
+                let resizeHandle;
+
+                const onMouseDown = (e) => {
+                    e.preventDefault();
+                    if (e.target.classList.contains('handle')) {
+                        isResizing = true;
+                        resizeHandle = e.target;
+                    } else {
+                        isDragging = true;
+                        dragStartX = e.clientX - cropBox.getBoundingClientRect().left;
+                        dragStartY = e.clientY - cropBox.getBoundingClientRect().top;
+                    }
+                };
+                const onMouseMove = (e) => {
+                    if (isDragging) {
+                        let newX = e.clientX - dragStartX;
+                        let newY = e.clientY - dragStartY;
+                        const editorRect = editorCanvas.getBoundingClientRect();
+                        newX = Math.max(0, Math.min(newX, editorRect.width - cropBox.offsetWidth));
+                        newY = Math.max(0, Math.min(newY, editorRect.offsetHeight - cropBox.offsetHeight));
+                        cropBox.style.left = `${newX}px`;
+                        cropBox.style.top = `${newY}px`;
+                    } else if (isResizing) {
+                        const rect = cropBox.getBoundingClientRect();
+                        const editorRect = editorCanvas.getBoundingClientRect();
+                        let newWidth = rect.width;
+                        let newHeight = rect.height;
+                        let newLeft = rect.left;
+                        let newTop = rect.top;
+                        if (resizeHandle.classList.contains('handle-br')) {
+                            newWidth = e.clientX - newLeft;
+                            newHeight = e.clientY - newTop;
+                        } else if (resizeHandle.classList.contains('handle-bl')) {
+                            newWidth = (rect.left + rect.width) - e.clientX;
+                            newHeight = e.clientY - newTop;
+                            newLeft = e.clientX;
+                        } else if (resizeHandle.classList.contains('handle-tr')) {
+                            newWidth = e.clientX - newLeft;
+                            newHeight = (rect.top + rect.height) - e.clientY;
+                            newTop = e.clientY;
+                        } else if (resizeHandle.classList.contains('handle-tl')) {
+                            newWidth = (rect.left + rect.width) - e.clientX;
+                            newHeight = (rect.top + rect.height) - e.clientY;
+                            newLeft = e.clientX;
+                            newTop = e.clientY;
+                        }
+                        newWidth = Math.max(12, newWidth);
+                        newHeight = Math.max(12, newHeight);
+                        newLeft = Math.max(editorRect.left, Math.min(newLeft, editorRect.right - newWidth));
+                        newTop = Math.max(editorRect.top, Math.min(newTop, editorRect.bottom - newHeight));
+                        cropBox.style.width = `${newWidth}px`;
+                        cropBox.style.height = `${newHeight}px`;
+                        cropBox.style.left = `${newLeft - editorRect.left}px`;
+                        cropBox.style.top = `${newTop - editorRect.top}px`;
+                    }
+                };
+                const onMouseUp = () => { isDragging = false; isResizing = false; };
+                cropBox.addEventListener('mousedown', onMouseDown);
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            };
+
+            // --- Lógica para arrastar e editar legendas ---
+
+            // Variável para rastrear a legenda sendo arrastada
+            let draggedCaption = null;
+            let captionDragStart = { x: 0, y: 0 };
+
+            // Evento para começar a arrastar a legenda
+            editorCanvas.addEventListener('mousedown', (e) => {
+                const rect = editorCanvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                if (currentTool !== 'caption') return;
+
+                const tempCaptions = uploadedImages[currentImageIndex].tempCaptions;
+                const scale = initialCanvasSize.width / editorCanvas.width;
+
+                draggedCaption = null;
+                // Encontra a legenda mais acima que foi clicada
+                for (let i = tempCaptions.length - 1; i >= 0; i--) {
+                    const caption = tempCaptions[i];
+                    editorCtx.font = `${caption.size / scale}px "${caption.font}"`;
+                    const metrics = editorCtx.measureText(caption.text);
+                    const textWidth = metrics.width;
+                    const textHeight = caption.size / scale;
+
+                    // Verifica se o clique está dentro dos limites do texto
+                    if (mouseX >= caption.x / scale && mouseX <= (caption.x / scale + textWidth) &&
+                        mouseY >= (caption.y - textHeight) / scale && mouseY <= caption.y / scale) {
+
+                        draggedCaption = caption;
+                        captionDragStart.x = mouseX - caption.x / scale;
+                        captionDragStart.y = mouseY - caption.y / scale;
+                        break;
+                    }
+                }
+            });
+
+            // Evento para mover a legenda
+            editorCanvas.addEventListener('mousemove', (e) => {
+                if (!draggedCaption || currentTool !== 'caption') return;
+
+                const rect = editorCanvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                const scale = initialCanvasSize.width / editorCanvas.width;
+
+                draggedCaption.x = (mouseX - captionDragStart.x) * scale;
+                draggedCaption.y = (mouseY - captionDragStart.y) * scale;
+
+                redrawEditorCanvas();
+            });
+
+            // Evento para parar de arrastar a legenda
+            editorCanvas.addEventListener('mouseup', () => {
+                draggedCaption = null;
+            });
+
+            captionTextInput.addEventListener('input', (e) => {
+                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    uploadedImages[currentImageIndex].tempCaptions[0].text = e.target.value;
+                    redrawEditorCanvas();
+                }
+            });
+
+            captionColorInput.addEventListener('input', (e) => {
+                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    uploadedImages[currentImageIndex].tempCaptions[0].color = e.target.value;
+                    redrawEditorCanvas();
+                }
+            });
+
+            captionOutlineColorInput.addEventListener('input', (e) => {
+                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    uploadedImages[currentImageIndex].tempCaptions[0].outlineColor = e.target.value;
+                    redrawEditorCanvas();
+                }
+            });
+
+            captionSizeSlider.addEventListener('input', (e) => {
+                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    const newSize = parseInt(e.target.value);
+                    uploadedImages[currentImageIndex].tempCaptions[0].size = newSize;
+                    captionSizeValueText.textContent = `${newSize} px`;
+                    redrawEditorCanvas();
+                }
+            });
+
+            captionStrokeSlider.addEventListener('input', (e) => {
+                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    const newStroke = parseInt(e.target.value);
+                    uploadedImages[currentImageIndex].tempCaptions[0].strokeWidth = newStroke;
+                    captionStrokeValueText.textContent = `${newStroke} px`;
+                    redrawEditorCanvas();
+                }
+            });
+
+
+            captionFontSelect.addEventListener('change', (e) => {
+                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    uploadedImages[currentImageIndex].tempCaptions[0].font = e.target.value;
+                    redrawEditorCanvas();
+                }
+            });
+
+            // Applies the blur effect and updates the image data
+            const applyBlur = (imageElement, imageObject, blurRadius) => {
+                const tempCanvas = document.createElement('canvas');
+                // The canvas for the blurred background is sized to prevent white borders
+                tempCanvas.width = imageElement.width + BLUR_PADDING;
+                tempCanvas.height = imageElement.height + BLUR_PADDING;
+                const ctx = tempCanvas.getContext('2d');
+                ctx.filter = `blur(${blurRadius}px)`;
+                ctx.drawImage(imageElement, BLUR_PADDING / 2, BLUR_PADDING / 2, imageElement.width, imageElement.height);
+                imageObject.blurredUrl = tempCanvas.toDataURL('image/png');
+            };
+
+            blurSlider.addEventListener('input', (e) => {
+                const newBlur = parseInt(e.target.value);
+                blurValueText.textContent = `${newBlur} px`;
+                const image = uploadedImages[currentImageIndex];
+                image.tempBlurRadius = newBlur;
+                if (newBlur > 0) {
+                    applyBlur(image.imgElement, image, newBlur);
+                }
+                redrawEditorCanvas();
+            });
+
+            backgroundSizeSlider.addEventListener('input', (e) => {
+                const newSize = parseInt(e.target.value);
+                backgroundSizeValueText.textContent = `${newSize} %`;
+                const image = uploadedImages[currentImageIndex];
+                image.tempBackgroundSize = newSize;
+                redrawEditorCanvas();
+            });
+
+            // Save and Discard actions for each tool
+            saveCropBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                const rect = cropBox.getBoundingClientRect();
+                const editorRect = editorCanvas.getBoundingClientRect();
+                const scale = image.imgElement.width / editorRect.width;
+
+                const newCrop = {
+                    x: (rect.left - editorRect.left) * scale,
+                    y: (rect.top - editorRect.top) * scale,
+                    width: rect.width * scale,
+                    height: rect.height * scale
+                };
+
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = newCrop.width;
+                tempCanvas.height = newCrop.height;
+                const ctx = tempCanvas.getContext('2d');
+                ctx.drawImage(image.imgElement, newCrop.x, newCrop.y, newCrop.width, newCrop.height, 0, 0, newCrop.width, newCrop.height);
+                image.croppedUrl = tempCanvas.toDataURL('image/png');
+                image.crop = newCrop;
+
+                setTool(null);
+                renderImages();
+            });
+
+            discardCropBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempCrop = JSON.parse(JSON.stringify(image.crop));
+                setTool(null);
+                redrawEditorCanvas();
+            });
+
+            saveCaptionBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.captions = JSON.parse(JSON.stringify(image.tempCaptions));
+                setTool(null);
+                renderImages();
+            });
+
+            discardCaptionBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempCaptions = JSON.parse(JSON.stringify(image.captions));
+                setTool(null);
+                redrawEditorCanvas();
+            });
+
+            saveBackgroundBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.blurRadius = image.tempBlurRadius;
+                image.backgroundSize = image.tempBackgroundSize;
+                applyBlur(image.imgElement, image, image.blurRadius);
+                setTool(null);
+                renderImages();
+            });
+
+            discardBackgroundBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempBlurRadius = image.blurRadius;
+                image.tempBackgroundSize = image.backgroundSize;
+                applyBlur(image.imgElement, image, image.tempBlurRadius);
+                setTool(null);
+                redrawEditorCanvas();
+            });
+
+            // Back button simply closes the modal without saving
+            backBtn.addEventListener('click', () => {
+                editModal.classList.add('hidden');
+                window.removeEventListener('resize', resizeCanvasAndDraw);
+                renderImages(); // Re-render gallery with original state
+            });
+
+            // Event listener for image upload
+            imageUpload.addEventListener('change', (event) => {
+                const files = event.target.files;
+                if (files.length > 0) {
+                    Array.from(files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = new Image();
+                            img.onload = () => {
+                                let isRotated = false;
+                                let processedImg = img;
+                                let imgWidth = img.width;
+                                let imgHeight = img.height;
+
+                                // Verifica a condição para rotação (largura >= altura + 250px)
+                                if (imgWidth - imgHeight >= 250) {
+                                    const canvas = document.createElement('canvas');
+                                    const ctx = canvas.getContext('2d');
+                                    
+                                    // Troca as dimensões para a rotação
+                                    canvas.width = imgHeight;
+                                    canvas.height = imgWidth;
+                                    
+                                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                                    ctx.rotate(90 * Math.PI / 180);
+                                    ctx.drawImage(img, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+
+                                    processedImg = new Image();
+                                    processedImg.src = canvas.toDataURL('image/png');
+                                    
+                                    isRotated = true;
+                                    
+                                    // A imagem rotacionada tem as dimensões invertidas
+                                    imgWidth = processedImg.width;
+                                    imgHeight = processedImg.height;
+                                }
+
+
+                                const newImage = {
+                                    id: Date.now() + Math.random(),
+                                    originalUrl: e.target.result,
+                                    imgElement: processedImg,
+                                    croppedUrl: processedImg.src,
+                                    crop: { x: 0, y: 0, width: imgWidth, height: imgHeight },
+                                    blurredUrl: null,
+                                    blurRadius: DEFAULT_BLUR,
+                                    backgroundSize: DEFAULT_BG_SIZE,
+                                    captions: [],
+                                    isRotated: isRotated,
+                                    tempCaptions: [],
+                                    tempBlurRadius: DEFAULT_BLUR,
+                                    tempBackgroundSize: DEFAULT_BG_SIZE,
+                                    tempCrop: { x: 0, y: 0, width: imgWidth, height: imgHeight },
+                                };
+                                // Aplica o desfoque padrão
+                                applyBlur(processedImg, newImage, DEFAULT_BLUR);
+                                
+                                // Adiciona as fotos rotacionadas no início do array, e as outras no final
+                                if (newImage.isRotated) {
+                                    uploadedImages.unshift(newImage);
+                                } else {
+                                    uploadedImages.push(newImage);
+                                }
+
+                                renderImages();
+                                updateExportButtonState();
+                            };
+                            img.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+            });
+
+            // Event listener for the "Clear All" button
+            clearAllBtn.addEventListener('click', () => {
+                uploadedImages = [];
+                imageGallery.innerHTML = '';
+                previewGallery.innerHTML = '';
+                updateExportButtonState();
+            });
+
+            // Lógica para o novo botão de pré-visualização completa
+            fullPreviewBtn.addEventListener('click', () => {
+                if (uploadedImages.length === 0) return;
+
+                fullPreviewModal.classList.remove('hidden');
+                fullPreviewArea.innerHTML = '';
+                currentPageIndex = 0;
+
+                const orientation = 'landscape';
+                const pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
+                const pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
+                const IMAGES_PER_PAGE = 8;
+                const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
+
+                // Mostra/esconde os botões de navegação
+                if (totalPages > 1) {
+                    fullPreviewNav.classList.remove('hidden');
+                    prevPageBtn.disabled = true;
+                    nextPageBtn.disabled = false;
+                } else {
+                    fullPreviewNav.classList.add('hidden');
+                }
+                
+                pageIndicator.textContent = `Página 1 de ${totalPages}`;
+
+                let renderPromiseChain = Promise.resolve();
+                for (let i = 0; i < totalPages; i++) {
+                    renderPromiseChain = renderPromiseChain.then(() => {
+                        const previewCanvas = document.createElement('canvas');
+                        previewCanvas.width = pageTotalWidth;
+                        previewCanvas.height = pageTotalHeight;
+                        const previewCtx = previewCanvas.getContext('2d');
+                        previewCtx.fillStyle = '#FFFFFF';
+                        previewCtx.fillRect(0, 0, pageTotalWidth, pageTotalHeight);
+
+                        return new Promise((resolvePage) => {
+                            let drawPromiseChain = Promise.resolve();
+                            const startImageIndex = i * IMAGES_PER_PAGE;
+                            const endImageIndex = Math.min(startImageIndex + IMAGES_PER_PAGE, uploadedImages.length);
+
+                            for (let j = startImageIndex; j < endImageIndex; j++) {
+                                drawPromiseChain = drawPromiseChain.then(() => {
+                                    const imageInPageIndex = j % IMAGES_PER_PAGE;
+                                    const col = imageInPageIndex % 4;
+                                    const row = Math.floor(imageInPageIndex / 4);
+
+                                    const xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
+                                    const yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
+
+                                    const compositeCanvas = document.createElement('canvas');
+                                    compositeCanvas.width = IMAGE_WIDTH_PX;
+                                    compositeCanvas.height = IMAGE_HEIGHT_PX;
+                                    const compositeCtx = compositeCanvas.getContext('2d');
+
+                                    return drawCompositeImage(compositeCtx, uploadedImages[j]).then(() => {
+                                        previewCtx.drawImage(compositeCanvas, xPos, yPos);
+                                    });
+                                });
+                            }
+                            drawPromiseChain.then(() => {
+                                const previewImage = new Image();
+                                previewImage.src = previewCanvas.toDataURL('image/png');
+                                previewImage.className = 'preview-page w-full h-auto mb-4 border border-gray-300 rounded-lg shadow-md';
+                                fullPreviewArea.appendChild(previewImage);
+                                resolvePage();
+                            });
+                        });
+                    });
+                }
+            });
+
+            closePreviewBtn.addEventListener('click', () => {
+                fullPreviewModal.classList.add('hidden');
+            });
+            
+            // Navegação entre pranchetas
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPageIndex > 0) {
+                    currentPageIndex--;
+                    const scrollDistance = fullPreviewArea.offsetWidth * currentPageIndex;
+                    fullPreviewArea.scrollTo({ left: scrollDistance, behavior: 'smooth' });
+                    pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${Math.ceil(uploadedImages.length / 8)}`;
+                    nextPageBtn.disabled = false;
+                    if (currentPageIndex === 0) {
+                        prevPageBtn.disabled = true;
+                    }
+                }
+            });
+
+            nextPageBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(uploadedImages.length / 8);
+                if (currentPageIndex < totalPages - 1) {
+                    currentPageIndex++;
+                    const scrollDistance = fullPreviewArea.offsetWidth * currentPageIndex;
+                    fullPreviewArea.scrollTo({ left: scrollDistance, behavior: 'smooth' });
+                    pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
+                    prevPageBtn.disabled = false;
+                    if (currentPageIndex === totalPages - 1) {
+                        nextPageBtn.disabled = true;
+                    }
+                }
+            });
+
+
+            // Common export function
+            const exportDocument = (orientation, format) => {
+                let gridCols, gridRows, pageTotalWidth, pageTotalHeight;
+                if (orientation === 'landscape') {
+                    gridCols = 4;
+                    gridRows = 2;
+                    pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
+                    pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
+                } else { // Portrait
+                    gridCols = 3;
+                    gridRows = 5;
+                    pageTotalWidth = A4_HEIGHT_PX_PORTRAIT;
+                    pageTotalHeight = A4_WIDTH_PX_PORTRAIT;
+                }
+                const IMAGES_PER_PAGE = gridCols * gridRows;
+                const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
+
+                statusMessage.textContent = `Gerando ${format.toUpperCase()}... Por favor, aguarde.`;
+                exportLandscapeBtn.disabled = true;
+                exportLandscapeJpgBtn.disabled = true;
+                exportPortraitBtn.disabled = true;
+                exportPortraitJpgBtn.disabled = true;
+
+                const doc = (format === 'pdf') ? new jsPDF({
+                    orientation: orientation,
+                    unit: 'px',
+                    format: [pageTotalWidth, pageTotalHeight]
+                }) : null;
+                
+                let processedImages = 0;
+
+                function processPage(pageIndex) {
+                    if (pageIndex >= totalPages) {
+                         if (format === 'pdf') {
+                            doc.save(`documento_imagens_${orientation}.pdf`);
+                        }
+                        statusMessage.textContent = `${format.toUpperCase()} gerado com sucesso!`;
+                        exportLandscapeBtn.disabled = false;
+                        exportLandscapeJpgBtn.disabled = false;
+                        exportPortraitBtn.disabled = false;
+                        exportPortraitJpgBtn.disabled = false;
+                        return;
+                    }
+
+                    const pageCanvas = document.createElement('canvas');
+                    pageCanvas.width = pageTotalWidth;
+                    pageCanvas.height = pageTotalHeight;
+                    const pageCtx = pageCanvas.getContext('2d');
+                    pageCtx.fillStyle = '#FFFFFF';
+                    pageCtx.fillRect(0, 0, pageTotalWidth, pageTotalHeight);
+
+                    const startImageIndex = pageIndex * IMAGES_PER_PAGE;
+                    const endImageIndex = Math.min(startImageIndex + IMAGES_PER_PAGE, uploadedImages.length);
+
+                    let drawPromiseChain = Promise.resolve();
+                    for (let i = startImageIndex; i < endImageIndex; i++) {
+                        drawPromiseChain = drawPromiseChain.then(() => {
+                            const imageInPageIndex = i % IMAGES_PER_PAGE;
+                            const col = imageInPageIndex % gridCols;
+                            const row = Math.floor(imageInPageIndex / gridCols);
+                            
+                            let xPos, yPos;
+                            if (orientation === 'landscape') {
+                                xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
+                                yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
+                            } else { // portrait
+                                const portraitMargin = (A4_HEIGHT_PX_PORTRAIT - (3 * IMAGE_WIDTH_PX)) / 4;
+                                const portraitSpacing = (A4_WIDTH_PX_PORTRAIT - (5 * IMAGE_HEIGHT_PX)) / 6;
+                                xPos = portraitMargin + col * (IMAGE_WIDTH_PX + portraitMargin);
+                                yPos = portraitSpacing + row * (IMAGE_HEIGHT_PX + portraitSpacing);
+                            }
+
+                            const compositeCanvas = document.createElement('canvas');
+                            compositeCanvas.width = IMAGE_WIDTH_PX;
+                            compositeCanvas.height = IMAGE_HEIGHT_PX;
+                            const compositeCtx = compositeCanvas.getContext('2d');
+
+                            return drawCompositeImage(compositeCtx, uploadedImages[i])
+                                .then(() => {
+                                    pageCtx.drawImage(compositeCanvas, xPos, yPos);
+                                });
+                        });
+                    }
+
+                    drawPromiseChain.then(() => {
+                        const dataUrl = pageCanvas.toDataURL(`image/${format}`, 1.0);
+                        if (format === 'pdf') {
+                            if (pageIndex > 0) doc.addPage();
+                            doc.addImage(dataUrl, 'PNG', 0, 0, pageTotalWidth, pageTotalHeight);
+                        } else { // jpg
+                            const link = document.createElement('a');
+                            link.href = dataUrl;
+                            link.download = `documento_imagens_${orientation}_pagina_${pageIndex + 1}.jpg`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }
+                        processPage(pageIndex + 1);
+                    }).catch(err => {
+                        console.error('Failed to process image:', err);
+                        statusMessage.textContent = `Erro ao carregar uma imagem para exportação.`;
+                        exportLandscapeBtn.disabled = false;
+                        exportLandscapeJpgBtn.disabled = false;
+                        exportPortraitBtn.disabled = false;
+                        exportPortraitJpgBtn.disabled = false;
+                    });
+                }
+                processPage(0);
+            };
+
+            // Event listeners for the export buttons
+            exportLandscapeBtn.addEventListener('click', () => exportDocument('landscape', 'pdf'));
+            exportLandscapeJpgBtn.addEventListener('click', () => exportDocument('landscape', 'jpg'));
+            exportPortraitBtn.addEventListener('click', () => exportDocument('portrait', 'pdf'));
+            exportPortraitJpgBtn.addEventListener('click', () => exportDocument('portrait', 'jpg'));
+
+            // Event listeners for the new modal export buttons
+            modalExportPortraitBtn.addEventListener('click', () => {
+                exportDocument('portrait', 'pdf');
+                fullPreviewModal.classList.add('hidden');
+            });
+            modalExportPortraitJpgBtn.addEventListener('click', () => {
+                exportDocument('portrait', 'jpg');
+                fullPreviewModal.classList.add('hidden');
+            });
+            modalExportLandscapeBtn.addEventListener('click', () => {
+                exportDocument('landscape', 'pdf');
+                fullPreviewModal.classList.add('hidden');
+            });
+            modalExportLandscapeJpgBtn.addEventListener('click', () => {
+                exportDocument('landscape', 'jpg');
+                fullPreviewModal.classList.add('hidden');
+            });
+
+
+            // --- Carousel de Dicas ---
+            const tips = [
+                {
+                    title: "Dica 1: Organize seu álbum",
+                    description: "Arraste e solte fotos para criar um documento PDF com uma grade de 2x4.",
+                    color: "bg-blue-100 text-blue-800"
+                },
+                {
+                    title: "Dica 2: Edite o Recorte",
+                    description: "Selecione uma imagem para abrir o editor e use a ferramenta de recorte para focar no que importa.",
+                    color: "bg-green-100 text-green-800"
+                },
+                {
+                    title: "Dica 3: Adicione Legendas",
+                    description: "Acréscente legendas às suas fotos com diferentes fontes, cores e contornos para um toque especial.",
+                    color: "bg-purple-100 text-purple-800"
+                },
+                {
+                    title: "Dica 4: Fundo Desfocado",
+                    description: "Use a ferramenta 'Editar Fundo' para desfocar o fundo de suas fotos e destacá-las.",
+                    color: "bg-indigo-100 text-indigo-800"
+                },
+                {
+                    title: "Dica 5: Redimensione o Fundo",
+                    description: "Ajuste o controle deslizante para ampliar o fundo e criar um efeito de zoom panorâmico.",
+                    color: "bg-yellow-100 text-yellow-800"
+                },
+                {
+                    title: "Dica 6: Salve em JPG",
+                    description: "Você não precisa de um PDF! Salve cada página do seu layout como uma imagem JPG de alta qualidade.",
+                    color: "bg-red-100 text-red-800"
+                },
+                {
+                    title: "Dica 7: Duas Orientações",
+                    description: "Escolha entre os formatos Retrato e Paisagem para exportar seu documento, perfeito para qualquer projeto.",
+                    color: "bg-gray-200 text-gray-800"
+                },
+                {
+                    title: "Dica 8: Pré-visualização Instantânea",
+                    description: "Visualize seu layout na hora para ver como seu documento final ficará, antes de exportar.",
+                    color: "bg-cyan-100 text-cyan-800"
+                },
+                {
+                    title: "Dica 9: Layout Otimizado",
+                    description: "O layout padrão de 2x4 foi otimizado para um aproveitamento máximo da página A4.",
+                    color: "bg-pink-100 text-pink-800"
+                },
+                {
+                    title: "Dica 10: Limpeza Rápida",
+                    description: "Clique em 'Limpar Tudo' para remover todas as fotos e começar um novo projeto.",
+                    color: "bg-teal-100 text-teal-800"
+                }
+            ];
+
+            const carouselSlidesContainer = document.getElementById('carousel-slides');
+            const carouselDotsContainer = document.getElementById('carousel-dots');
+            let currentSlideIndex = 0;
+            const totalSlides = tips.length;
+
+            // Cria os slides e os pontos
+            tips.forEach((tip, index) => {
+                const slide = document.createElement('div');
+                slide.className = `carousel-slide ${tip.color}`;
+                slide.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-2">${tip.title}</h3>
+                    <p class="text-base">${tip.description}</p>
+                `;
+                carouselSlidesContainer.appendChild(slide);
+
+                const dot = document.createElement('span');
+                dot.className = "carousel-dot";
+                dot.addEventListener('click', () => {
+                    currentSlideIndex = index;
+                    updateCarousel();
+                });
+                carouselDotsContainer.appendChild(dot);
+            });
+
+            // Função para atualizar o carrossel
+            const updateCarousel = () => {
+                carouselSlidesContainer.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+                
+                document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                    dot.classList.toggle('active-dot', index === currentSlideIndex);
+                });
+            };
+
+            // Avança para o próximo slide
+            const nextSlide = () => {
+                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+                updateCarousel();
+            };
+
+            // Inicia o carrossel
+            updateCarousel();
+            setInterval(nextSlide, 5000); // Muda de slide a cada 5 segundos
+        };
+    </script>
+</body>
+</html>
