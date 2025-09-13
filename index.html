@@ -767,7 +767,7 @@
                             // Draw background if it exists, using 'cover' logic to fill the box completely
                             if (imageObject.blurredUrl && imageObject.blurRadius > 0) {
                                 const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalCoverDimensions(bgImg.width, bgImg.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
-                                const bgScale = imageObject.backgroundSize / 170;
+                                const bgScale = imageObject.backgroundSize / 100;
                                 const finalBgWidth = drawWidth * bgScale;
                                 const finalBgHeight = drawHeight * bgScale;
                                 const finalBgOffsetX = offsetX - (finalBgWidth - drawWidth) / 2;
@@ -1663,5 +1663,6 @@
     </script>
 </body>
 </html>
+
 
 
