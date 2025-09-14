@@ -269,7 +269,7 @@
             }
             
             .button-mobile {
-                width: 100%;
+                width: 50%;
                 margin-bottom: 0.5rem;
             }
         }
@@ -882,7 +882,7 @@
                             // Draw background if it exists, using 'cover' logic to fill the box completely
                             if (imageObject.blurredUrl && imageObject.blurRadius > 0) {
                                 const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalCoverDimensions(bgImg.width, bgImg.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
-                                const bgScale = imageObject.backgroundSize;
+                                const bgScale = imageObject.backgroundSize / 150;
                                 const finalBgWidth = drawWidth * bgScale;
                                 const finalBgHeight = drawHeight * bgScale;
                                 const finalBgOffsetX = offsetX - (finalBgWidth - drawWidth) / 2;
@@ -984,7 +984,7 @@
                     blurredImg.src = image.blurredUrl;
                     blurredImg.onload = () => {
                         // Calcula as dimensões para a imagem de fundo com base no redimensionamento temporário
-                        const bgScale = image.tempBackgroundSize / 170;
+                        const bgScale = image.tempBackgroundSize / 100;
                         const bgWidth = editorCanvas.width * bgScale;
                         const bgHeight = editorCanvas.height * bgScale;
                         const bgOffsetX = (editorCanvas.width - bgWidth) / 2;
@@ -1379,8 +1379,8 @@
                             return;
                         }
                         
-                        // Verifica o tamanho do arquivo (limite de 10MB)
-                        if (file.size > 10 * 1024 * 1024) {
+                        // Verifica o tamanho do arquivo (limite de 10 com 1024 mudei para 20MB)
+                        if (file.size > 20 * 1920 * 1920) {
                             loadedCount++;
                             if (loadedCount === totalFiles) {
                                 loadingOverlay.classList.add('hidden');
@@ -1867,6 +1867,7 @@
 </script>
 </body>
 </html>
+
 
 
 
