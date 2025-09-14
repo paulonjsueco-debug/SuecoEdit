@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuecoEdit</title>
+    <title>SuecoEdit - Versão Responsiva</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="favicon.png">
     <!-- Tailwind CSS CDN -->
@@ -127,12 +127,12 @@
             margin: 0 auto 1.5rem;
             border-radius: 1rem;
             box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
-           
+            height: 120px;
         }
         .carousel-slide-wrapper {
             display: flex;
             transition: transform 0.5s ease;
-            
+            height: 100%;
         }
         .carousel-slide {
             min-width: 100%;
@@ -143,13 +143,7 @@
             border-radius: 1rem;
             display: flex;
             flex-direction: column;
-            justify-content: center;word-wrap: break-word;
-            overflow-wrap: break-word;
-            white-space: normal; 
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            white-space: normal;
-
+            justify-content: center;
         }
         .carousel-dot {
             height: 10px;
@@ -241,6 +235,11 @@
             opacity: 1;
         }
         
+        /* Preview em tempo real para controles */
+        .realtime-preview {
+            transition: all 0.3s ease;
+        }
+        
         /* Estilos para mobile */
         @media (max-width: 768px) {
             .hero-section {
@@ -269,9 +268,46 @@
             }
             
             .button-mobile {
-                width: 50%;
+                width: 100%;
                 margin-bottom: 0.5rem;
             }
+            
+            /* Ajustes para o modal em mobile */
+            #edit-modal > div {
+                width: 95%;
+                height: 90%;
+                padding: 1rem;
+            }
+            
+            .tool-btn {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Melhorias de acessibilidade */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Melhorias para os controles de legenda */
+        .caption-preview {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        /* Manter proporção da imagem */
+        .maintain-aspect-ratio {
+            object-fit: contain;
         }
     </style>
 </head>
@@ -296,7 +332,7 @@
         <!-- Início do código da aplicação SuecoEdit -->
         <div class="container bg-white shadow-xl rounded-2xl p-4 sm:p-6 w-full">
             <!-- Título -->
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-blue-600 mb-4 text-center hover:scale-105 transition-transform duration-300">Vamos começar 👇</h1>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-blue-600 mb-4 text-center hover:scale-105 transition-transform duration-300">SuecoEdit</h1>
             <p class="text-center text-gray-600 mb-6">Arraste e solte fotos para criar fotos polaroides com uma grade de 2x4.</p>
 
             <!-- Seção de Upload -->
@@ -306,6 +342,7 @@
                     <input type="file" id="image-upload" accept="image/*" multiple class="hidden">
                 </label>
                 <p class="text-sm text-gray-500 mt-2">Arraste e solte arquivos aqui ou clique para selecionar.</p>
+                <p class="text-xs text-gray-400 mt-1">Suporte a JPEG, PNG e GIF. Máx. 10MB por imagem.</p>
             </div>
 
             <!-- Controles do layout de imagens -->
@@ -326,7 +363,7 @@
                 <div class="p-4 bg-gray-50 rounded-xl shadow-inner">
                     <h2 class="text-lg font-bold mb-3">Opções de Layout</h2>
                     <div class="flex flex-col space-y-3">
-                        <p class="text-gray-700 text-sm">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento de 40px na horizontal e 60px na vertical.</p>
+                        <p class="text-gray-700 text-sm">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento de 40px na horizontal и 60px na vertical.</p>
                     </div>
                 </div>
 
@@ -371,7 +408,7 @@
             </div>
             <div id="status-message" class="mt-3 text-center text-gray-600 font-medium"></div>
             
-            <!-- Loading Overlay (adicionado) -->
+            <!-- Loading Overlay -->
             <div id="loading-overlay" class="loading-overlay hidden">
                 <div class="spinner mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -390,7 +427,7 @@
                     <!-- Área Principal do Canvas -->
                     <div class="flex-1 flex items-center justify-center relative min-h-[30vh] lg:min-h-96">
                         <div id="editor-area" class="editor-container w-full h-full relative">
-                            <canvas id="editor-canvas" class="w-full h-full"></canvas>
+                            <canvas id="editor-canvas" class="w-full h-full maintain-aspect-ratio"></canvas>
                             <div id="crop-box" class="crop-box hidden">
                                 <div class="handle handle-tl"></div>
                                 <div class="handle handle-tr"></div>
@@ -423,39 +460,39 @@
                                 <div class="px-2 w-full mb-4">
                                     <label class="block">
                                         <span class="text-gray-700">Texto:</span>
-                                        <input type="text" id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <input type="text" id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 realtime-preview">
                                     </label>
                                 </div>
                                 <div class="px-2 w-1/2 mb-4">
                                     <label class="block">
                                         <span class="text-gray-700">Cor:</span>
-                                        <input type="color" id="caption-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300">
+                                        <input type="color" id="caption-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#000000">
                                     </label>
                                 </div>
                                 <div class="px-2 w-1/2 mb-4">
                                     <label class="block">
                                         <span class="text-gray-700">Contorno:</span>
-                                        <input type="color" id="caption-outline-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300">
+                                        <input type="color" id="caption-outline-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#FFFFFF">
                                     </label>
                                 </div>
                                 <div class="px-2 w-full mb-4">
                                     <label class="block">
                                         <span class="text-gray-700">Tamanho da Fonte:</span>
-                                        <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500">
+                                        <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500 realtime-preview">
                                         <p class="text-right text-sm text-gray-500" id="caption-size-value">20 px</p>
                                     </label>
                                 </div>
                                 <div class="px-2 w-full mb-4">
                                     <label class="block">
                                         <span class="text-gray-700">Espessura do Contorno:</span>
-                                        <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500">
+                                        <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500 realtime-preview">
                                         <p class="text-right text-sm text-gray-500" id="caption-stroke-value">0 px</p>
                                     </label>
                                 </div>
                                 <div class="px-2 w-full mb-4">
                                     <label class="block">
                                         <span class="text-gray-700">Fonte:</span>
-                                        <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm realtime-preview">
                                             <option value="Valentine Baby, sans-serif">Valentine Baby</option>
                                             <option value="Inter, sans-serif">Inter</option>
                                             <option value="Arial, sans-serif">Arial</option>
@@ -482,12 +519,12 @@
                             <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Ajuste o desfoque e o redimensionamento do fundo da imagem.</p>
                             <label class="block mb-4">
                                 <span class="text-gray-700">Intensidade do Desfoque:</span>
-                                <input type="range" id="blur-slider" min="0" max="250" value="15" class="mt-1 w-full accent-indigo-500">
+                                <input type="range" id="blur-slider" min="0" max="250" value="15" class="mt-1 w-full accent-indigo-500 realtime-preview">
                                 <p class="text-right text-sm text-gray-500" id="blur-value">15 px</p>
                             </label>
                             <label class="block mb-4">
                                 <span class="text-gray-700">Redimensionar Fundo (%):</span>
-                                <input type="range" id="background-size-slider" min="100" max="500" value="100" class="mt-1 w-full accent-indigo-500">
+                                <input type="range" id="background-size-slider" min="100" max="500" value="100" class="mt-1 w-full accent-indigo-500 realtime-preview">
                                 <p class="text-right text-sm text-gray-500" id="background-size-value">100 %</p>
                             </label>
                             <div class="flex justify-center lg:justify-end space-x-4 mt-4">
@@ -652,8 +689,8 @@
             let isDragging = false;
             let initialCanvasSize = { width: 0, height: 0 };
 
-            const DEFAULT_BLUR = 20; // Default blur value
-            const DEFAULT_BG_SIZE = 190; // Novo valor padrão de redimensionamento de fundo
+            const DEFAULT_BLUR = 30; // Default blur value
+            const DEFAULT_BG_SIZE = 180; // Novo valor padrão de redimensionamento de fundo
             const BLUR_PADDING = 250; // Padding to prevent white borders on blurred images
 
             // Dimensões da folha A4 em 300 DPI
@@ -881,12 +918,14 @@
                         if (imagesLoaded === totalImages) {
                             // Draw background if it exists, using 'cover' logic to fill the box completely
                             if (imageObject.blurredUrl && imageObject.blurRadius > 0) {
-                                const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalCoverDimensions(bgImg.width, bgImg.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
-                                const bgScale = imageObject.backgroundSize / 150;
+                                // MODIFICADO: Usar contain para manter a proporção do fundo
+                                const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(bgImg.width, bgImg.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
+                                const bgScale = imageObject.backgroundSize / 100;
                                 const finalBgWidth = drawWidth * bgScale;
                                 const finalBgHeight = drawHeight * bgScale;
-                                const finalBgOffsetX = offsetX - (finalBgWidth - drawWidth) / 2;
-                                const finalBgOffsetY = offsetY - (finalBgHeight - drawHeight) / 2;
+                                // MODIFICADO: Centralizar o fundo
+                                const finalBgOffsetX = offsetX + (drawWidth - finalBgWidth) / 2;
+                                const finalBgOffsetY = offsetY + (drawHeight - finalBgHeight) / 2;
                                 ctx.drawImage(bgImg, finalBgOffsetX, finalBgOffsetY, finalBgWidth, finalBgHeight);
                             }
 
@@ -947,6 +986,7 @@
                 const imageAspect = image.width / image.height;
                 const containerAspect = containerWidth / containerHeight;
 
+                // MODIFICADO: Manter a proporção da imagem no editor
                 if (containerAspect > imageAspect) {
                     canvasHeight = containerHeight;
                     canvasWidth = canvasHeight * imageAspect;
@@ -983,20 +1023,24 @@
                     const blurredImg = new Image();
                     blurredImg.src = image.blurredUrl;
                     blurredImg.onload = () => {
-                        // Calcula as dimensões para a imagem de fundo com base no redimensionamento temporário
+                        // MODIFICADO: Manter a proporção da imagem de fundo
+                        const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(blurredImg.width, blurredImg.height, editorCanvas.width, editorCanvas.height);
                         const bgScale = image.tempBackgroundSize / 100;
-                        const bgWidth = editorCanvas.width * bgScale;
-                        const bgHeight = editorCanvas.height * bgScale;
-                        const bgOffsetX = (editorCanvas.width - bgWidth) / 2;
-                        const bgOffsetY = (editorCanvas.height - bgHeight) / 2;
+                        const bgWidth = drawWidth * bgScale;
+                        const bgHeight = drawHeight * bgScale;
+                        // MODIFICADO: Centralizar o fundo
+                        const bgOffsetX = offsetX + (drawWidth - bgWidth) / 2;
+                        const bgOffsetY = offsetY + (drawHeight - bgHeight) / 2;
 
                         // Desenha APENAS a imagem de fundo
                         editorCtx.drawImage(blurredImg, bgOffsetX, bgOffsetY, bgWidth, bgHeight);
                     };
                 } else {
                     // Para outras ferramentas, desenha a imagem principal e as legendas temporárias
-                    editorCtx.drawImage(image.imgElement, 0, 0, editorCanvas.width, editorCanvas.height);
-                    drawCaptionsOnCanvas(editorCtx, image.tempCaptions, 0, 0, 1);
+                    // MODIFICADO: Manter a proporção da imagem principal
+                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(image.imgElement.width, image.imgElement.height, editorCanvas.width, editorCanvas.height);
+                    editorCtx.drawImage(image.imgElement, offsetX, offsetY, drawWidth, drawHeight);
+                    drawCaptionsOnCanvas(editorCctx, image.tempCaptions, offsetX, offsetY, drawWidth / image.imgElement.width);
                 }
             };
 
@@ -1061,13 +1105,64 @@
                     captionStrokeSlider.value = image.tempCaptions[0].strokeWidth;
                     captionStrokeValueText.textContent = `${image.tempCaptions[0].strokeWidth} px`;
                     captionFontSelect.value = image.tempCaptions[0].font;
+                    
+                    // Adiciona event listeners para preview em tempo real
+                    addCaptionRealtimePreview();
+                    
                     redrawEditorCanvas();
                 } else if (toolName === 'background') {
                     backgroundControls.classList.remove('hidden');
                     toolBackgroundBtn.classList.remove('bg-gray-200', 'text-gray-700');
                     toolBackgroundBtn.classList.add('bg-blue-500', 'text-white');
+                    
+                    // Adiciona event listeners para preview em tempo real
+                    addBackgroundRealtimePreview();
+                    
                     redrawEditorCanvas();
                 }
+            };
+
+            // Adiciona preview em tempo real para controles de legenda
+            const addCaptionRealtimePreview = () => {
+                const realtimeElements = document.querySelectorAll('#caption-controls .realtime-preview');
+                realtimeElements.forEach(element => {
+                    element.addEventListener('input', () => {
+                        if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                            const caption = uploadedImages[currentImageIndex].tempCaptions[0];
+                            caption.text = captionTextInput.value;
+                            caption.color = captionColorInput.value;
+                            caption.outlineColor = captionOutlineColorInput.value;
+                            caption.size = parseInt(captionSizeSlider.value);
+                            caption.strokeWidth = parseInt(captionStrokeSlider.value);
+                            caption.font = captionFontSelect.value;
+                            
+                            captionSizeValueText.textContent = `${caption.size} px`;
+                            captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
+                            
+                            redrawEditorCanvas();
+                        }
+                    });
+                });
+            };
+
+            // Adiciona preview em tempo real para controles de fundo
+            const addBackgroundRealtimePreview = () => {
+                const realtimeElements = document.querySelectorAll('#background-controls .realtime-preview');
+                realtimeElements.forEach(element => {
+                    element.addEventListener('input', () => {
+                        const image = uploadedImages[currentImageIndex];
+                        image.tempBlurRadius = parseInt(blurSlider.value);
+                        image.tempBackgroundSize = parseInt(backgroundSizeSlider.value);
+                        
+                        blurValueText.textContent = `${image.tempBlurRadius} px`;
+                        backgroundSizeValueText.textContent = `${image.tempBackgroundSize} %`;
+                        
+                        if (image.tempBlurRadius > 0) {
+                            applyBlur(image.imgElement, image, image.tempBlurRadius);
+                        }
+                        redrawEditorCanvas();
+                    });
+                });
             };
 
             toolCropBtn.addEventListener('click', () => setTool('crop'));
@@ -1207,53 +1302,6 @@
                 draggedCaption = null;
             });
 
-            captionTextInput.addEventListener('input', (e) => {
-                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    uploadedImages[currentImageIndex].tempCaptions[0].text = e.target.value;
-                    redrawEditorCanvas();
-                }
-            });
-
-            captionColorInput.addEventListener('input', (e) => {
-                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    uploadedImages[currentImageIndex].tempCaptions[0].color = e.target.value;
-                    redrawEditorCanvas();
-                }
-            });
-
-            captionOutlineColorInput.addEventListener('input', (e) => {
-                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    uploadedImages[currentImageIndex].tempCaptions[0].outlineColor = e.target.value;
-                    redrawEditorCanvas();
-                }
-            });
-
-            captionSizeSlider.addEventListener('input', (e) => {
-                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    const newSize = parseInt(e.target.value);
-                    uploadedImages[currentImageIndex].tempCaptions[0].size = newSize;
-                    captionSizeValueText.textContent = `${newSize} px`;
-                    redrawEditorCanvas();
-                }
-            });
-
-            captionStrokeSlider.addEventListener('input', (e) => {
-                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    const newStroke = parseInt(e.target.value);
-                    uploadedImages[currentImageIndex].tempCaptions[0].strokeWidth = newStroke;
-                    captionStrokeValueText.textContent = `${newStroke} px`;
-                    redrawEditorCanvas();
-                }
-            });
-
-
-            captionFontSelect.addEventListener('change', (e) => {
-                if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    uploadedImages[currentImageIndex].tempCaptions[0].font = e.target.value;
-                    redrawEditorCanvas();
-                }
-            });
-
             // Applies the blur effect and updates the image data
             const applyBlur = (imageElement, imageObject, blurRadius) => {
                 const tempCanvas = document.createElement('canvas');
@@ -1265,25 +1313,6 @@
                 ctx.drawImage(imageElement, BLUR_PADDING / 2, BLUR_PADDING / 2, imageElement.width, imageElement.height);
                 imageObject.blurredUrl = tempCanvas.toDataURL('image/png');
             };
-
-            blurSlider.addEventListener('input', (e) => {
-                const newBlur = parseInt(e.target.value);
-                blurValueText.textContent = `${newBlur} px`;
-                const image = uploadedImages[currentImageIndex];
-                image.tempBlurRadius = newBlur;
-                if (newBlur > 0) {
-                    applyBlur(image.imgElement, image, newBlur);
-                }
-                redrawEditorCanvas();
-            });
-
-            backgroundSizeSlider.addEventListener('input', (e) => {
-                const newSize = parseInt(e.target.value);
-                backgroundSizeValueText.textContent = `${newSize} %`;
-                const image = uploadedImages[currentImageIndex];
-                image.tempBackgroundSize = newSize;
-                redrawEditorCanvas();
-            });
 
             // Save and Discard actions for each tool
             saveCropBtn.addEventListener('click', () => {
@@ -1379,8 +1408,8 @@
                             return;
                         }
                         
-                        // Verifica o tamanho do arquivo (limite de 10 com 1024 mudei para 20MB)
-                        if (file.size > 20 * 1920 * 1920) {
+                        // Verifica o tamanho do arquivo (limite de 10MB)
+                        if (file.size > 10 * 1024 * 1024) {
                             loadedCount++;
                             if (loadedCount === totalFiles) {
                                 loadingOverlay.classList.add('hidden');
@@ -1478,6 +1507,7 @@
             // Lógica para o novo botão de pré-visualização completa
             fullPreviewBtn.addEventListener('click', () => {
                 if (uploadedImages.length === 0) return;
+
                 fullPreviewModal.classList.remove('hidden');
                 fullPreviewArea.innerHTML = '';
                 currentPageIndex = 0;
@@ -1741,7 +1771,7 @@
                 },
                 {
                     title: "Dica 2: Edite o Recorte",
-                    description: "Selecione uma imagem para abrir o editor _<e use a ferramenta de recorte para focar no que importa.",
+                    description: "Selecione uma imagem para abrir o editor e use a ferramenta de recorte para focar no que importa.",
                     color: "bg-white-100 text-Black-800"
                 },
                 {
@@ -1761,7 +1791,7 @@
                 },
                 {
                     title: "Dica 6: Salve em JPG",
-                    description: "Se você não precisa de um PDF, Salve cada página do seu layout como uma imagem JPG de alta qualidade.",
+                    description: "Você não precisa de um PDF! Salve cada página do seu layout como uma imagem JPG de alta qualidade.",
                     color: "bg-white-100 text-black-800"
                 },
                 {
@@ -1850,6 +1880,9 @@
                     imageUpload.dispatchEvent(event);
                 }
             });
+
+            // CORREÇÃO: Inicializar o carrossel após o carregamento da página
+            updateCarousel();
         };
     </script>
     <script>
@@ -1867,7 +1900,3 @@
 </script>
 </body>
 </html>
-
-
-
-
