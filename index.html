@@ -652,8 +652,8 @@
             let isDragging = false;
             let initialCanvasSize = { width: 0, height: 0 };
 
-            const DEFAULT_BLUR = 30; // Default blur value
-            const DEFAULT_BG_SIZE = 180; // Novo valor padrão de redimensionamento de fundo
+            const DEFAULT_BLUR = 20; // Default blur value
+            const DEFAULT_BG_SIZE = 190; // Novo valor padrão de redimensionamento de fundo
             const BLUR_PADDING = 250; // Padding to prevent white borders on blurred images
 
             // Dimensões da folha A4 em 300 DPI
@@ -984,7 +984,7 @@
                     blurredImg.src = image.blurredUrl;
                     blurredImg.onload = () => {
                         // Calcula as dimensões para a imagem de fundo com base no redimensionamento temporário
-                        const bgScale = image.tempBackgroundSize / 100;
+                        const bgScale = image.tempBackgroundSize / 170;
                         const bgWidth = editorCanvas.width * bgScale;
                         const bgHeight = editorCanvas.height * bgScale;
                         const bgOffsetX = (editorCanvas.width - bgWidth) / 2;
@@ -1478,7 +1478,6 @@
             // Lógica para o novo botão de pré-visualização completa
             fullPreviewBtn.addEventListener('click', () => {
                 if (uploadedImages.length === 0) return;
-
                 fullPreviewModal.classList.remove('hidden');
                 fullPreviewArea.innerHTML = '';
                 currentPageIndex = 0;
@@ -1868,5 +1867,6 @@
 </script>
 </body>
 </html>
+
 
 
