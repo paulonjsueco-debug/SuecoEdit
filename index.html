@@ -16,7 +16,7 @@
         @font-face {
             font-family: 'Valentine Baby';
             src: url('https://fonts.cdnfonts.com/s/72225/Valentine Baby.woff') format('woff');
-       }
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -28,31 +28,31 @@
         .hero-section {
             background: linear-gradient(135deg, #60a5fa, #3b82f6);
             color: white;
-            padding: 4rem 1rem;
+            padding: 2rem 1rem;
             text-align: center;
             border-bottom-left-radius: 2rem;
             border-bottom-right-radius: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
         }
 
         .hero-section h1 {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
         }
 
         .hero-section p {
-            font-size: 1.25rem;
+            font-size: 1rem;
             opacity: 0.9;
         }
 
         .container-wrapper {
             max-width: 100%;
-            padding: 1rem;
+            padding: 0.5rem;
         }
         
-        /* Estilos do Editor de Imagens (copiados do arquivo anterior) */
+        /* Estilos do Editor de Imagens */
         .container {
             max-width: 960px;
         }
@@ -106,7 +106,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border-radius: 0.5rem;
             border: 1px solid #e5e7eb;
-            margin: 1rem;
+            margin: 0.5rem;
         }
         .preview-zoom-indicator {
             position: absolute;
@@ -119,26 +119,37 @@
             font-size: 12px;
         }
 
-        /* Carousel Styles */
+        /* Carousel Styles - CORRIGIDO */
         .carousel-container {
             position: relative;
             overflow: hidden;
             max-width: 700px;
-            margin: 0.3 auto 2rem;
+            margin: 0 auto 1.5rem;
             border-radius: 1rem;
             box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+           
         }
         .carousel-slide-wrapper {
             display: flex;
-            transition: transform 1s opacity(0.68, -0.55, 0.27, 1.55);
+            transition: transform 0.5s ease;
+            
         }
         .carousel-slide {
             min-width: 100%;
             flex-shrink: 0;
-            padding: 2rem;
+            padding: 1rem;
             text-align: center;
             background-color: #ffffff;
             border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal; 
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+
         }
         .carousel-dot {
             height: 10px;
@@ -147,9 +158,11 @@
             border-radius: 50%;
             display: inline-block;
             transition: background-color 0.6s ease;
+            margin: 0 3px;
+            cursor: pointer;
         }
         .active-dot {
-            background-color: #717171;
+            background-color: #3b82f6;
         }
 
         @keyframes spin {
@@ -173,8 +186,92 @@
         }
         #full-preview-area .preview-page {
             flex-shrink: 0;
-            width: 90%; /* Ajuste para melhor visualização em tela cheia */
+            width: 90%;
             max-width: 900px;
+        }
+
+        /* Novos estilos para melhorias */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            flex-direction: column;
+        }
+        
+        .image-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Estilos para mobile */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 1.5rem 1rem;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .carousel-container {
+                height: 140px;
+                margin-bottom: 1rem;
+            }
+            
+            .carousel-slide {
+                padding: 0.5rem;
+            }
+            
+            .flex-row-mobile {
+                flex-direction: column;
+            }
+            
+            .button-mobile {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -185,26 +282,26 @@
         <p class="text-white">A sua Gráfica bem na palma das suas mãos 🤩.</p>
     </div>
 
-    <!-- Carousel de Dicas -->
+    <!-- Carousel de Dicas - CORRIGIDO -->
     <div class="carousel-container">
         <div id="carousel-slides" class="carousel-slide-wrapper">
             <!-- Slides are dynamically generated by JavaScript -->
         </div>
-        <div id="carousel-dots" class="flex justify-center mt-4 space-x-2">
+        <div id="carousel-dots" class="flex justify-center mt-2 space-x-2">
             <!-- Dots are dynamically generated -->
         </div>
     </div>
 
     <div class="container-wrapper flex items-center justify-center">
         <!-- Início do código da aplicação SuecoEdit -->
-        <div class="container bg-white shadow-xl rounded-2xl p-6 sm:p-10 w-full">
+        <div class="container bg-white shadow-xl rounded-2xl p-4 sm:p-6 w-full">
             <!-- Título -->
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-blue-600 mb-6 text-center hover:scale-105 transition-transform duration-300">SuecoEdit</h1>
-            <p class="text-center text-gray-600 mb-8">Arraste e solte fotos para criar fotos polaroides com uma grade de 2x4.</p>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-blue-600 mb-4 text-center hover:scale-105 transition-transform duration-300">SuecoEdit</h1>
+            <p class="text-center text-gray-600 mb-6">Arraste e solte fotos para criar fotos polaroides com uma grade de 2x4.</p>
 
             <!-- Seção de Upload -->
-            <div id="upload-section" class="mb-8 p-6 border-2 border-dashed border-gray-300 rounded-xl text-center">
-                <label for="image-upload" class="file-input-label bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+            <div id="upload-section" class="mb-6 p-4 border-2 border-dashed border-gray-300 rounded-xl text-center">
+                <label for="image-upload" class="file-input-label bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors inline-block">
                     <span>Selecionar Imagens</span>
                     <input type="file" id="image-upload" accept="image/*" multiple class="hidden">
                 </label>
@@ -213,65 +310,80 @@
 
             <!-- Controles do layout de imagens -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
-                <h2 class="text-2xl font-bold">Imagens Carregadas</h2>
+                <h2 class="text-xl font-bold">Imagens Carregadas</h2>
                 <button id="clear-all-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors transform hover:scale-105 w-full sm:w-auto">
                     Limpar Tudo
                 </button>
             </div>
 
             <!-- Galeria de miniaturas de imagens -->
-            <div id="image-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+            <div id="image-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
                 <!-- As miniaturas serão adicionadas aqui via JavaScript -->
             </div>
 
             <!-- Controles e Opções -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="p-6 bg-gray-50 rounded-xl shadow-inner">
-                    <h2 class="text-lg font-bold mb-4">Opções de Layout</h2>
-                    <div class="flex flex-col space-y-4">
-                        <p class="text-gray-700">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento de 40px na horizontal e 60px na vertical.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="p-4 bg-gray-50 rounded-xl shadow-inner">
+                    <h2 class="text-lg font-bold mb-3">Opções de Layout</h2>
+                    <div class="flex flex-col space-y-3">
+                        <p class="text-gray-700 text-sm">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento de 40px na horizontal e 60px na vertical.</p>
                     </div>
                 </div>
 
                 <!-- Visualização da Folha A4 em Mosaico -->
-                <div class="p-6 bg-gray-50 rounded-xl shadow-inner">
-                    <div class="flex justify-between items-center mb-4">
+                <div class="p-4 bg-gray-50 rounded-xl shadow-inner">
+                    <div class="flex justify-between items-center mb-3">
                         <h2 class="text-lg font-bold">Pré-visualização (Mosaico)</h2>
                         <span class="text-sm font-semibold text-blue-600">Zoom: 100%</span>
                     </div>
-                    <div id="preview-gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div id="preview-gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <!-- O mosaico de pré-visualizações será adicionado aqui via JavaScript -->
                     </div>
                 </div>
             </div>
 
             <!-- Botões de Exportar e Pré-visualização -->
-            <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8">
-                <div class="flex flex-wrap justify-center gap-4">
-                    <button id="export-portrait-btn" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg text-base shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+            <div class="flex flex-col md:flex-row flex-wrap justify-center gap-3 mt-6">
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button id="export-portrait-btn" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg text-sm shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
                         Gerar PDF (Retrato)
+                        <span class="tooltip-text">Exportar em formato PDF no modo retrato</span>
                     </button>
-                    <button id="export-portrait-jpg-btn" class="bg-green-500 text-white font-bold py-2 px-6 rounded-lg text-base shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                    <button id="export-portrait-jpg-btn" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg text-sm shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
                         Gerar JPG (Retrato)
+                        <span class="tooltip-text">Exportar em formato JPG no modo retrato</span>
                     </button>
                 </div>
-                <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
                     Pré-visualização de Exportação
+                    <span class="tooltip-text">Visualizar todas as páginas antes de exportar</span>
                 </button>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <button id="export-landscape-btn" class="bg-blue-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button id="export-landscape-btn" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
                         Gerar PDF
+                        <span class="tooltip-text">Exportar em formato PDF no modo paisagem</span>
                     </button>
-                    <button id="export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto">
+                    <button id="export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
                         Gerar JPG
+                        <span class="tooltip-text">Exportar em formato JPG no modo paisagem</span>
                     </button>
                 </div>
             </div>
-            <div id="status-message" class="mt-4 text-center text-gray-600 font-medium"></div>
+            <div id="status-message" class="mt-3 text-center text-gray-600 font-medium"></div>
+            
+            <!-- Loading Overlay (adicionado) -->
+            <div id="loading-overlay" class="loading-overlay hidden">
+                <div class="spinner mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                </div>
+                <p id="loading-text">Processando...</p>
+            </div>
         </div>
 
         <!-- Modal de Edição -->
-        <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4">
+        <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4 z-50">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
                 <!-- Área Principal de Edição e Painel de Ferramentas -->
                 <div class="flex-1 flex flex-col lg:flex-row overflow-hidden p-2 sm:p-0">
@@ -411,7 +523,7 @@
         </div>
 
         <!-- Novo Modal de Pré-visualização de Exportação -->
-        <div id="full-preview-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4">
+        <div id="full-preview-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4 z-50">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-2xl font-bold">Pré-visualização de Exportação</h2>
@@ -500,6 +612,8 @@
             const captionFontSelect = document.getElementById('caption-font-select');
             const editorArea = document.getElementById('editor-area');
             const uploadSection = document.getElementById('upload-section');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
 
             // Novos botões e modais de pré-visualização
             const fullPreviewBtn = document.getElementById('full-preview-btn');
@@ -599,7 +713,7 @@
                 imageGallery.innerHTML = '';
                 uploadedImages.forEach((image, index) => {
                     const card = document.createElement('div');
-                    card.className = 'relative group w-full aspect-square rounded-xl overflow-hidden shadow-md border-2 border-gray-200';
+                    card.className = 'relative group w-full aspect-square rounded-xl overflow-hidden shadow-md border-2 border-gray-200 image-card';
                     // Alterado para sempre usar 'object-contain' no thumbnail
                     card.innerHTML = `
                         <img src="${image.croppedUrl}" alt="Thumbnail" class="w-full h-full object-contain">
@@ -716,7 +830,6 @@
                 // Dimensões e espaçamentos dinâmicos para o layout Retrato
                 const portraitMargin = (A4_HEIGHT_PX_PORTRAIT - (3 * IMAGE_WIDTH_PX)) / 4;
                 const portraitSpacing = (A4_WIDTH_PX_PORTRAIT - (5 * IMAGE_HEIGHT_PX)) / 6;
-
 
                 const startImageIndex = pageIndex * IMAGES_PER_PAGE;
                 const endImageIndex = Math.min(startImageIndex + IMAGES_PER_PAGE, uploadedImages.length);
@@ -1248,7 +1361,34 @@
             imageUpload.addEventListener('change', (event) => {
                 const files = event.target.files;
                 if (files.length > 0) {
+                    // Mostra o overlay de carregamento
+                    loadingOverlay.classList.remove('hidden');
+                    loadingText.textContent = 'Carregando imagens...';
+                    
+                    let loadedCount = 0;
+                    const totalFiles = files.length;
+                    
                     Array.from(files).forEach(file => {
+                        // Verifica se o arquivo é uma imagem
+                        if (!file.type.match('image.*')) {
+                            loadedCount++;
+                            if (loadedCount === totalFiles) {
+                                loadingOverlay.classList.add('hidden');
+                            }
+                            statusMessage.textContent = 'Por favor, selecione apenas arquivos de imagem.';
+                            return;
+                        }
+                        
+                        // Verifica o tamanho do arquivo (limite de 10MB)
+                        if (file.size > 10 * 1024 * 1024) {
+                            loadedCount++;
+                            if (loadedCount === totalFiles) {
+                                loadingOverlay.classList.add('hidden');
+                            }
+                            statusMessage.textContent = 'Imagem muito grande. Por favor, selecione imagens menores que 10MB.';
+                            return;
+                        }
+                        
                         const reader = new FileReader();
                         reader.onload = (e) => {
                             const img = new Image();
@@ -1281,7 +1421,6 @@
                                     imgHeight = processedImg.height;
                                 }
 
-
                                 const newImage = {
                                     id: Date.now() + Math.random(),
                                     originalUrl: e.target.result,
@@ -1308,8 +1447,13 @@
                                     uploadedImages.push(newImage);
                                 }
 
-                                renderImages();
-                                updateExportButtonState();
+                                loadedCount++;
+                                if (loadedCount === totalFiles) {
+                                    loadingOverlay.classList.add('hidden');
+                                    renderImages();
+                                    updateExportButtonState();
+                                    statusMessage.textContent = `${totalFiles} imagem(ns) carregada(s) com sucesso!`;
+                                }
                             };
                             img.src = e.target.result;
                         };
@@ -1320,10 +1464,15 @@
 
             // Event listener for the "Clear All" button
             clearAllBtn.addEventListener('click', () => {
-                uploadedImages = [];
-                imageGallery.innerHTML = '';
-                previewGallery.innerHTML = '';
-                updateExportButtonState();
+                if (uploadedImages.length === 0) return;
+                
+                if (confirm('Tem certeza que deseja remover todas as imagens?')) {
+                    uploadedImages = [];
+                    imageGallery.innerHTML = '';
+                    previewGallery.innerHTML = '';
+                    updateExportButtonState();
+                    statusMessage.textContent = 'Todas as imagens foram removidas.';
+                }
             });
 
             // Lógica para o novo botão de pré-visualização completa
@@ -1343,13 +1492,17 @@
                 // Mostra/esconde os botões de navegação
                 if (totalPages > 1) {
                     fullPreviewNav.classList.remove('hidden');
-                    prevPageBtn.disabled = true;
-                    nextPageBtn.disabled = false;
+                    prevPageBtn.disabled = currentPageIndex === 0;
+                    nextPageBtn.disabled = currentPageIndex === totalPages - 1;
                 } else {
                     fullPreviewNav.classList.add('hidden');
                 }
                 
-                pageIndicator.textContent = `Página 1 de ${totalPages}`;
+                pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
+
+                // Mostra overlay de carregamento
+                loadingOverlay.classList.remove('hidden');
+                loadingText.textContent = 'Gerando pré-visualização...';
 
                 let renderPromiseChain = Promise.resolve();
                 for (let i = 0; i < totalPages; i++) {
@@ -1395,6 +1548,14 @@
                         });
                     });
                 }
+                
+                renderPromiseChain.then(() => {
+                    loadingOverlay.classList.add('hidden');
+                    
+                    // Scroll para a página atual
+                    const scrollDistance = fullPreviewArea.offsetWidth * currentPageIndex;
+                    fullPreviewArea.scrollTo({ left: scrollDistance, behavior: 'smooth' });
+                });
             });
 
             closePreviewBtn.addEventListener('click', () => {
@@ -1403,11 +1564,12 @@
             
             // Navegação entre pranchetas
             prevPageBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(uploadedImages.length / 8);
                 if (currentPageIndex > 0) {
                     currentPageIndex--;
                     const scrollDistance = fullPreviewArea.offsetWidth * currentPageIndex;
                     fullPreviewArea.scrollTo({ left: scrollDistance, behavior: 'smooth' });
-                    pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${Math.ceil(uploadedImages.length / 8)}`;
+                    pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
                     nextPageBtn.disabled = false;
                     if (currentPageIndex === 0) {
                         prevPageBtn.disabled = true;
@@ -1447,6 +1609,10 @@
                 const IMAGES_PER_PAGE = gridCols * gridRows;
                 const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
 
+                // Mostra overlay de carregamento
+                loadingOverlay.classList.remove('hidden');
+                loadingText.textContent = `Gerando ${format.toUpperCase()}... Por favor, aguarde.`;
+                
                 statusMessage.textContent = `Gerando ${format.toUpperCase()}... Por favor, aguarde.`;
                 exportLandscapeBtn.disabled = true;
                 exportLandscapeJpgBtn.disabled = true;
@@ -1471,6 +1637,7 @@
                         exportLandscapeJpgBtn.disabled = false;
                         exportPortraitBtn.disabled = false;
                         exportPortraitJpgBtn.disabled = false;
+                        loadingOverlay.classList.add('hidden');
                         return;
                     }
 
@@ -1535,6 +1702,7 @@
                         exportLandscapeJpgBtn.disabled = false;
                         exportPortraitBtn.disabled = false;
                         exportPortraitJpgBtn.disabled = false;
+                        loadingOverlay.classList.add('hidden');
                     });
                 }
                 processPage(0);
@@ -1565,7 +1733,7 @@
             });
 
 
-            // --- Carousel de Dicas ---
+            // --- Carousel de Dicas - CORRIGIDO ---
             const tips = [
                 {
                     title: "Dica 1: Organize seu álbum",
@@ -1574,7 +1742,7 @@
                 },
                 {
                     title: "Dica 2: Edite o Recorte",
-                    description: "Selecione uma imagem para abrir o editor e use a ferramenta de recorte para focar no que importa.",
+                    description: "Selecione uma imagem para abrir o editor _<e use a ferramenta de recorte para focar no que importa.",
                     color: "bg-white-100 text-Black-800"
                 },
                 {
@@ -1594,7 +1762,7 @@
                 },
                 {
                     title: "Dica 6: Salve em JPG",
-                    description: "Você não precisa de um PDF! Salve cada página do seu layout como uma imagem JPG de alta qualidade.",
+                    description: "Se você não precisa de um PDF, Salve cada página do seu layout como uma imagem JPG de alta qualidade.",
                     color: "bg-white-100 text-black-800"
                 },
                 {
@@ -1629,13 +1797,14 @@
                 const slide = document.createElement('div');
                 slide.className = `carousel-slide ${tip.color}`;
                 slide.innerHTML = `
-                    <h3 class="text-2xl font-bold mb-2">${tip.title}</h3>
-                    <p class="text-base">${tip.description}</p>
+                    <h3 class="text-xl font-bold mb-2">${tip.title}</h3>
+                    <p class="text-sm">${tip.description}</p>
                 `;
                 carouselSlidesContainer.appendChild(slide);
 
                 const dot = document.createElement('span');
                 dot.className = "carousel-dot";
+                if (index === 0) dot.classList.add('active-dot');
                 dot.addEventListener('click', () => {
                     currentSlideIndex = index;
                     updateCarousel();
@@ -1661,6 +1830,27 @@
             // Inicia o carrossel
             updateCarousel();
             setInterval(nextSlide, 5000); // Muda de slide a cada 5 segundos
+            
+            // Adiciona evento de arrastar e soltar para a área de upload
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.classList.add('bg-blue-100', 'border-blue-400');
+            });
+            
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.classList.remove('bg-blue-100', 'border-blue-400');
+            });
+            
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('bg-blue-100', 'border-blue-400');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    imageUpload.files = e.dataTransfer.files;
+                    const event = new Event('change');
+                    imageUpload.dispatchEvent(event);
+                }
+            });
         };
     </script>
     <script>
@@ -1678,15 +1868,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
