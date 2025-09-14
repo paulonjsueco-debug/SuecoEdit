@@ -17,5 +17,11 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "splash_pages": null,
+  "display_override": ["standalone"],
+  "shortcuts": [],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "author": "2025 By Paulo Sueco"
 }
