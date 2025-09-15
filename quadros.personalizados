@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuecoEdit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ícones de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2canvas para capturar a imagem do div -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- FileSaver para salvar o arquivo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- jsPDF para criar o arquivo PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-section {
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            padding: 4rem 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        .prancheta {
+            position: relative;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            /* Define o tamanho máximo para proteger a estrutura do site */
+            max-width: 600px;
+            max-height: 600px;
+        }
+        .prancheta img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .thumbnail-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .thumbnail-container {
+            position: relative;
+        }
+        /* Estilos dos botões de controle de miniatura */
+        .thumbnail-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        .thumbnail-button {
+            cursor: pointer;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 10;
+            transition: background-color 0.2s;
+        }
+        .thumbnail-button.remove {
+            background-color: #ef4444;
+        }
+        .thumbnail-button.remove:hover {
+            background-color: #dc2626;
+        }
+        .thumbnail-button.edit {
+            background-color: #3b82f6;
+        }
+        .thumbnail-button.edit:hover {
+            background-color: #2563eb;
+        }
+        .thumbnail-button .fas {
+            font-size: 12px;
+            margin-right: 0.25rem;
+        }
+        .dimension-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-right: 1rem;
+            align-items: center;
+        }
+        .dimension-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        /* Estilos do container de cada prancheta */
+        .frame-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative; /* Essencial para o posicionamento do overlay */
+        }
+        .frame-info {
+            text-align: center;
+            font-size: 0.875rem; /* text-sm */
+            color: #4b5563; /* text-gray-600 */
+        }
+
+        /* Estilos para o overlay de ações sobre a prancheta */
+        .prancheta-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            border-radius: 0.5rem;
+            gap: 0.5rem;
+        }
+        .frame-card:hover .prancheta-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .prancheta-overlay-btn {
+            background-color: #fff;
+            color: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .prancheta-overlay-btn:hover {
+            background-color: #dbeafe;
+            transform: scale(1.05);
+        }
+
+        /* Estilos para o botão de menu em dispositivos móveis */
+        .mobile-actions-toggle {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            opacity: 0; /* Escondido por padrão, visível apenas em mobile */
+        }
+        .mobile-actions-toggle.active {
+            opacity: 1;
+        }
+        /* Estilos do editor de imagem */
+        .editor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .editor-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .prancheta-overlay {
+                opacity: 0;
+                pointer-events: none;
+            }
+            .mobile-actions-toggle {
+                opacity: 1;
+            }
+            .prancheta-overlay.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
+
+    <!-- Cabeçalho -->
+    <div class="w-full hero-section">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">SuecoEdit</h1>
+        <p class="text-base sm:text-lg text-white opacity-90">Carregue suas fotos e exporte-as em um formato pronto para impressão.</p>
+    </div>
+
+    <div class="w-full max-w-4xl mx-auto mt-8 px-4">
+        <!-- Controles de Configuração -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+            <div class="flex items-center gap-4 w-full sm:w-auto">
+                <label class="text-gray-700 font-medium">Unidade:</label>
+                <select id="unit-select" class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="cm">cm</option>
+                    <option value="mm">mm</option>
+                </select>
+            </div>
+            <label for="file-input" class="cursor-pointer bg-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300 w-full text-center sm:w-auto mt-4 sm:mt-0">
+                <i class="fas fa-upload mr-2"></i> Adicionar Fotos
+            </label>
+            <input id="file-input" type="file" accept="image/*" multiple class="hidden">
+        </div>
+
+        <!-- Painel de Fotos Carregadas -->
+        <div id="preview-panel" class="bg-white p-6 rounded-xl shadow-md mb-8 hidden">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Fotos Carregadas</h3>
+            <div id="thumbnails-container" class="flex flex-wrap justify-center gap-8">
+                <!-- Miniaturas das fotos e controles de dimensão aparecerão aqui -->
+            </div>
+        </div>
+
+        <!-- Área de Visualização e Exportação -->
+        <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Pré-visualização</h3>
+        <div id="pranchetas-container" class="flex flex-wrap justify-center gap-6">
+            <!-- As pranchetas geradas aparecerão aqui -->
+        </div>
+
+        <!-- Botão de Download e opções -->
+        <div class="flex flex-col sm:flex-row justify-center items-center mt-8 gap-4">
+            <div class="flex items-center gap-2">
+                 <label for="download-format-select" class="text-gray-700 font-medium whitespace-nowrap">Formato de Exportação:</label>
+                <select id="download-format-select" class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </div>
+            <button id="download-btn" class="bg-blue-500 text-white px-8 py-4 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300 w-full sm:w-auto hidden">
+                <i class="fas fa-download mr-2"></i> Baixar Todas as Fotos
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal do Editor de Imagem -->
+    <div id="editor-modal" class="editor-modal hidden">
+        <div class="editor-content">
+            <h4 class="text-xl font-bold text-gray-800 text-center">Editor de Imagem</h4>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <div class="flex-shrink-0 border-2 border-gray-300 rounded-md overflow-hidden" style="max-width: 400px; max-height: 400px;">
+                    <canvas id="editor-canvas" class="w-full h-full"></canvas>
+                </div>
+                <div class="flex-grow flex flex-col gap-4 w-full">
+                    <div>
+                        <label for="brightness-slider" class="block text-sm font-medium text-gray-700">Brilho</label>
+                        <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="contrast-slider" class="block text-sm font-medium text-gray-700">Contraste</label>
+                        <input type="range" id="contrast-slider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div class="flex justify-center gap-4">
+                        <button id="grayscale-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Escala de Cinza</button>
+                        <button id="sepia-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Sépia</button>
+                        <button id="reset-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Redefinir</button>
+                    </div>
+                    <div class="flex justify-between gap-4 mt-4">
+                        <button id="save-edit-btn" class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition-colors w-full">Salvar</button>
+                        <button id="cancel-edit-btn" class="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition-colors w-full">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('file-input');
+            const unitSelect = document.getElementById('unit-select');
+            const pranchetasContainer = document.getElementById('pranchetas-container');
+            const downloadBtn = document.getElementById('download-btn');
+            const previewPanel = document.getElementById('preview-panel');
+            const thumbnailsContainer = document.getElementById('thumbnails-container');
+            const downloadFormatSelect = document.getElementById('download-format-select');
+
+            const editorModal = document.getElementById('editor-modal');
+            const editorCanvas = document.getElementById('editor-canvas');
+            const brightnessSlider = document.getElementById('brightness-slider');
+            const contrastSlider = document.getElementById('contrast-slider');
+            const grayscaleBtn = document.getElementById('grayscale-btn');
+            const sepiaBtn = document.getElementById('sepia-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const saveEditBtn = document.getElementById('save-edit-btn');
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+            let photos = [];
+            let currentEditPhotoIndex = null;
+            let editorCtx = editorCanvas.getContext('2d');
+            const MAX_FILES = 10;
+            const DEFAULT_WIDTH = 21.0;
+            const DEFAULT_HEIGHT = 29.7;
+            const MAX_DISPLAY_WIDTH = 600;
+            const MAX_DISPLAY_HEIGHT = 600;
+            const PPI = 300; // Pixels por Polegada para alta resolução
+            const CM_PER_INCH = 2.54;
+            
+            // Função para renderizar a interface
+            function renderUI() {
+                renderThumbnails();
+                renderPranchetas();
+                if (photos.length > 0) {
+                    previewPanel.classList.remove('hidden');
+                    downloadBtn.classList.remove('hidden');
+                } else {
+                    previewPanel.classList.add('hidden');
+                    downloadBtn.classList.add('hidden');
+                }
+            }
+
+            // Função para exibir as miniaturas e seus controles
+            function renderThumbnails() {
+                thumbnailsContainer.innerHTML = '';
+                photos.forEach((photo, index) => {
+                    const thumbnailItem = document.createElement('div');
+                    thumbnailItem.className = 'thumbnail-item flex flex-row items-center gap-4';
+
+                    const dimensionControls = document.createElement('div');
+                    dimensionControls.className = 'dimension-controls';
+
+                    const linkBtn = document.createElement('button');
+                    linkBtn.className = 'text-gray-400 hover:text-blue-500 transition-colors duration-200';
+                    linkBtn.innerHTML = `<i class="fas fa-${photo.locked ? 'link' : 'unlink'}"></i>`;
+                    linkBtn.title = photo.locked ? 'Desvincular dimensões' : 'Vincular dimensões';
+                    linkBtn.onclick = () => {
+                        photo.locked = !photo.locked;
+                        renderUI();
+                    };
+
+                    const heightInputWrapper = document.createElement('div');
+                    heightInputWrapper.className = 'dimension-inputs';
+                    const heightLabel = document.createElement('label');
+                    heightLabel.className = 'text-xs text-gray-600 font-medium';
+                    heightLabel.textContent = 'Altura';
+                    const heightInput = document.createElement('input');
+                    heightInput.type = 'number';
+                    heightInput.step = "any"; // Permite que o usuário insira números decimais
+                    heightInput.value = photo.height;
+                    heightInput.className = 'w-16 px-1 py-1 border rounded-md text-center text-sm';
+                    heightInput.oninput = (e) => {
+                        const newHeight = parseFloat(e.target.value);
+                        photo.height = newHeight;
+                        if (photo.locked && photo.originalAspectRatio) {
+                            // Arredonda o valor calculado para um número inteiro
+                            photo.width = Math.round(newHeight * photo.originalAspectRatio);
+                            widthInput.value = photo.width;
+                        }
+                        renderPranchetas();
+                    };
+                    heightInputWrapper.appendChild(heightLabel);
+                    heightInputWrapper.appendChild(heightInput);
+
+                    const widthInputWrapper = document.createElement('div');
+                    widthInputWrapper.className = 'dimension-inputs';
+                    const widthLabel = document.createElement('label');
+                    widthLabel.className = 'text-xs text-gray-600 font-medium';
+                    widthLabel.textContent = 'Largura';
+                    const widthInput = document.createElement('input');
+                    widthInput.type = 'number';
+                    widthInput.step = "any"; // Permite que o usuário insira números decimais
+                    widthInput.value = photo.width;
+                    widthInput.className = 'w-16 px-1 py-1 border rounded-md text-center text-sm';
+                    widthInput.oninput = (e) => {
+                        const newWidth = parseFloat(e.target.value);
+                        photo.width = newWidth;
+                        if (photo.locked && photo.originalAspectRatio) {
+                            // Arredonda o valor calculado para um número inteiro
+                            photo.height = Math.round(newWidth / photo.originalAspectRatio);
+                            heightInput.value = photo.height;
+                        }
+                        renderPranchetas();
+                    };
+                    widthInputWrapper.appendChild(widthLabel);
+                    widthInputWrapper.appendChild(widthInput);
+                    
+                    const unitSpan = document.createElement('span');
+                    unitSpan.textContent = unitSelect.value;
+                    unitSpan.className = 'text-gray-600 font-medium text-xs mt-2';
+
+                    dimensionControls.appendChild(heightInputWrapper);
+                    dimensionControls.appendChild(widthInputWrapper);
+                    dimensionControls.appendChild(linkBtn);
+                    dimensionControls.appendChild(unitSpan);
+
+                    const thumbnailContainer = document.createElement('div');
+                    thumbnailContainer.className = 'thumbnail-container w-24 h-24 rounded-md overflow-hidden border-2 border-transparent hover:border-blue-500 transition-colors cursor-pointer relative';
+                    
+                    const thumbImg = document.createElement('img');
+                    thumbImg.src = photo.url;
+                    thumbImg.alt = photo.file.name;
+                    thumbImg.className = 'w-full h-full object-cover';
+                    thumbnailContainer.appendChild(thumbImg);
+                    
+                    // Adiciona o botão de editar
+                    const editButton = document.createElement('button');
+                    editButton.className = 'thumbnail-button edit absolute top-1 right-1';
+                    editButton.innerHTML = '<i class="fas fa-edit"></i>';
+                    editButton.title = 'Editar foto';
+                    editButton.onclick = () => openEditor(index);
+                    thumbnailContainer.appendChild(editButton);
+
+                    // Adiciona o botão de remover
+                    const removeButton = document.createElement('button');
+                    removeButton.className = 'thumbnail-button remove absolute bottom-1 right-1';
+                    removeButton.innerHTML = '<i class="fas fa-trash"></i>';
+                    removeButton.title = 'Remover foto';
+                    removeButton.onclick = () => {
+                        photos.splice(index, 1);
+                        renderUI();
+                    };
+                    thumbnailContainer.appendChild(removeButton);
+
+                    thumbnailItem.appendChild(dimensionControls);
+                    thumbnailItem.appendChild(thumbnailContainer);
+                    
+                    thumbnailsContainer.appendChild(thumbnailItem);
+                });
+            }
+
+            // Função para exibir as pranchetas com as imagens
+            function renderPranchetas() {
+                pranchetasContainer.innerHTML = '';
+                const unit = unitSelect.value;
+                const ratio = unit === 'cm' ? 10 : 1;
+                
+                // Definição dos tamanhos de quadro padrão em cm
+                const standardSizes = [
+                    { name: 'A6', dimensions: [[10.5, 14.8], [10, 15]] },
+                    { name: 'A5', dimensions: [[14.8, 21.0], [15, 20]] },
+                    { name: 'A4', dimensions: [[21.0, 29.7], [20, 30]] },
+                    { name: 'A3', dimensions: [[29.7, 42.0], [30, 40], [30, 45]] },
+                    { name: 'A2', dimensions: [[42.0, 59.4], [40, 60]] },
+                    { name: 'A1', dimensions: [[59.4, 84.1], [60, 90]] },
+                    { name: 'A0', dimensions: [[84.1, 118.9], [90, 160]] },
+                ];
+
+                photos.forEach((photo, index) => {
+                    // Novo container para envolver a prancheta e o rótulo
+                    const frameCard = document.createElement('div');
+                    frameCard.className = 'frame-card';
+
+                    const pranchetaDiv = document.createElement('div');
+                    pranchetaDiv.className = 'prancheta rounded-lg shadow-md';
+                    
+                    let displayWidth = photo.width * ratio;
+                    let displayHeight = photo.height * ratio;
+                    
+                    // Ajusta o tamanho da prancheta para não exceder o máximo
+                    if (displayWidth > MAX_DISPLAY_WIDTH || displayHeight > MAX_DISPLAY_HEIGHT) {
+                        const widthRatio = MAX_DISPLAY_WIDTH / displayWidth;
+                        const heightRatio = MAX_DISPLAY_HEIGHT / displayHeight;
+                        const scale = Math.min(widthRatio, heightRatio);
+                        displayWidth *= scale;
+                        displayHeight *= scale;
+                    }
+
+                    pranchetaDiv.style.width = `${displayWidth}px`;
+                    pranchetaDiv.style.height = `${displayHeight}px`;
+
+                    const contentWrapper = document.createElement('div');
+                    contentWrapper.className = 'export-content w-full h-full relative';
+
+                    const img = document.createElement('img');
+                    img.src = photo.url;
+                    img.alt = photo.file.name;
+                    img.className = 'w-full h-full object-cover';
+
+                    contentWrapper.appendChild(img);
+                    pranchetaDiv.appendChild(contentWrapper);
+
+                    let sizeText = '';
+                    const widthCm = unit === 'cm' ? photo.width : photo.width / 10;
+                    const heightCm = unit === 'cm' ? photo.height : photo.height / 10;
+                    
+                    let matchedFrameName = '';
+                    // Verifica se as dimensões correspondem a algum tamanho padrão
+                    for (const size of standardSizes) {
+                        for (const dimensions of size.dimensions) {
+                            const [stdW, stdH] = dimensions;
+                            // Checa correspondência exata, considerando o retrato e paisagem
+                            if ((Math.round(widthCm * 10) / 10 === stdW && Math.round(heightCm * 10) / 10 === stdH) || 
+                                (Math.round(widthCm * 10) / 10 === stdH && Math.round(heightCm * 10) / 10 === stdW)) {
+                                matchedFrameName = size.name;
+                                break;
+                            }
+                        }
+                        if (matchedFrameName) break;
+                    }
+
+                    if (matchedFrameName) {
+                        sizeText = `${matchedFrameName} - ${photo.width}${unit} x ${photo.height}${unit}`;
+                    } else {
+                        sizeText = `Tamanho Personalizado: ${photo.width}${unit} x ${photo.height}${unit}`;
+                    }
+
+                    // Rótulo para as dimensões e nome do quadro, posicionado abaixo da prancheta
+                    const frameInfo = document.createElement('div');
+                    frameInfo.className = 'frame-info';
+                    frameInfo.innerHTML = sizeText;
+
+                    // Overlay de ações
+                    const pranchetaOverlay = document.createElement('div');
+                    pranchetaOverlay.className = 'prancheta-overlay';
+
+                    // Botão de Download
+                    const downloadSingleBtn = document.createElement('button');
+                    downloadSingleBtn.className = 'prancheta-overlay-btn';
+                    downloadSingleBtn.innerHTML = '<i class="fas fa-download"></i> Baixar';
+                    downloadSingleBtn.onclick = () => {
+                        downloadFrame(index);
+                    };
+                    
+                    // Botão de Remover
+                    const removePranchetaBtn = document.createElement('button');
+                    removePranchetaBtn.className = 'prancheta-overlay-btn';
+                    removePranchetaBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Remover';
+                    removePranchetaBtn.onclick = () => {
+                        photos.splice(index, 1);
+                        renderUI();
+                    };
+
+                    pranchetaOverlay.appendChild(downloadSingleBtn);
+                    pranchetaOverlay.appendChild(removePranchetaBtn);
+
+                    // Botão de toggle para mobile
+                    const mobileActionsToggle = document.createElement('button');
+                    mobileActionsToggle.className = 'mobile-actions-toggle';
+                    mobileActionsToggle.innerHTML = '<i class="fas fa-ellipsis-h text-gray-800"></i>';
+                    mobileActionsToggle.onclick = (e) => {
+                        e.stopPropagation();
+                        pranchetaOverlay.classList.toggle('active');
+                    };
+
+                    pranchetaDiv.appendChild(pranchetaOverlay);
+                    pranchetaDiv.appendChild(mobileActionsToggle);
+
+                    // Adiciona a prancheta e o rótulo ao novo container
+                    frameCard.appendChild(pranchetaDiv);
+                    frameCard.appendChild(frameInfo);
+
+                    pranchetasContainer.appendChild(frameCard);
+                });
+            }
+
+            // Função para gerar o canvas em alta resolução
+            async function generateHighResCanvas(photo, format) {
+                const physicalWidthCm = photo.width;
+                const physicalHeightCm = photo.height;
+
+                // Converte cm para polegadas
+                const physicalWidthInches = physicalWidthCm / CM_PER_INCH;
+                const physicalHeightInches = physicalHeightCm / CM_PER_INCH;
+
+                // Calcula a largura e altura em pixels para 300 PPI
+                const targetWidthPx = physicalWidthInches * PPI;
+                const targetHeightPx = physicalHeightInches * PPI;
+
+                // Cria um elemento temporário para o html2canvas renderizar
+                const tempDiv = document.createElement('div');
+                tempDiv.style.width = `${targetWidthPx}px`;
+                tempDiv.style.height = `${targetHeightPx}px`;
+                tempDiv.style.position = 'absolute';
+                tempDiv.style.top = '-9999px';
+                tempDiv.style.left = '-9999px';
+
+                const img = new Image();
+                img.src = photo.url;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                tempDiv.appendChild(img);
+                document.body.appendChild(tempDiv);
+                
+                // Aguarda a imagem carregar no elemento temporário
+                await new Promise(resolve => img.onload = resolve);
+
+                // Captura a imagem em alta resolução
+                const canvas = await html2canvas(tempDiv, {
+                    scale: 1, // Já definimos o tamanho do div, então a escala é 1
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                document.body.removeChild(tempDiv);
+
+                return canvas;
+            }
+
+            // Função para baixar um único quadro
+            async function downloadFrame(index) {
+                const photo = photos[index];
+                const format = downloadFormatSelect.value;
+                const dateString = new Date().toISOString().replace(/[:.]/g, '-');
+                const fileName = `SuecoEdit_${photo.width}${unitSelect.value}x${photo.height}${unitSelect.value}_${dateString}`;
+
+                const canvas = await generateHighResCanvas(photo, format);
+
+                if (format === 'pdf') {
+                    const { jsPDF } = window.jspdf;
+                    const isLandscape = photo.width > photo.height;
+                    const pdf = new jsPDF(isLandscape ? 'l' : 'p', 'mm', [photo.width, photo.height]);
+
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+                    pdf.save(`${fileName}.pdf`);
+                } else {
+                    canvas.toBlob(blob => {
+                        saveAs(blob, `${fileName}.${format}`);
+                    }, `image/${format === 'jpg' ? 'jpeg' : 'png'}`, 1.0); // Qualidade 1.0 para manter a resolução
+                }
+            }
+
+            // Função para abrir o editor de imagem
+            function openEditor(index) {
+                currentEditPhotoIndex = index;
+                const photo = photos[index];
+                const img = new Image();
+                img.onload = () => {
+                    editorCanvas.width = img.width;
+                    editorCanvas.height = img.height;
+                    editorCtx.drawImage(img, 0, 0);
+                    brightnessSlider.value = 1.0;
+                    contrastSlider.value = 1.0;
+                    editorModal.classList.remove('hidden');
+                };
+                img.src = photo.url;
+            }
+
+            // Função para aplicar filtros e ajustes
+            function applyFilters() {
+                const img = new Image();
+                img.onload = () => {
+                    editorCanvas.width = img.width;
+                    editorCanvas.height = img.height;
+                    editorCtx.drawImage(img, 0, 0);
+
+                    const brightness = parseFloat(brightnessSlider.value);
+                    const contrast = parseFloat(contrastSlider.value);
+
+                    const imageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
+                    const data = imageData.data;
+
+                    for (let i = 0; i < data.length; i += 4) {
+                        // Aplica brilho
+                        let r = data[i] * brightness;
+                        let g = data[i + 1] * brightness;
+                        let b = data[i + 2] * brightness;
+
+                        // Aplica contraste
+                        let factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+                        r = factor * (r - 128) + 128;
+                        g = factor * (g - 128) + 128;
+                        b = factor * (b - 128) + 128;
+                        
+                        data[i] = Math.min(255, Math.max(0, r));
+                        data[i + 1] = Math.min(255, Math.max(0, g));
+                        data[i + 2] = Math.min(255, Math.max(0, b));
+                    }
+                    editorCtx.putImageData(imageData, 0, 0);
+                };
+                img.src = photos[currentEditPhotoIndex].url;
+            }
+            
+            // Ouve a mudança no input de arquivo
+            fileInput.addEventListener('change', (e) => {
+                const newFiles = Array.from(e.target.files);
+                if (photos.length + newFiles.length > MAX_FILES) {
+                    // Substitui o alert por uma mensagem no console para evitar problemas com o iframe
+                    console.error(`Você pode carregar no máximo ${MAX_FILES} fotos.`);
+                    return;
+                }
+                newFiles.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            photos.push({
+                                file: { name: file.name, type: file.type }, // Salva apenas dados essenciais do arquivo
+                                url: e.target.result,
+                                width: DEFAULT_WIDTH,
+                                height: DEFAULT_HEIGHT,
+                                locked: false,
+                                originalAspectRatio: img.width / img.height
+                            });
+                            renderUI();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+                e.target.value = '';
+            });
+
+            // Ouve a mudança na unidade
+            unitSelect.addEventListener('change', renderUI);
+
+            // Oculta overlays de mobile ao clicar em qualquer lugar
+            document.addEventListener('click', (e) => {
+                document.querySelectorAll('.prancheta-overlay').forEach(overlay => {
+                    if (overlay.classList.contains('active') && !overlay.contains(e.target)) {
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+
+            // Função para baixar todas as pranchetas
+            downloadBtn.addEventListener('click', async () => {
+                if (photos.length === 0) return;
+                
+                // Baixa cada arquivo individualmente em uma fila
+                for (const [index, photo] of photos.entries()) {
+                    await downloadFrame(index);
+                    // Adiciona um pequeno atraso para não sobrecarregar o navegador
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            });
+
+            // Ouve as mudanças nos sliders do editor
+            brightnessSlider.addEventListener('input', applyFilters);
+            contrastSlider.addEventListener('input', applyFilters);
+            
+            // Botões de filtro e redefinição
+            grayscaleBtn.addEventListener('click', () => {
+                const imageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    data[i] = avg;
+                    data[i + 1] = avg;
+                    data[i + 2] = avg;
+                }
+                editorCtx.putImageData(imageData, 0, 0);
+            });
+
+            sepiaBtn.addEventListener('click', () => {
+                const imageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    data[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
+                    data[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
+                    data[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
+                }
+                editorCtx.putImageData(imageData, 0, 0);
+            });
+
+            resetBtn.addEventListener('click', () => {
+                const photo = photos[currentEditPhotoIndex];
+                const img = new Image();
+                img.onload = () => {
+                    editorCanvas.width = img.width;
+                    editorCanvas.height = img.height;
+                    editorCtx.drawImage(img, 0, 0);
+                    brightnessSlider.value = 1.0;
+                    contrastSlider.value = 1.0;
+                };
+                img.src = photo.url;
+            });
+
+            saveEditBtn.addEventListener('click', () => {
+                const newUrl = editorCanvas.toDataURL('image/png');
+                photos[currentEditPhotoIndex].url = newUrl;
+                editorModal.classList.add('hidden');
+                renderUI();
+            });
+
+            cancelEditBtn.addEventListener('click', () => {
+                editorModal.classList.add('hidden');
+            });
+
+            // Inicia o aplicativo
+            renderUI();
+        });
+    </script>
+</body>
+</html>
