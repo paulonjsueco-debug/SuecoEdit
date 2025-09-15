@@ -35,7 +35,6 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            /* Define o tamanho máximo para proteger a estrutura do site */
             max-width: 600px;
             max-height: 600px;
         }
@@ -54,7 +53,6 @@
         .thumbnail-container {
             position: relative;
         }
-        /* Estilos dos botões de controle de miniatura */
         .thumbnail-actions {
             display: flex;
             flex-direction: column;
@@ -108,7 +106,6 @@
             flex-direction: column;
             gap: 0.25rem;
         }
-        /* Estilos do container de cada prancheta */
         .frame-card {
             display: flex;
             flex-direction: column;
@@ -121,8 +118,6 @@
             font-size: 0.875rem;
             color: #4b5563;
         }
-
-        /* Estilos para o overlay de ações sobre a prancheta */
         .prancheta-overlay {
             position: absolute;
             top: 0;
@@ -159,8 +154,6 @@
             background-color: #dbeafe;
             transform: scale(1.05);
         }
-
-        /* Estilos para o botão de menu em dispositivos móveis */
         .mobile-actions-toggle {
             position: absolute;
             top: 0.5rem;
@@ -179,8 +172,6 @@
         .mobile-actions-toggle.active {
             opacity: 1;
         }
-        
-        /* Estilos do editor de imagem */
         .editor-modal {
             position: fixed;
             top: 0;
@@ -193,7 +184,6 @@
             align-items: center;
             z-index: 50;
         }
-
         .editor-content {
             background-color: #fff;
             padding: 2rem;
@@ -205,8 +195,6 @@
             gap: 1rem;
             position: relative;
         }
-        
-        /* Botão de fechar no editor */
         .close-editor {
             position: absolute;
             top: 1rem;
@@ -217,12 +205,9 @@
             cursor: pointer;
             color: #6b7280;
         }
-        
         .close-editor:hover {
             color: #374151;
         }
-
-        /* Botão de voltar ao topo */
         .back-to-top {
             position: fixed;
             top: 20px;
@@ -242,17 +227,13 @@
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
         }
-
         .back-to-top.visible {
             opacity: 1;
             visibility: visible;
         }
-
         .back-to-top:hover {
             background-color: #2563eb;
         }
-        
-        /* Botão de voltar à página anterior */
         .back-button {
             position: fixed;
             top: 20px;
@@ -271,22 +252,10 @@
             opacity: 0.9;
             transition: opacity 0.3s, background-color 0.3s;
         }
-
         .back-button:hover {
             background-color: #2563eb;
             opacity: 1;
         }
-
-        /* Estilo para a visualização no editor */
-        .editor-preview {
-            max-width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            margin: 0 auto;
-            display: block;
-        }
-        
-        /* Estilo para o modal de visualização */
         .viewer-modal {
             position: fixed;
             top: 0;
@@ -299,7 +268,6 @@
             align-items: center;
             z-index: 60;
         }
-        
         .viewer-content {
             position: relative;
             display: flex;
@@ -308,19 +276,16 @@
             max-width: 90%;
             max-height: 90%;
         }
-        
         .viewer-image {
             max-width: 100%;
             max-height: 80vh;
             object-fit: contain;
         }
-        
         .viewer-actions {
             margin-top: 1rem;
             display: flex;
             gap: 1rem;
         }
-        
         .viewer-actions button {
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
@@ -330,7 +295,6 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
         .close-viewer {
             position: absolute;
             top: -40px;
@@ -341,19 +305,45 @@
             font-size: 2rem;
             cursor: pointer;
         }
-        
-        /* Controles de recorte */
         .crop-controls {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
             margin-top: 1rem;
         }
-        
         .crop-slider {
             width: 100%;
         }
-
+        .editor-preview-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: #f9fafb;
+            max-width: 100%;
+        }
+        .editor-main-preview {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+        }
+        .editor-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .editor-control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .editor-control-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
         @media (max-width: 640px) {
             .prancheta-overlay {
                 opacity: 0;
@@ -366,52 +356,47 @@
                 opacity: 1;
                 pointer-events: auto;
             }
-            
-            /* Ajuste para o botão em dispositivos móveis */
             .back-to-top, .back-button {
                 width: 40px;
                 height: 40px;
                 top: 10px;
             }
-            
             .back-button {
                 left: 10px;
             }
-            
             .back-to-top {
-                right: 10px;
+                right: 5px;
             }
-            
             .editor-content {
                 padding: 1rem;
                 width: 95%;
+            }
+            .editor-controls {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
+
     <div class="flex items-center gap-3 p-4 bg-white shadow-md">
   <img src="favicon.png" alt="Logo" class="w-8 h-8">
   <h1 class="text-xl font-bold text-gray-700">SuecoEdit</h1></h1>
     </div>
-    <!-- Botão de voltar à página anterior -->
     <button id="goBack" class="back-button">
         <i class="fas fa-arrow-left"></i>
     </button>
 
-    <!-- Botão de voltar ao topo -->
     <div id="backToTop" class="back-to-top">
         <i class="fas fa-arrow-up"></i>
     </div>
 
-    <!-- Cabeçalho -->
     <div class="w-full hero-section">
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">SuecoEdit</h1>
         <p class="text-base sm:text-lg text-white opacity-90">Carregue suas fotos e exporte-as em um formato pronto para impressão.</p>
     </div>
 
     <div class="w-full max-w-4xl mx-auto mt-8 px-4">
-        <!-- Controles de Configuração -->
         <div class="bg-white p-6 rounded-xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
             <div class="flex items-center gap-4 w-full sm:w-auto">
                 <label class="text-gray-700 font-medium">Unidade:</label>
@@ -426,21 +411,16 @@
             <input id="file-input" type="file" accept="image/*" multiple class="hidden">
         </div>
 
-        <!-- Painel de Fotos Carregadas -->
         <div id="preview-panel" class="bg-white p-6 rounded-xl shadow-md mb-8 hidden">
             <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Fotos Carregadas</h3>
             <div id="thumbnails-container" class="flex flex-wrap justify-center gap-8">
-                <!-- Miniaturas das fotos e controles de dimensão aparecerão aqui -->
             </div>
         </div>
 
-        <!-- Área de Visualização e Exportação -->
         <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Pré-visualização</h3>
         <div id="pranchetas-container" class="flex flex-wrap justify-center gap-6">
-            <!-- As pranchetas geradas aparecerão aqui -->
         </div>
 
-        <!-- Botão de Download e opções -->
         <div class="flex flex-col sm:flex-row justify-center items-center mt-8 gap-4">
             <div class="flex items-center gap-2">
                  <label for="download-format-select" class="text-gray-700 font-medium whitespace-nowrap">Formato de Exportação:</label>
@@ -456,7 +436,6 @@
         </div>
     </div>
     
-    <!-- Modal do Editor de Imagem -->
     <div id="editor-modal" class="editor-modal hidden">
         <div class="editor-content">
             <button id="close-editor" class="close-editor">
@@ -464,49 +443,47 @@
             </button>
             <h4 class="text-xl font-bold text-gray-800 text-center">Editor de Imagem</h4>
             
-            <!-- Visualização da imagem como aparece na prancheta -->
-            <div id="editor-preview-container" class="flex justify-center mb-4">
-                <img id="editor-preview" class="editor-preview" alt="Pré-visualização">
+            <div class="editor-preview-container">
+                <img id="editor-main-preview" class="editor-main-preview" alt="Visualização em tempo real">
             </div>
             
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <div class="flex-shrink-0 border-2 border-gray-300 rounded-md overflow-hidden" style="max-width: 400px; max-height: 400px;">
-                    <canvas id="editor-canvas" class="w-full h-full"></canvas>
-                </div>
-                <div class="flex-grow flex flex-col gap-4 w-full">
-                    <!-- Controles de recorte -->
-                    <div class="crop-controls">
-                        <label for="crop-slider" class="block text-sm font-medium text-gray-700">Zoom/Recorte</label>
-                        <input type="range" id="crop-slider" min="1" max="3" step="0.1" value="1" class="crop-slider">
-                        <div class="flex justify-between text-xs text-gray-600">
-                            <span>Menos zoom</span>
-                            <span>Mais zoom</span>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="brightness-slider" class="block text-sm font-medium text-gray-700">Brilho</label>
-                        <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                    </div>
-                    <div>
-                        <label for="contrast-slider" class="block text-sm font-medium text-gray-700">Contraste</label>
-                        <input type="range" id="contrast-slider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                    </div>
-                    <div class="flex justify-center gap-4">
-                        <button id="grayscale-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Escala de Cinza</button>
-                        <button id="sepia-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Sépia</button>
-                        <button id="reset-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Redefinir</button>
-                    </div>
-                    <div class="flex justify-between gap-4 mt-4">
-                        <button id="save-edit-btn" class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition-colors w-full">Salvar</button>
-                        <button id="cancel-edit-btn" class="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition-colors w-full">Cancelar</button>
+            <div class="editor-controls">
+                <div class="editor-control-group">
+                    <label for="crop-slider" class="editor-control-label">Zoom/Recorte</label>
+                    <input type="range" id="crop-slider" min="1" max="3" step="0.1" value="1" class="crop-slider">
+                    <div class="flex justify-between text-xs text-gray-600">
+                        <span>Menos zoom</span>
+                        <span>Mais zoom</span>
                     </div>
                 </div>
+                
+                <div class="editor-control-group">
+                    <label for="brightness-slider" class="editor-control-label">Brilho</label>
+                    <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                
+                <div class="editor-control-group">
+                    <label for="contrast-slider" class="editor-control-label">Contraste</label>
+                    <input type="range" id="contrast-slider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                </div>
+                
+                <div class="editor-control-group">
+                    <label class="editor-control-label">Filtros</label>
+                    <div class="flex gap-2">
+                        <button id="grayscale-btn" class="flex-1 px-3 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors text-sm">Cinza</button>
+                        <button id="sepia-btn" class="flex-1 px-3 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors text-sm">Sépia</button>
+                        <button id="reset-btn" class="flex-1 px-3 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors text-sm">Redefinir</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between gap-4 mt-4">
+                <button id="save-edit-btn" class="bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600 transition-colors w-full">Salvar</button>
+                <button id="cancel-edit-btn" class="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition-colors w-full">Cancelar</button>
             </div>
         </div>
     </div>
     
-    <!-- Modal do Visualizador -->
     <div id="viewer-modal" class="viewer-modal hidden">
         <div class="viewer-content">
             <button id="close-viewer" class="close-viewer">
@@ -535,7 +512,7 @@
             const downloadFormatSelect = document.getElementById('download-format-select');
             const backToTopButton = document.getElementById('backToTop');
             const goBackButton = document.getElementById('goBack');
-            const editorPreview = document.getElementById('editor-preview');
+            const editorMainPreview = document.getElementById('editor-main-preview');
             const closeEditorBtn = document.getElementById('close-editor');
             const viewerModal = document.getElementById('viewer-modal');
             const viewerImage = document.getElementById('viewer-image');
@@ -543,9 +520,6 @@
             const closeViewerBtn2 = document.getElementById('close-viewer-btn');
             const editFromViewerBtn = document.getElementById('edit-from-viewer');
             const cropSlider = document.getElementById('crop-slider');
-
-            const editorModal = document.getElementById('editor-modal');
-            const editorCanvas = document.getElementById('editor-canvas');
             const brightnessSlider = document.getElementById('brightness-slider');
             const contrastSlider = document.getElementById('contrast-slider');
             const grayscaleBtn = document.getElementById('grayscale-btn');
@@ -554,9 +528,10 @@
             const saveEditBtn = document.getElementById('save-edit-btn');
             const cancelEditBtn = document.getElementById('cancel-edit-btn');
 
+            const editorModal = document.getElementById('editor-modal');
+            
             let photos = [];
             let currentEditPhotoIndex = null;
-            let editorCtx = editorCanvas.getContext('2d');
             const MAX_FILES = 10;
             const DEFAULT_WIDTH = 21.0;
             const DEFAULT_HEIGHT = 29.7;
@@ -883,7 +858,7 @@
             }
 
             // Função para gerar o canvas em alta resolução mantendo as proporções
-            async function generateHighResCanvas(photo, format) {
+            async function generateHighResCanvas(photo) {
                 const physicalWidthCm = photo.width;
                 const physicalHeightCm = photo.height;
 
@@ -895,15 +870,16 @@
                 const targetWidthPx = Math.round(physicalWidthInches * PPI);
                 const targetHeightPx = Math.round(physicalHeightInches * PPI);
 
-                // Cria um elemento temporário para o html2canvas renderizar
-                const tempDiv = document.createElement('div');
-                tempDiv.style.width = `${targetWidthPx}px`;
-                tempDiv.style.height = `${targetHeightPx}px`;
-                tempDiv.style.position = 'absolute';
-                tempDiv.style.top = '-9999px';
-                tempDiv.style.left = '-9999px';
-                tempDiv.style.backgroundColor = '#ffffff';
-
+                // Cria um canvas com as dimensões desejadas
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidthPx;
+                canvas.height = targetHeightPx;
+                const ctx = canvas.getContext('2d');
+                
+                // Preenche o fundo com branco
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, targetWidthPx, targetHeightPx);
+                
                 const img = new Image();
                 img.src = photo.url;
                 
@@ -917,42 +893,34 @@
                     }
                 });
                 
-                // Aplica o recorte se necessário
-                let finalImg = img;
-                if (photo.cropFactor && photo.cropFactor > 1) {
-                    const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
-                    finalImg = croppedCanvas;
+                // Calcula as proporções
+                const imgRatio = img.width / img.height;
+                const targetRatio = targetWidthPx / targetHeightPx;
+                
+                let drawWidth, drawHeight, offsetX, offsetY;
+                
+                if (imgRatio > targetRatio) {
+                    // Imagem é mais larga que o alvo
+                    drawHeight = targetHeightPx;
+                    drawWidth = drawHeight * imgRatio;
+                    offsetX = (targetWidthPx - drawWidth) / 2;
+                    offsetY = 0;
+                } else {
+                    // Imagem é mais alta que o alvo
+                    drawWidth = targetWidthPx;
+                    drawHeight = drawWidth / imgRatio;
+                    offsetX = 0;
+                    offsetY = (targetHeightPx - drawHeight) / 2;
                 }
                 
-                // Cria uma imagem com o recorte aplicado
-                const processedImg = new Image();
-                processedImg.src = finalImg.toDataURL('image/png');
-                processedImg.style.width = '100%';
-                processedImg.style.height = '100%';
-                processedImg.style.objectFit = 'contain';
+                // Aplica o recorte se necessário
+                if (photo.cropFactor && photo.cropFactor > 1) {
+                    const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
+                    ctx.drawImage(croppedCanvas, offsetX, offsetY, drawWidth, drawHeight);
+                } else {
+                    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+                }
                 
-                tempDiv.appendChild(processedImg);
-                document.body.appendChild(tempDiv);
-                
-                // Aguarda a imagem processada carregar
-                await new Promise(resolve => {
-                    if (processedImg.complete) {
-                        resolve();
-                    } else {
-                        processedImg.onload = resolve;
-                        processedImg.onerror = resolve;
-                    }
-                });
-
-                // Captura a imagem em alta resolução
-                const canvas = await html2canvas(tempDiv, {
-                    scale: 1,
-                    useCORS: true,
-                    backgroundColor: '#ffffff'
-                });
-
-                document.body.removeChild(tempDiv);
-
                 return canvas;
             }
 
@@ -963,7 +931,7 @@
                 const dateString = new Date().toISOString().replace(/[:.]/g, '-');
                 const fileName = `SuecoEdit_${photo.width}${unitSelect.value}x${photo.height}${unitSelect.value}_${dateString}`;
 
-                const canvas = await generateHighResCanvas(photo, format);
+                const canvas = await generateHighResCanvas(photo);
 
                 if (format === 'pdf') {
                     const { jsPDF } = window.jspdf;
@@ -980,73 +948,33 @@
                 }
             }
 
-            // Função para abrir o editor de imagem
-            function openEditor(index) {
-                currentEditPhotoIndex = index;
-                const photo = photos[index];
-                
-                // Inicializa o fator de recorte se não existir
-                if (!photo.cropFactor) {
-                    photo.cropFactor = 1;
-                }
-                
-                // Configura o slider de recorte
-                cropSlider.value = photo.cropFactor;
-                
-                // Atualiza a visualização no editor
-                updateEditorPreview(photo);
-                
-                editorModal.classList.remove('hidden');
-            }
-
             // Função para atualizar a visualização no editor
             function updateEditorPreview(photo) {
                 const img = new Image();
                 img.onload = function() {
-                    // Aplica o recorte atual
-                    const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
+                    // Cria um canvas temporário para processar a imagem
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
                     
-                    // Configura o canvas do editor
-                    editorCanvas.width = croppedCanvas.width;
-                    editorCanvas.height = croppedCanvas.height;
-                    editorCtx.drawImage(croppedCanvas, 0, 0);
+                    // Define as dimensões do canvas
+                    tempCanvas.width = img.width;
+                    tempCanvas.height = img.height;
                     
-                    // Atualiza a visualização no modal do editor
-                    editorPreview.src = croppedCanvas.toDataURL('image/png');
+                    // Aplica o recorte se necessário
+                    if (photo.cropFactor && photo.cropFactor > 1) {
+                        const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
+                        tempCtx.drawImage(croppedCanvas, 0, 0);
+                    } else {
+                        tempCtx.drawImage(img, 0, 0);
+                    }
                     
-                    // Ajusta o tamanho da visualização para caber no modal
-                    const maxWidth = Math.min(croppedCanvas.width, 400);
-                    const maxHeight = Math.min(croppedCanvas.height, 400);
-                    editorPreview.style.width = `${maxWidth}px`;
-                    editorPreview.style.height = `${maxHeight}px`;
-                    
-                    // Configura os sliders
-                    brightnessSlider.value = photo.brightness || 1.0;
-                    contrastSlider.value = photo.contrast || 1.0;
-                };
-                img.src = photo.url;
-            }
-
-            // Função para aplicar filtros e ajustes
-            function applyFilters() {
-                const photo = photos[currentEditPhotoIndex];
-                const img = new Image();
-                img.onload = () => {
-                    // Primeiro aplica o recorte
-                    const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
-                    
-                    // Configura o canvas do editor
-                    editorCanvas.width = croppedCanvas.width;
-                    editorCanvas.height = croppedCanvas.height;
-                    editorCtx.drawImage(croppedCanvas, 0, 0);
-
                     // Aplica brilho e contraste
+                    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                    const data = imageData.data;
+                    
                     const brightness = parseFloat(brightnessSlider.value);
                     const contrast = parseFloat(contrastSlider.value);
-
-                    const imageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
-                    const data = imageData.data;
-
+                    
                     for (let i = 0; i < data.length; i += 4) {
                         // Aplica brilho
                         let r = data[i] * brightness;
@@ -1063,14 +991,65 @@
                         data[i + 1] = Math.min(255, Math.max(0, g));
                         data[i + 2] = Math.min(255, Math.max(0, b));
                     }
-                    editorCtx.putImageData(imageData, 0, 0);
                     
-                    // Atualiza a visualização
-                    editorPreview.src = editorCanvas.toDataURL('image/png');
+                    tempCtx.putImageData(imageData, 0, 0);
+                    
+                    // Aplica filtros se necessário
+                    if (photo.grayscale) {
+                        const grayData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                        const gray = grayData.data;
+                        for (let i = 0; i < gray.length; i += 4) {
+                            const avg = (gray[i] + gray[i + 1] + gray[i + 2]) / 3;
+                            gray[i] = avg;
+                            gray[i + 1] = avg;
+                            gray[i + 2] = avg;
+                        }
+                        tempCtx.putImageData(grayData, 0, 0);
+                    }
+                    
+                    if (photo.sepia) {
+                        const sepiaData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                        const sepia = sepiaData.data;
+                        for (let i = 0; i < sepia.length; i += 4) {
+                            const r = sepia[i];
+                            const g = sepia[i + 1];
+                            const b = sepia[i + 2];
+                            sepia[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
+                            sepia[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
+                            sepia[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
+                        }
+                        tempCtx.putImageData(sepiaData, 0, 0);
+                    }
+                    
+                    // Atualiza a visualização principal
+                    editorMainPreview.src = tempCanvas.toDataURL('image/png');
                 };
-                img.src = photos[currentEditPhotoIndex].url;
+                img.src = photo.url;
             }
-            
+
+            // Função para abrir o editor de imagem
+            function openEditor(index) {
+                currentEditPhotoIndex = index;
+                const photo = photos[index];
+                
+                // Inicializa as propriedades se não existirem
+                if (!photo.cropFactor) photo.cropFactor = 1;
+                if (!photo.brightness) photo.brightness = 1.0;
+                if (!photo.contrast) photo.contrast = 1.0;
+                if (!photo.grayscale) photo.grayscale = false;
+                if (!photo.sepia) photo.sepia = false;
+                
+                // Configura os controles
+                cropSlider.value = photo.cropFactor;
+                brightnessSlider.value = photo.brightness;
+                contrastSlider.value = photo.contrast;
+                
+                // Atualiza a visualização
+                updateEditorPreview(photo);
+                
+                editorModal.classList.remove('hidden');
+            }
+
             // Ouve a mudança no input de arquivo
             fileInput.addEventListener('change', (e) => {
                 const newFiles = Array.from(e.target.files);
@@ -1092,7 +1071,9 @@
                                 originalAspectRatio: img.width / img.height,
                                 cropFactor: 1,
                                 brightness: 1.0,
-                                contrast: 1.0
+                                contrast: 1.0,
+                                grayscale: false,
+                                sepia: false
                             });
                             renderUI();
                         };
@@ -1106,11 +1087,130 @@
             // Ouve a mudança na unidade
             unitSelect.addEventListener('change', renderUI);
 
-            // Ouve a mudança no slider de recorte
+            // Ouve as mudanças nos controles do editor
             cropSlider.addEventListener('input', (e) => {
                 const photo = photos[currentEditPhotoIndex];
                 photo.cropFactor = parseFloat(e.target.value);
                 updateEditorPreview(photo);
+            });
+
+            brightnessSlider.addEventListener('input', (e) => {
+                const photo = photos[currentEditPhotoIndex];
+                photo.brightness = parseFloat(e.target.value);
+                updateEditorPreview(photo);
+            });
+
+            contrastSlider.addEventListener('input', (e) => {
+                const photo = photos[currentEditPhotoIndex];
+                photo.contrast = parseFloat(e.target.value);
+                updateEditorPreview(photo);
+            });
+
+            // Botões de filtro
+            grayscaleBtn.addEventListener('click', () => {
+                const photo = photos[currentEditPhotoIndex];
+                photo.grayscale = !photo.grayscale;
+                photo.sepia = false; // Desativa sépia se estiver ativo
+                updateEditorPreview(photo);
+            });
+
+            sepiaBtn.addEventListener('click', () => {
+                const photo = photos[currentEditPhotoIndex];
+                photo.sepia = !photo.sepia;
+                photo.grayscale = false; // Desativa escala de cinza se estiver ativo
+                updateEditorPreview(photo);
+            });
+
+            resetBtn.addEventListener('click', () => {
+                const photo = photos[currentEditPhotoIndex];
+                photo.cropFactor = 1;
+                photo.brightness = 1.0;
+                photo.contrast = 1.0;
+                photo.grayscale = false;
+                photo.sepia = false;
+                cropSlider.value = 1;
+                brightnessSlider.value = 1.0;
+                contrastSlider.value = 1.0;
+                updateEditorPreview(photo);
+            });
+
+            saveEditBtn.addEventListener('click', () => {
+                const photo = photos[currentEditPhotoIndex];
+                
+                // Atualiza a imagem com as edições
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Aplica o recorte se necessário
+                    if (photo.cropFactor > 1) {
+                        const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
+                        ctx.drawImage(croppedCanvas, 0, 0);
+                    } else {
+                        ctx.drawImage(img, 0, 0);
+                    }
+                    
+                    // Aplica brilho e contraste
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    
+                    for (let i = 0; i < data.length; i += 4) {
+                        let r = data[i] * photo.brightness;
+                        let g = data[i + 1] * photo.brightness;
+                        let b = data[i + 2] * photo.brightness;
+
+                        let factor = (259 * (photo.contrast + 255)) / (255 * (259 - photo.contrast));
+                        r = factor * (r - 128) + 128;
+                        g = factor * (g - 128) + 128;
+                        b = factor * (b - 128) + 128;
+                        
+                        data[i] = Math.min(255, Math.max(0, r));
+                        data[i + 1] = Math.min(255, Math.max(0, g));
+                        data[i + 2] = Math.min(255, Math.max(0, b));
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                    
+                    // Aplica filtros
+                    if (photo.grayscale) {
+                        const grayData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const gray = grayData.data;
+                        for (let i = 0; i < gray.length; i += 4) {
+                            const avg = (gray[i] + gray[i + 1] + gray[i + 2]) / 3;
+                            gray[i] = avg;
+                            gray[i + 1] = avg;
+                            gray[i + 2] = avg;
+                        }
+                        ctx.putImageData(grayData, 0, 0);
+                    }
+                    
+                    if (photo.sepia) {
+                        const sepiaData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const sepia = sepiaData.data;
+                        for (let i = 0; i < sepia.length; i += 4) {
+                            const r = sepia[i];
+                            const g = sepia[i + 1];
+                            const b = sepia[i + 2];
+                            sepia[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
+                            sepia[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
+                            sepia[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
+                        }
+                        ctx.putImageData(sepiaData, 0, 0);
+                    }
+                    
+                    // Atualiza a URL da foto
+                    photo.url = canvas.toDataURL('image/png');
+                    
+                    editorModal.classList.add('hidden');
+                    renderUI();
+                };
+                img.src = photo.url;
+            });
+
+            cancelEditBtn.addEventListener('click', () => {
+                editorModal.classList.add('hidden');
             });
 
             // Oculta overlays de mobile ao clicar em qualquer lugar
@@ -1130,67 +1230,6 @@
                     await downloadFrame(index);
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
-            });
-
-            // Ouve as mudanças nos sliders do editor
-            brightnessSlider.addEventListener('input', applyFilters);
-            contrastSlider.addEventListener('input', applyFilters);
-            
-            // Botões de filtro e redefinição
-            grayscaleBtn.addEventListener('click', () => {
-                const imageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
-                const data = imageData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg;
-                    data[i + 1] = avg;
-                    data[i + 2] = avg;
-                }
-                editorCtx.putImageData(imageData, 0, 0);
-                editorPreview.src = editorCanvas.toDataURL('image/png');
-            });
-
-            sepiaBtn.addEventListener('click', () => {
-                const imageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
-                const data = imageData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-                    data[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
-                    data[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
-                    data[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
-                }
-                editorCtx.putImageData(imageData, 0, 0);
-                editorPreview.src = editorCanvas.toDataURL('image/png');
-            });
-
-            resetBtn.addEventListener('click', () => {
-                const photo = photos[currentEditPhotoIndex];
-                photo.cropFactor = 1;
-                photo.brightness = 1.0;
-                photo.contrast = 1.0;
-                cropSlider.value = 1;
-                brightnessSlider.value = 1.0;
-                contrastSlider.value = 1.0;
-                updateEditorPreview(photo);
-            });
-
-            saveEditBtn.addEventListener('click', () => {
-                const photo = photos[currentEditPhotoIndex];
-                photo.brightness = parseFloat(brightnessSlider.value);
-                photo.contrast = parseFloat(contrastSlider.value);
-                
-                // Salva a imagem editada
-                const newUrl = editorCanvas.toDataURL('image/png');
-                photo.url = newUrl;
-                
-                editorModal.classList.add('hidden');
-                renderUI();
-            });
-
-            cancelEditBtn.addEventListener('click', () => {
-                editorModal.classList.add('hidden');
             });
 
             // Inicia o aplicativo
