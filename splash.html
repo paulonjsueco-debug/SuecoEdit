@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuecoEdit Splash</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <meta name="theme-color" content="#3b82f6">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background-color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      opacity: 1;
+      transition: opacity 1s ease;
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 20px;
+      animation: fadeIn 1.5s ease;
+    }
+    .app-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #000000;
+      animation: fadeIn 2s ease;
+    }
+    .author {
+      font-size: 1rem;
+      color: #888888;
+      margin-top: 5px;
+      animation: fadeIn 2.5s ease;
+      margin-bottom: 20px;
+    }
+    .loader {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #e0e0e0;
+      border-top: 5px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <img src="icons/icon-192.png" alt="Logo" class="logo">
+  <div class="app-name">SuecoEdit</div>
+  <div class="author">2025 By Paulo Sueco</div>
+  <div class="loader"></div>
+
+  <script>
+    // Quando abrir a PWA, mostrar splash, animar e redirecionar automaticamente
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        document.body.style.opacity = 0;
+      }, 1500); // começa a desaparecer após 1.5s
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 2500); // redireciona após fade out
+    });
+  </script>
+</body>
+</html>
