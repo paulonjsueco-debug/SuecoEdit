@@ -54,7 +54,7 @@
         </div>
 
         <!-- Quadros Personalizados -->
-        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="window.location.href='#'"> <!-- Substitua o '#' pelo link da sua página de Quadros Personalizados -->
+        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
             <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
                 <i class="fas fa-image text-white text-3xl sm:text-4xl mb-2"></i>
                 <h3 class="text-sm sm:text-base font-medium text-white">Quadros Personalizados</h3>
@@ -62,7 +62,7 @@
         </div>
         
         <!-- Fotos Tipo Passe -->
-        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="window.location.href='#'"> <!-- Substitua o '#' pelo link da sua página de Fotos Tipo Passe -->
+        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
             <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
                 <i class="fas fa-id-card text-white text-3xl sm:text-4xl mb-2"></i>
                 <h3 class="text-sm sm:text-base font-medium text-white">Fotos Tipo Passe</h3>
@@ -70,7 +70,7 @@
         </div>
 
         <!-- Converter Formato de Imagem -->
-        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="window.location.href='#'"> <!-- Substitua o '#' pelo link da sua página de Converter Formato de Imagem -->
+        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
             <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
                 <i class="fas fa-sync-alt text-white text-3xl sm:text-4xl mb-2"></i>
                 <h3 class="text-sm sm:text-base font-medium text-white">Converter Formato</h3>
@@ -120,10 +120,25 @@
         </button>
     </div>
 
+    <!-- Modal "Em Breve" -->
+    <div id="coming-soon-modal" class="fixed inset-0 bg-gray-800/75 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm mx-4">
+            <p class="text-xl font-semibold text-gray-800 mb-4">Em Breve</p>
+            <p class="text-gray-600 mb-6">Esta função está em desenvolvimento. Volte em breve para conferir!</p>
+            <button onclick="hideComingSoonModal()" class="bg-blue-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300">
+                Fechar
+            </button>
+        </div>
+    </div>
+
     <script>
-        // Oculta o alerta e usa um modal futuramente.
-        function showSoonAlert(message) {
-            console.log(message);
+        // Funções para mostrar/ocultar o modal
+        function showComingSoonModal() {
+            document.getElementById('coming-soon-modal').classList.remove('hidden');
+        }
+
+        function hideComingSoonModal() {
+            document.getElementById('coming-soon-modal').classList.add('hidden');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
