@@ -1,138 +1,138 @@
-!DOCTYPE html
-html lang=pt-br
-head
-    meta charset=UTF-8
-    meta name=viewport content=width=device-width, initial-scale=1.0
-    titleSuecoEdit - Hometitle
-    link rel=manifest href=manifest.json
-    link rel=icon type=imagepng href=favicon.png
-    meta name=theme-color content=#3b82f6
-    script src=httpscdn.tailwindcss.comscript
-    !-- Ícones de Font Awesome --
-    link rel=stylesheet href=httpscdnjs.cloudflare.comajaxlibsfont-awesome6.4.0cssall.min.css
-    style
-        @import url('httpsfonts.googleapis.comcss2family=Interwght@400;500;700&display=swap');
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuecoEdit - Home</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="theme-color" content="#3b82f6">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ícones de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
         body {
-            font-family 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
         .hero-section {
-            background linear-gradient(to bottom, #60a5fa, #3b82f6);
-            border-bottom-left-radius 50px;
-            border-bottom-right-radius 50px;
-            padding 4rem 2rem;
-            box-shadow 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            text-align center;
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            padding: 4rem 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            text-align: center;
         }
         .icon-gradient-bg {
-            background linear-gradient(to bottom, #60a5fa, #3b82f6);
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
         }
-    style
-head
-body class=bg-gray-100 min-h-screen flex flex-col items-center
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
 
-    !-- Cabeçalho --
-    div class=w-full hero-section
-        h1 class=text-3xl smtext-4xl lgtext-5xl font-bold text-white mb-2Bem-vindo ao SuecoEdit!h1
-        p class=text-base smtext-lg text-white opacity-90A sua Gráfica bem na palma das suas mãos 🤩.p
-    div
+    <!-- Cabeçalho -->
+    <div class="w-full hero-section">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Bem-vindo ao SuecoEdit!</h1>
+        <p class="text-base sm:text-lg text-white opacity-90">A sua Gráfica bem na palma das suas mãos 🤩.</p>
+    </div>
 
-    !-- Seção principal --
-    div class=w-full flex flex-col items-center mt-12 px-4
-        h2 class=text-2xl smtext-3xl font-semibold text-blue-800 mb-2 text-centerVamos Começar 😎h2
-        div class=text-sm smtext-base text-gray-600 mb-8 text-centerO que gostarias de Criardiv
-    div
+    <!-- Seção principal -->
+    <div class="w-full flex flex-col items-center mt-12 px-4">
+        <h2 class="text-2xl sm:text-3xl font-semibold text-blue-800 mb-2 text-center">Vamos Começar 😎</h2>
+        <div class="text-sm sm:text-base text-gray-600 mb-8 text-center">O que gostarias de Criar?</div>
+    </div>
 
-    !-- Atalhos com ícones --
-    div class=w-full grid grid-cols-2 smgrid-cols-2 mdgrid-cols-4 lggrid-cols-4 gap-4 smgap-6 lggap-8 px-4 smpx-8 max-w-5xl
+    <!-- Atalhos com ícones -->
+    <div class="w-full grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-8 max-w-5xl">
         
-        !-- Fotos Polaroides --
-        div class=cursor-pointer transform hoverscale-105 transition-transform duration-300 onclick=window.location.href='polaroides.html' !-- Substitua o '#' pelo link da sua página de Fotos Polaroides --
-            div class=icon-gradient-bg rounded-xl shadow-md p-4 smp-6 flex flex-col items-center justify-center text-center w-full aspect-square
-                i class=fas fa-camera text-white text-3xl smtext-4xl mb-2i
-                h3 class=text-sm smtext-base font-medium text-whiteFotos Polaroidesh3
-            div
-        div
+        <!-- Fotos Polaroides -->
+        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="window.location.href='polaroides.html'"> <!-- Substitua o '#' pelo link da sua página de Fotos Polaroides -->
+            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
+                <i class="fas fa-camera text-white text-3xl sm:text-4xl mb-2"></i>
+                <h3 class="text-sm sm:text-base font-medium text-white">Fotos Polaroides</h3>
+            </div>
+        </div>
 
-        !-- Quadros Personalizados --
-        div class=cursor-pointer transform hoverscale-105 transition-transform duration-300 onclick=showComingSoonModal()
-            div class=icon-gradient-bg rounded-xl shadow-md p-4 smp-6 flex flex-col items-center justify-center text-center w-full aspect-square
-                i class=fas fa-image text-white text-3xl smtext-4xl mb-2i
-                h3 class=text-sm smtext-base font-medium text-whiteQuadros Personalizadosh3
-            div
-        div
+        <!-- Quadros Personalizados -->
+        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
+            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
+                <i class="fas fa-image text-white text-3xl sm:text-4xl mb-2"></i>
+                <h3 class="text-sm sm:text-base font-medium text-white">Quadros Personalizados</h3>
+            </div>
+        </div>
         
-        !-- Fotos Tipo Passe --
-        div class=cursor-pointer transform hoverscale-105 transition-transform duration-300 onclick=showComingSoonModal()
-            div class=icon-gradient-bg rounded-xl shadow-md p-4 smp-6 flex flex-col items-center justify-center text-center w-full aspect-square
-                i class=fas fa-id-card text-white text-3xl smtext-4xl mb-2i
-                h3 class=text-sm smtext-base font-medium text-whiteFotos Tipo Passeh3
-            div
-        div
+        <!-- Fotos Tipo Passe -->
+        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
+            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
+                <i class="fas fa-id-card text-white text-3xl sm:text-4xl mb-2"></i>
+                <h3 class="text-sm sm:text-base font-medium text-white">Fotos Tipo Passe</h3>
+            </div>
+        </div>
 
-        !-- Converter Formato de Imagem --
-        div class=cursor-pointer transform hoverscale-105 transition-transform duration-300 onclick=showComingSoonModal()
-            div class=icon-gradient-bg rounded-xl shadow-md p-4 smp-6 flex flex-col items-center justify-center text-center w-full aspect-square
-                i class=fas fa-sync-alt text-white text-3xl smtext-4xl mb-2i
-                h3 class=text-sm smtext-base font-medium text-whiteConverter Formatoh3
-            div
-        div
-    div
+        <!-- Converter Formato de Imagem -->
+        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
+            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
+                <i class="fas fa-sync-alt text-white text-3xl sm:text-4xl mb-2"></i>
+                <h3 class="text-sm sm:text-base font-medium text-white">Converter Formato</h3>
+            </div>
+        </div>
+    </div>
 
-    !-- Seção de Dicas (Carrossel) --
-    div class=max-w-xl mx-auto mt-12 mb-8 px-4 relative
-        h2 class=text-xl smtext-2xl font-semibold text-blue-800 mb-4 text-centerDicas SuecoEdith2
-        div id=carousel-container class=relative overflow-hidden rounded-xl shadow-md
-            div id=carousel-cards class=flex transition-transform duration-300 ease-in-out
-                !-- Dica 1 --
-                div class=flex-none w-full p-4 smp-6 bg-white cursor-pointer transform transition-transform duration-300 text-center
-                    h4 class=font-bold text-gray-800 mb-1Dica de Polaroidh4
-                    p class=text-sm text-gray-600Para fotos mais autênticas, use filtros com cores quentes.p
-                div
-                !-- Dica 2 --
-                div class=flex-none w-full p-4 smp-6 bg-white cursor-pointer transform transition-transform duration-300 text-center
-                    h4 class=font-bold text-gray-800 mb-1Moldura Perfeitah4
-                    p class=text-sm text-gray-600Siga as proporções 34 para um enquadramento ideal.p
-                div
-                !-- Dica 3 --
-                div class=flex-none w-full p-4 smp-6 bg-white cursor-pointer transform transition-transform duration-300 text-center
-                    h4 class=font-bold text-gray-800 mb-1Iluminaçãoh4
-                    p class=text-sm text-gray-600Aproveite a luz natural para evitar sombras indesejadas.p
-                div
-                !-- Dica 4 --
-                div class=flex-none w-full p-4 smp-6 bg-white cursor-pointer transform transition-transform duration-300 text-center
-                    h4 class=font-bold text-gray-800 mb-1Fundo Simplesh4
-                    p class=text-sm text-gray-600Um fundo liso destaca o objeto principal da foto.p
-                div
-                !-- Dica 5 --
-                div class=flex-none w-full p-4 smp-6 bg-white cursor-pointer transform transition-transform duration-300 text-center
-                    h4 class=font-bold text-gray-800 mb-1Fotos Panorâmicash4
-                    p class=text-sm text-gray-600Mantenha a câmera nivelada para um resultado uniforme.p
-                div
-            div
-        div
+    <!-- Seção de Dicas (Carrossel) -->
+    <div class="max-w-xl mx-auto mt-12 mb-8 px-4 relative">
+        <h2 class="text-xl sm:text-2xl font-semibold text-blue-800 mb-4 text-center">Dicas SuecoEdit</h2>
+        <div id="carousel-container" class="relative overflow-hidden rounded-xl shadow-md">
+            <div id="carousel-cards" class="flex transition-transform duration-300 ease-in-out">
+                <!-- Dica 1 -->
+                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
+                    <h4 class="font-bold text-gray-800 mb-1">Dica de Polaroid</h4>
+                    <p class="text-sm text-gray-600">Para fotos mais autênticas, use filtros com cores quentes.</p>
+                </div>
+                <!-- Dica 2 -->
+                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
+                    <h4 class="font-bold text-gray-800 mb-1">Moldura Perfeita</h4>
+                    <p class="text-sm text-gray-600">Siga as proporções 3:4 para um enquadramento ideal.</p>
+                </div>
+                <!-- Dica 3 -->
+                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
+                    <h4 class="font-bold text-gray-800 mb-1">Iluminação</h4>
+                    <p class="text-sm text-gray-600">Aproveite a luz natural para evitar sombras indesejadas.</p>
+                </div>
+                <!-- Dica 4 -->
+                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
+                    <h4 class="font-bold text-gray-800 mb-1">Fundo Simples</h4>
+                    <p class="text-sm text-gray-600">Um fundo liso destaca o objeto principal da foto.</p>
+                </div>
+                <!-- Dica 5 -->
+                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
+                    <h4 class="font-bold text-gray-800 mb-1">Fotos Panorâmicas</h4>
+                    <p class="text-sm text-gray-600">Mantenha a câmera nivelada para um resultado uniforme.</p>
+                </div>
+            </div>
+        </div>
         
-        !-- Botões de Navegação do Carrossel --
-        button id=prev-btn class=absolute top-12 left-0 -mt-2 transform -translate-y-12 bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hoverbg-blue-600 transition-colors z-10 -ml-2
-            i class=fas fa-chevron-lefti
-        button
-        button id=next-btn class=absolute top-12 right-0 -mt-2 transform -translate-y-12 bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hoverbg-blue-600 transition-colors z-10 -mr-2
-            i class=fas fa-chevron-righti
-        button
-    div
+        <!-- Botões de Navegação do Carrossel -->
+        <button id="prev-btn" class="absolute top-1/2 left-0 -mt-2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors z-10 -ml-2">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="next-btn" class="absolute top-1/2 right-0 -mt-2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors z-10 -mr-2">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
 
-    !-- Modal Em Breve --
-    div id=coming-soon-modal class=fixed inset-0 bg-gray-80075 flex items-center justify-center hidden z-50
-        div class=bg-white p-8 rounded-lg shadow-xl text-center max-w-sm mx-4
-            p class=text-xl font-semibold text-gray-800 mb-4Em Brevep
-            p class=text-gray-600 mb-6Esta função está em desenvolvimento. Volte em breve para conferir!p
-            button onclick=hideComingSoonModal() class=bg-blue-500 text-white px-6 py-2 rounded-full shadow-md hoverbg-blue-600 transition-colors duration-300
+    <!-- Modal "Em Breve" -->
+    <div id="coming-soon-modal" class="fixed inset-0 bg-gray-800/75 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm mx-4">
+            <p class="text-xl font-semibold text-gray-800 mb-4">Em Breve</p>
+            <p class="text-gray-600 mb-6">Esta função está em desenvolvimento. Volte em breve para conferir!</p>
+            <button onclick="hideComingSoonModal()" class="bg-blue-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300">
                 Fechar
-            button
-        div
-    div
+            </button>
+        </div>
+    </div>
 
-    script
-         Funções para mostrarocultar o modal
+    <script>
+        // Funções para mostrar/ocultar o modal
         function showComingSoonModal() {
             document.getElementById('coming-soon-modal').classList.remove('hidden');
         }
@@ -141,7 +141,7 @@ body class=bg-gray-100 min-h-screen flex flex-col items-center
             document.getElementById('coming-soon-modal').classList.add('hidden');
         }
 
-        document.addEventListener('DOMContentLoaded', () = {
+        document.addEventListener('DOMContentLoaded', () => {
             const carouselContainer = document.getElementById('carousel-container');
             const carouselCards = document.getElementById('carousel-cards');
             const prevBtn = document.getElementById('prev-btn');
@@ -153,12 +153,12 @@ body class=bg-gray-100 min-h-screen flex flex-col items-center
             let touchEndX = 0;
 
             function updateCarousel() {
-                const offset = -currentIndex  100;
+                const offset = -currentIndex * 100;
                 carouselCards.style.transform = `translateX(${offset}%)`;
             }
 
             function startInterval() {
-                intervalId = setInterval(() = {
+                intervalId = setInterval(() => {
                     nextBtn.click();
                 }, 2000);
             }
@@ -167,46 +167,46 @@ body class=bg-gray-100 min-h-screen flex flex-col items-center
                 clearInterval(intervalId);
             }
 
-            prevBtn.addEventListener('click', () = {
-                currentIndex = (currentIndex  0)  currentIndex - 1  cards.length - 1;
+            prevBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex > 0) ? currentIndex - 1 : cards.length - 1;
                 updateCarousel();
             });
 
-            nextBtn.addEventListener('click', () = {
-                currentIndex = (currentIndex  cards.length - 1)  currentIndex + 1  0;
+            nextBtn.addEventListener('click', () => {
+                currentIndex = (currentIndex < cards.length - 1) ? currentIndex + 1 : 0;
                 updateCarousel();
             });
 
-             Lidar com a interação do mouse para pausar o carrossel
+            // Lidar com a interação do mouse para pausar o carrossel
             carouselContainer.addEventListener('mouseenter', stopInterval);
             carouselContainer.addEventListener('mouseleave', startInterval);
 
-             Lidar com gestos de toque para navegação
-            carouselContainer.addEventListener('touchstart', (e) = {
+            // Lidar com gestos de toque para navegação
+            carouselContainer.addEventListener('touchstart', (e) => {
                 stopInterval();
                 touchStartX = e.changedTouches[0].screenX;
             });
 
-            carouselContainer.addEventListener('touchend', (e) = {
+            carouselContainer.addEventListener('touchend', (e) => {
                 touchEndX = e.changedTouches[0].screenX;
                 handleSwipe();
                 startInterval();
             });
 
             function handleSwipe() {
-                const swipeThreshold = 50;  Mínimo de pixels para deslizar
-                if (touchEndX  touchStartX - swipeThreshold) {
-                     Deslizar para a esquerda
+                const swipeThreshold = 50; // Mínimo de pixels para deslizar
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Deslizar para a esquerda
                     nextBtn.click();
-                } else if (touchEndX  touchStartX + swipeThreshold) {
-                     Deslizar para a direita
+                } else if (touchEndX > touchStartX + swipeThreshold) {
+                    // Deslizar para a direita
                     prevBtn.click();
                 }
             }
             
-             Inicia o carrossel ao carregar a página
+            // Inicia o carrossel ao carregar a página
             startInterval();
         });
-    script
-body
-html
+    </script>
+</body>
+</html>
