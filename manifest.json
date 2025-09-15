@@ -1,8 +1,8 @@
 {
   "name": "SuecoEdit",
   "short_name": "SuecoEdit",
-  "description": "SuecoEdit - A sua Gráfica bem na palma das suas mãos. 2025 By Paulo Sueco.",
-  "start_url": "./",
+  "description": "SuecoEdit - A sua Gráfica bem na palma das suas mãos.",
+  "start_url": "./splash.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
