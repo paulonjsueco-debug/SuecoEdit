@@ -19,14 +19,12 @@
             font-family: 'Inter', sans-serif;
         }
         .hero-section {
-            
             background: linear-gradient(to bottom, #60a5fa, #3b82f6);
             border-bottom-left-radius: 50px;
             border-bottom-right-radius: 50px;
             padding: 4rem 2rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             text-align: center;
-            
         }
         .prancheta {
             position: relative;
@@ -44,7 +42,7 @@
         .prancheta img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Alterado de 'cover' para 'contain' para manter proporções */
+            object-fit: contain;
         }
         .thumbnail-item {
             display: flex;
@@ -116,12 +114,12 @@
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
-            position: relative; /* Essencial para o posicionamento do overlay */
+            position: relative;
         }
         .frame-info {
             text-align: center;
-            font-size: 0.875rem; /* text-sm */
-            color: #4b5563; /* text-gray-600 */
+            font-size: 0.875rem;
+            color: #4b5563;
         }
 
         /* Estilos para o overlay de ações sobre a prancheta */
@@ -176,11 +174,12 @@
             justify-content: center;
             cursor: pointer;
             z-index: 20;
-            opacity: 0; /* Escondido por padrão, visível apenas em mobile */
+            opacity: 0;
         }
         .mobile-actions-toggle.active {
             opacity: 1;
         }
+        
         /* Estilos do editor de imagem */
         .editor-modal {
             position: fixed;
@@ -188,7 +187,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -204,6 +203,23 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            position: relative;
+        }
+        
+        /* Botão de fechar no editor */
+        .close-editor {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .close-editor:hover {
+            color: #374151;
         }
 
         /* Botão de voltar ao topo */
@@ -261,6 +277,83 @@
             opacity: 1;
         }
 
+        /* Estilo para a visualização no editor */
+        .editor-preview {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        /* Estilo para o modal de visualização */
+        .viewer-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 60;
+        }
+        
+        .viewer-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .viewer-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        
+        .viewer-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .viewer-actions button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .close-viewer {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
+        /* Controles de recorte */
+        .crop-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .crop-slider {
+            width: 100%;
+        }
+
         @media (max-width: 640px) {
             .prancheta-overlay {
                 opacity: 0;
@@ -288,15 +381,11 @@
             .back-to-top {
                 right: 10px;
             }
-        }
-        
-        /* Estilo para a visualização no editor */
-        .editor-preview {
-            max-width: 100%;
-            max-height: 400px;
-            object-fit: contain;
-            margin: 0 auto;
-            display: block;
+            
+            .editor-content {
+                padding: 1rem;
+                width: 95%;
+            }
         }
     </style>
 </head>
@@ -305,7 +394,6 @@
   <img src="favicon.png" alt="Logo" class="w-8 h-8">
   <h1 class="text-xl font-bold text-gray-700">SuecoEdit</h1></h1>
     </div>
-
     <!-- Botão de voltar à página anterior -->
     <button id="goBack" class="back-button">
         <i class="fas fa-arrow-left"></i>
@@ -371,6 +459,9 @@
     <!-- Modal do Editor de Imagem -->
     <div id="editor-modal" class="editor-modal hidden">
         <div class="editor-content">
+            <button id="close-editor" class="close-editor">
+                <i class="fas fa-times"></i>
+            </button>
             <h4 class="text-xl font-bold text-gray-800 text-center">Editor de Imagem</h4>
             
             <!-- Visualização da imagem como aparece na prancheta -->
@@ -383,6 +474,16 @@
                     <canvas id="editor-canvas" class="w-full h-full"></canvas>
                 </div>
                 <div class="flex-grow flex flex-col gap-4 w-full">
+                    <!-- Controles de recorte -->
+                    <div class="crop-controls">
+                        <label for="crop-slider" class="block text-sm font-medium text-gray-700">Zoom/Recorte</label>
+                        <input type="range" id="crop-slider" min="1" max="3" step="0.1" value="1" class="crop-slider">
+                        <div class="flex justify-between text-xs text-gray-600">
+                            <span>Menos zoom</span>
+                            <span>Mais zoom</span>
+                        </div>
+                    </div>
+                    
                     <div>
                         <label for="brightness-slider" class="block text-sm font-medium text-gray-700">Brilho</label>
                         <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.05" value="1.0" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
@@ -404,7 +505,24 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Modal do Visualizador -->
+    <div id="viewer-modal" class="viewer-modal hidden">
+        <div class="viewer-content">
+            <button id="close-viewer" class="close-viewer">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="viewer-image" class="viewer-image" alt="Visualização">
+            <div class="viewer-actions">
+                <button id="edit-from-viewer" class="bg-blue-500 text-white">
+                    <i class="fas fa-edit mr-2"></i> Editar
+                </button>
+                <button id="close-viewer-btn" class="bg-gray-500 text-white">
+                    <i class="fas fa-times mr-2"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -418,6 +536,13 @@
             const backToTopButton = document.getElementById('backToTop');
             const goBackButton = document.getElementById('goBack');
             const editorPreview = document.getElementById('editor-preview');
+            const closeEditorBtn = document.getElementById('close-editor');
+            const viewerModal = document.getElementById('viewer-modal');
+            const viewerImage = document.getElementById('viewer-image');
+            const closeViewerBtn = document.getElementById('close-viewer');
+            const closeViewerBtn2 = document.getElementById('close-viewer-btn');
+            const editFromViewerBtn = document.getElementById('edit-from-viewer');
+            const cropSlider = document.getElementById('crop-slider');
 
             const editorModal = document.getElementById('editor-modal');
             const editorCanvas = document.getElementById('editor-canvas');
@@ -437,7 +562,7 @@
             const DEFAULT_HEIGHT = 29.7;
             const MAX_DISPLAY_WIDTH = 600;
             const MAX_DISPLAY_HEIGHT = 600;
-            const PPI = 300; // Pixels por Polegada para alta resolução
+            const PPI = 300;
             const CM_PER_INCH = 2.54;
             
             // Função para mostrar/ocultar o botão de voltar ao topo
@@ -466,6 +591,22 @@
             window.addEventListener('scroll', toggleBackToTopButton);
             backToTopButton.addEventListener('click', scrollToTop);
             goBackButton.addEventListener('click', goBack);
+            closeEditorBtn.addEventListener('click', () => editorModal.classList.add('hidden'));
+            closeViewerBtn.addEventListener('click', () => viewerModal.classList.add('hidden'));
+            closeViewerBtn2.addEventListener('click', () => viewerModal.classList.add('hidden'));
+
+            // Função para abrir o visualizador
+            function openViewer(index) {
+                const photo = photos[index];
+                viewerImage.src = photo.url;
+                viewerModal.classList.remove('hidden');
+                
+                // Configurar o botão de editar para abrir o editor para esta foto
+                editFromViewerBtn.onclick = () => {
+                    viewerModal.classList.add('hidden');
+                    openEditor(index);
+                };
+            }
 
             // Função para renderizar a interface
             function renderUI() {
@@ -506,14 +647,13 @@
                     heightLabel.textContent = 'Altura';
                     const heightInput = document.createElement('input');
                     heightInput.type = 'number';
-                    heightInput.step = "any"; // Permite que o usuário insira números decimais
+                    heightInput.step = "any";
                     heightInput.value = photo.height;
                     heightInput.className = 'w-16 px-1 py-1 border rounded-md text-center text-sm';
                     heightInput.oninput = (e) => {
                         const newHeight = parseFloat(e.target.value);
                         photo.height = newHeight;
                         if (photo.locked && photo.originalAspectRatio) {
-                            // Mantém a proporção original
                             photo.width = Math.round(newHeight * photo.originalAspectRatio * 100) / 100;
                             widthInput.value = photo.width;
                         }
@@ -529,14 +669,13 @@
                     widthLabel.textContent = 'Largura';
                     const widthInput = document.createElement('input');
                     widthInput.type = 'number';
-                    widthInput.step = "any"; // Permite que o usuário insira números decimais
+                    widthInput.step = "any";
                     widthInput.value = photo.width;
                     widthInput.className = 'w-16 px-1 py-1 border rounded-md text-center text-sm';
                     widthInput.oninput = (e) => {
                         const newWidth = parseFloat(e.target.value);
                         photo.width = newWidth;
                         if (photo.locked && photo.originalAspectRatio) {
-                            // Mantém a proporção original
                             photo.height = Math.round(newWidth / photo.originalAspectRatio * 100) / 100;
                             heightInput.value = photo.height;
                         }
@@ -576,7 +715,7 @@
                     viewButton.className = 'thumbnail-button view absolute bottom-1 right-1';
                     viewButton.innerHTML = '<i class="fas fa-eye"></i>';
                     viewButton.title = 'Visualizar foto';
-                    viewButton.onclick = () => openEditor(index);
+                    viewButton.onclick = () => openViewer(index);
                     thumbnailContainer.appendChild(viewButton);
 
                     // Adiciona o botão de remover
@@ -603,7 +742,6 @@
                 const unit = unitSelect.value;
                 const ratio = unit === 'cm' ? 10 : 1;
                 
-                // Definição dos tamanhos de quadro padrão em cm
                 const standardSizes = [
                     { name: 'A6', dimensions: [[10.5, 14.8], [10, 15]] },
                     { name: 'A5', dimensions: [[14.8, 21.0], [15, 20]] },
@@ -615,7 +753,6 @@
                 ];
 
                 photos.forEach((photo, index) => {
-                    // Novo container para envolver a prancheta e o rótulo
                     const frameCard = document.createElement('div');
                     frameCard.className = 'frame-card';
 
@@ -625,7 +762,6 @@
                     let displayWidth = photo.width * ratio;
                     let displayHeight = photo.height * ratio;
                     
-                    // Ajusta o tamanho da prancheta para não exceder o máximo
                     if (displayWidth > MAX_DISPLAY_WIDTH || displayHeight > MAX_DISPLAY_HEIGHT) {
                         const widthRatio = MAX_DISPLAY_WIDTH / displayWidth;
                         const heightRatio = MAX_DISPLAY_HEIGHT / displayHeight;
@@ -643,7 +779,7 @@
                     const img = document.createElement('img');
                     img.src = photo.url;
                     img.alt = photo.file.name;
-                    img.className = 'w-full h-full object-contain'; // Alterado para 'contain' para manter proporções
+                    img.className = 'w-full h-full object-contain';
 
                     contentWrapper.appendChild(img);
                     pranchetaDiv.appendChild(contentWrapper);
@@ -653,11 +789,9 @@
                     const heightCm = unit === 'cm' ? photo.height : photo.height / 10;
                     
                     let matchedFrameName = '';
-                    // Verifica se as dimensões correspondem a algum tamanho padrão
                     for (const size of standardSizes) {
                         for (const dimensions of size.dimensions) {
                             const [stdW, stdH] = dimensions;
-                            // Checa correspondência exata, considerando o retrato e paisagem
                             if ((Math.round(widthCm * 10) / 10 === stdW && Math.round(heightCm * 10) / 10 === stdH) || 
                                 (Math.round(widthCm * 10) / 10 === stdH && Math.round(heightCm * 10) / 10 === stdW)) {
                                 matchedFrameName = size.name;
@@ -673,12 +807,10 @@
                         sizeText = `Tamanho Personalizado: ${photo.width}${unit} x ${photo.height}${unit}`;
                     }
 
-                    // Rótulo para as dimensões e nome do quadro, posicionado abaixo da prancheta
                     const frameInfo = document.createElement('div');
                     frameInfo.className = 'frame-info';
                     frameInfo.innerHTML = sizeText;
 
-                    // Overlay de ações
                     const pranchetaOverlay = document.createElement('div');
                     pranchetaOverlay.className = 'prancheta-overlay';
 
@@ -695,13 +827,12 @@
                     viewPranchetaBtn.className = 'prancheta-overlay-btn';
                     viewPranchetaBtn.innerHTML = '<i class="fas fa-eye"></i> Visualizar';
                     viewPranchetaBtn.onclick = () => {
-                        openEditor(index);
+                        openViewer(index);
                     };
 
                     pranchetaOverlay.appendChild(downloadSingleBtn);
                     pranchetaOverlay.appendChild(viewPranchetaBtn);
 
-                    // Botão de toggle para mobile
                     const mobileActionsToggle = document.createElement('button');
                     mobileActionsToggle.className = 'mobile-actions-toggle';
                     mobileActionsToggle.innerHTML = '<i class="fas fa-ellipsis-h text-gray-800"></i>';
@@ -713,12 +844,42 @@
                     pranchetaDiv.appendChild(pranchetaOverlay);
                     pranchetaDiv.appendChild(mobileActionsToggle);
 
-                    // Adiciona a prancheta e o rótulo ao novo container
                     frameCard.appendChild(pranchetaDiv);
                     frameCard.appendChild(frameInfo);
 
                     pranchetasContainer.appendChild(frameCard);
                 });
+            }
+
+            // Função para aplicar recorte centralizado (zoom)
+            function applyCentralCrop(img, cropFactor) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Define as dimensões do canvas como as dimensões originais da imagem
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Calcula as novas dimensões com base no fator de recorte
+                const newWidth = img.width / cropFactor;
+                const newHeight = img.height / cropFactor;
+                
+                // Calcula a posição para recorte centralizado
+                const x = (img.width - newWidth) / 2;
+                const y = (img.height - newHeight) / 2;
+                
+                // Desenha a parte recortada da imagem no canvas
+                ctx.drawImage(
+                    img,
+                    x, y,           // Coordenadas de recorte (canto superior esquerdo)
+                    newWidth,       // Largura do recorte
+                    newHeight,      // Altura do recorte
+                    0, 0,           // Posição no canvas
+                    img.width,      // Largura no canvas
+                    img.height      // Altura no canvas
+                );
+                
+                return canvas;
             }
 
             // Função para gerar o canvas em alta resolução mantendo as proporções
@@ -745,19 +906,41 @@
 
                 const img = new Image();
                 img.src = photo.url;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'contain'; // Mantém as proporções
-                tempDiv.appendChild(img);
-                document.body.appendChild(tempDiv);
                 
-                // Aguarda a imagem carregar no elemento temporário
+                // Aguarda a imagem carregar
                 await new Promise(resolve => {
                     if (img.complete) {
                         resolve();
                     } else {
                         img.onload = resolve;
                         img.onerror = resolve;
+                    }
+                });
+                
+                // Aplica o recorte se necessário
+                let finalImg = img;
+                if (photo.cropFactor && photo.cropFactor > 1) {
+                    const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
+                    finalImg = croppedCanvas;
+                }
+                
+                // Cria uma imagem com o recorte aplicado
+                const processedImg = new Image();
+                processedImg.src = finalImg.toDataURL('image/png');
+                processedImg.style.width = '100%';
+                processedImg.style.height = '100%';
+                processedImg.style.objectFit = 'contain';
+                
+                tempDiv.appendChild(processedImg);
+                document.body.appendChild(tempDiv);
+                
+                // Aguarda a imagem processada carregar
+                await new Promise(resolve => {
+                    if (processedImg.complete) {
+                        resolve();
+                    } else {
+                        processedImg.onload = resolve;
+                        processedImg.onerror = resolve;
                     }
                 });
 
@@ -802,49 +985,62 @@
                 currentEditPhotoIndex = index;
                 const photo = photos[index];
                 
-                // Atualiza a visualização no editor para mostrar como aparece na prancheta
-                const unit = unitSelect.value;
-                const ratio = unit === 'cm' ? 10 : 1;
-                let displayWidth = photo.width * ratio;
-                let displayHeight = photo.height * ratio;
-                
-                // Ajusta o tamanho para não exceder o máximo
-                if (displayWidth > MAX_DISPLAY_WIDTH || displayHeight > MAX_DISPLAY_HEIGHT) {
-                    const widthRatio = MAX_DISPLAY_WIDTH / displayWidth;
-                    const heightRatio = MAX_DISPLAY_HEIGHT / displayHeight;
-                    const scale = Math.min(widthRatio, heightRatio);
-                    displayWidth *= scale;
-                    displayHeight *= scale;
+                // Inicializa o fator de recorte se não existir
+                if (!photo.cropFactor) {
+                    photo.cropFactor = 1;
                 }
                 
-                // Cria uma imagem temporária para a visualização
-                const tempImg = new Image();
-                tempImg.onload = function() {
+                // Configura o slider de recorte
+                cropSlider.value = photo.cropFactor;
+                
+                // Atualiza a visualização no editor
+                updateEditorPreview(photo);
+                
+                editorModal.classList.remove('hidden');
+            }
+
+            // Função para atualizar a visualização no editor
+            function updateEditorPreview(photo) {
+                const img = new Image();
+                img.onload = function() {
+                    // Aplica o recorte atual
+                    const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
+                    
                     // Configura o canvas do editor
-                    editorCanvas.width = tempImg.width;
-                    editorCanvas.height = tempImg.height;
-                    editorCtx.drawImage(tempImg, 0, 0);
+                    editorCanvas.width = croppedCanvas.width;
+                    editorCanvas.height = croppedCanvas.height;
+                    editorCtx.drawImage(croppedCanvas, 0, 0);
                     
                     // Atualiza a visualização no modal do editor
-                    editorPreview.src = photo.url;
-                    editorPreview.style.width = `${displayWidth}px`;
-                    editorPreview.style.height = `${displayHeight}px`;
+                    editorPreview.src = croppedCanvas.toDataURL('image/png');
                     
-                    brightnessSlider.value = 1.0;
-                    contrastSlider.value = 1.0;
-                    editorModal.classList.remove('hidden');
+                    // Ajusta o tamanho da visualização para caber no modal
+                    const maxWidth = Math.min(croppedCanvas.width, 400);
+                    const maxHeight = Math.min(croppedCanvas.height, 400);
+                    editorPreview.style.width = `${maxWidth}px`;
+                    editorPreview.style.height = `${maxHeight}px`;
+                    
+                    // Configura os sliders
+                    brightnessSlider.value = photo.brightness || 1.0;
+                    contrastSlider.value = photo.contrast || 1.0;
                 };
-                tempImg.src = photo.url;
+                img.src = photo.url;
             }
 
             // Função para aplicar filtros e ajustes
             function applyFilters() {
+                const photo = photos[currentEditPhotoIndex];
                 const img = new Image();
                 img.onload = () => {
-                    editorCanvas.width = img.width;
-                    editorCanvas.height = img.height;
-                    editorCtx.drawImage(img, 0, 0);
+                    // Primeiro aplica o recorte
+                    const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
+                    
+                    // Configura o canvas do editor
+                    editorCanvas.width = croppedCanvas.width;
+                    editorCanvas.height = croppedCanvas.height;
+                    editorCtx.drawImage(croppedCanvas, 0, 0);
 
+                    // Aplica brilho e contraste
                     const brightness = parseFloat(brightnessSlider.value);
                     const contrast = parseFloat(contrastSlider.value);
 
@@ -868,6 +1064,9 @@
                         data[i + 2] = Math.min(255, Math.max(0, b));
                     }
                     editorCtx.putImageData(imageData, 0, 0);
+                    
+                    // Atualiza a visualização
+                    editorPreview.src = editorCanvas.toDataURL('image/png');
                 };
                 img.src = photos[currentEditPhotoIndex].url;
             }
@@ -890,7 +1089,10 @@
                                 width: DEFAULT_WIDTH,
                                 height: DEFAULT_HEIGHT,
                                 locked: false,
-                                originalAspectRatio: img.width / img.height
+                                originalAspectRatio: img.width / img.height,
+                                cropFactor: 1,
+                                brightness: 1.0,
+                                contrast: 1.0
                             });
                             renderUI();
                         };
@@ -903,6 +1105,13 @@
 
             // Ouve a mudança na unidade
             unitSelect.addEventListener('change', renderUI);
+
+            // Ouve a mudança no slider de recorte
+            cropSlider.addEventListener('input', (e) => {
+                const photo = photos[currentEditPhotoIndex];
+                photo.cropFactor = parseFloat(e.target.value);
+                updateEditorPreview(photo);
+            });
 
             // Oculta overlays de mobile ao clicar em qualquer lugar
             document.addEventListener('click', (e) => {
@@ -917,10 +1126,8 @@
             downloadBtn.addEventListener('click', async () => {
                 if (photos.length === 0) return;
                 
-                // Baixa cada arquivo individualmente em uma fila
                 for (const [index, photo] of photos.entries()) {
                     await downloadFrame(index);
-                    // Adiciona um pequeno atraso para não sobrecarregar o navegador
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
             });
@@ -940,6 +1147,7 @@
                     data[i + 2] = avg;
                 }
                 editorCtx.putImageData(imageData, 0, 0);
+                editorPreview.src = editorCanvas.toDataURL('image/png');
             });
 
             sepiaBtn.addEventListener('click', () => {
@@ -954,24 +1162,29 @@
                     data[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
                 }
                 editorCtx.putImageData(imageData, 0, 0);
+                editorPreview.src = editorCanvas.toDataURL('image/png');
             });
 
             resetBtn.addEventListener('click', () => {
                 const photo = photos[currentEditPhotoIndex];
-                const img = new Image();
-                img.onload = () => {
-                    editorCanvas.width = img.width;
-                    editorCanvas.height = img.height;
-                    editorCtx.drawImage(img, 0, 0);
-                    brightnessSlider.value = 1.0;
-                    contrastSlider.value = 1.0;
-                };
-                img.src = photo.url;
+                photo.cropFactor = 1;
+                photo.brightness = 1.0;
+                photo.contrast = 1.0;
+                cropSlider.value = 1;
+                brightnessSlider.value = 1.0;
+                contrastSlider.value = 1.0;
+                updateEditorPreview(photo);
             });
 
             saveEditBtn.addEventListener('click', () => {
+                const photo = photos[currentEditPhotoIndex];
+                photo.brightness = parseFloat(brightnessSlider.value);
+                photo.contrast = parseFloat(contrastSlider.value);
+                
+                // Salva a imagem editada
                 const newUrl = editorCanvas.toDataURL('image/png');
-                photos[currentEditPhotoIndex].url = newUrl;
+                photo.url = newUrl;
+                
                 editorModal.classList.add('hidden');
                 renderUI();
             });
