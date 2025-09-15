@@ -1,0 +1,10 @@
+Esta app, SuecoeDIT TEM COMO OBJECTIVO PRINCIPAL, OPTIMIZAR, AGILIZAR E ATÉ SIMPLIFICAR
+A DEPENDENCIA DE APLICATIVOS EXTERNOS, OU DISPOSITIVOS EXTERNOS, COMO POR EXEMPLO O COMPUTADOR.
+COM ESSA APP, AS PESSOAS E GRÁFICAS PODERÃO FAZER A MAIORIA DOS SEUS SERVIÇOS DE FORMA MAIS RÁPIDA, EFICIENTE SEM A NECECIDADE DE UM COMPUTADOR, EXCEPTO EM CASO DE
+EDICAO OU CRIACÃO MAIS COMPLEXOS E EXIGENTES.
+
+O OBJECTIVO É INCORPORAR MAIS FERRAMENTAS E TORNAR A EXPERIÊNCIA DO USUARIO COM A APP MAIS INTERESSANTE.
+pretendo adicionar funcionalidades para uso offline, porém ja reparei que para irro teria de ser um app instalavel diferente de web app, 
+mas como um iniciante acredito que estou num bom caminho.
+
+estou aberto à ideias e colaboracoes para o desenvolvimento da app.
