@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuecoEdit - Home</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="theme-color" content="#3b82f6">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Cabeçalho -->
+  <div class="hero-section bg-gradient-to-r from-blue-400 to-blue-600 text-white text-center py-12 rounded-b-3xl shadow-lg">
+    <h1 class="text-3xl font-extrabold mb-2">Bem-vindo ao SuecoEdit!</h1>
+    <p class="text-lg opacity-90">A sua Gráfica bem na palma das suas mãos 🤩</p>
+  </div>
+
+  <!-- Botão inicial -->
+  <div class="flex justify-center mt-16">
+    <button onclick="window.location.href='index.html'" 
+      class="bg-blue-600 text-white text-lg px-8 py-4 rounded-full shadow-lg hover:bg-blue-700 transition">
+      Começar a Criar Gratuitamente
+    </button>
+  </div>
+
+  <!-- Atalhos com ícones -->
+  <div class="grid grid-cols-2 gap-8 mt-20 px-8 text-center">
+    
+    <!-- Fotos Polaroides -->
+    <div class="cursor-pointer" onclick="window.location.href='index.html'">
+      <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+        <img src="icons/polaroid.png" alt="Fotos Polaroides" class="mx-auto w-16 h-16 mb-4">
+        <h2 class="text-lg font-semibold text-gray-700">Fotos Polaroides</h2>
+      </div>
+    </div>
+
+    <!-- Outro atalho (exemplo futuro) -->
+    <div class="cursor-pointer" onclick="alert('Em breve...')">
+      <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+        <img src="icons/poster.png" alt="Cartazes" class="mx-auto w-16 h-16 mb-4">
+        <h2 class="text-lg font-semibold text-gray-700">Cartazes</h2>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
