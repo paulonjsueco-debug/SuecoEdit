@@ -22,8 +22,8 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            margin-bottom: 1.5rem;/*acrescentei para tentar adicionar espaço la emcima*/
-            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2); /*acrescentei para tentar adicionar espaço la emcima*/
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
             background-color: #f3f4f6;
         }
 
@@ -76,25 +76,34 @@
             align-items: center;
             background-color: #f3f4f6;
         }
-        .crop-box {
+        
+        /* Novos estilos para a visualização com máscara e linhas */
+        .mask-overlay {
             position: absolute;
-            border: 2px dashed white;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-            cursor: move;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
-        .handle {
+        
+        .mask-line {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: white;
-            border: 1px solid #3b82f6;
-            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            z-index: 11;
         }
-        .handle-tl { top: -6px; left: -6px; cursor: nwse-resize; }
-        .handle-tr { top: -6px; right: -6px; cursor: nesw-resize; }
-        .handle-bl { bottom: -6px; left: -6px; cursor: nesw-resize; }
-        .handle-br { bottom: -6px; right: -6px; cursor: nwse-resize; }
-
+        
+        .mask-line.vertical {
+            width: 1px;
+            height: 100%;
+        }
+        
+        .mask-line.horizontal {
+            width: 100%;
+            height: 1px;
+        }
+        
         .preview-canvas-wrapper {
             position: relative;
             user-select: none;
@@ -121,7 +130,7 @@
             font-size: 12px;
         }
 
-        /* Carousel Styles - CORRIGIDO */
+        /* Carousel Styles */
         .carousel-container {
             position: relative;
             overflow: hidden;
@@ -169,21 +178,25 @@
             animation: spin 1s linear infinite;
         }
 
-        /* Full Preview Area for Horizontal Scrolling */
+        /* Full Preview Area - MODIFICADO para grade 2x4 */
         #full-preview-area {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
             gap: 1rem;
-            align-items: flex-start;
+            overflow-y: auto;
+            align-items: start;
+            justify-items: center;
+            max-height: 70vh;
         }
+        
         #full-preview-area .preview-page {
-            flex-shrink: 0;
-            width: 90%;
-            max-width: 900px;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         /* Novos estilos para melhorias */
@@ -256,8 +269,6 @@
                 padding: 1rem;
             }
             
-            
-            
             .flex-row-mobile {
                 flex-direction: column;
             }
@@ -277,6 +288,12 @@
             .tool-btn {
                 font-size: 0.8rem;
                 padding: 0.5rem;
+            }
+            
+            /* Ajustes para a pré-visualização em mobile */
+            #full-preview-area {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, 1fr);
             }
         }
         
@@ -304,279 +321,328 @@
         .maintain-aspect-ratio {
             object-fit: contain;
         }
+        
+        /* Estilos para a área de upload com drag and drop */
+        .drag-over {
+            background-color: #dbeafe !important;
+            border-color: #3b82f6 !important;
+        }
+        
+        /* Estilos para os controles de zoom */
+        .zoom-controls {
+            transition: all 0.3s ease;
+        }
+        
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
     </style>
 </head>
-    
-        <!--Logotipo do suecoedit ao lada esquerdo no topo -->
 <body class="bg-gray-100 text-gray-800">
 
     <div class="flex items-center gap-3 p-4 bg-white shadow-md">
-  <img src="favicon.png" alt="Logo" class="w-8 h-8">
-  <h1 class="text-xl font-bold text-gray-700">SuecoEdit</h1></h1>
+        <img src="favicon.png" alt="Logo" class="w-8 h-8">
+        <h1 class="text-xl font-bold text-gray-700">SuecoEdit</h1>
     </div>
     
-        <!-- Início do código da aplicação SuecoEdit -->
-            <div class="container bg-white shadow-xl rounded-2xl p-4 sm:p-6 w-full max-w-md mx-auto opacity-0">
-            <!-- Título -->
-            <p class="text-center text-gray-600 mb-6">Arraste e solte fotos para criar fotos polaroides com uma grade de 2x4.</p>
-            </div>
+    <!-- Início do código da aplicação SuecoEdit -->
+    <div class="container mx-auto px-4 py-6">
+        <!-- Título -->
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-blue-800">Criar Fotos Polaroides</h2>
+            <p class="text-gray-600 mt-2">Arraste e solte fotos para criar fotos polaroides com uma grade de 2x4.</p>
+        </div>
 
-            <!-- Seção de Upload -->
-            <div iid="upload-section" class="mt-65 mb-6 p-4 border-2 border-dashed border-gray-300 rounded-xl text-center w-11/12 md:w-[800px] mx-auto">
-                <label for="image-upload" class="file-input-label bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors inline-block">
+        <!-- Seção de Upload com Drag & Drop -->
+        <div id="upload-section" class="mt-6 mb-6 p-8 border-2 border-dashed border-gray-300 rounded-xl text-center bg-white transition-colors duration-300">
+            <div class="flex flex-col items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                <p class="text-lg font-medium text-gray-700 mb-2">Arraste e solte suas imagens aqui</p>
+                <p class="text-sm text-gray-500 mb-4">ou</p>
+                <label for="image-upload" class="file-input-label bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors inline-block cursor-pointer">
                     <span>Selecionar Imagens</span>
                     <input type="file" id="image-upload" accept="image/*" multiple class="hidden">
                 </label>
-                <p class="text-sm text-gray-500 mt-2">Arraste e solte arquivos aqui ou clique para selecionar.</p>
-                <p class="text-xs text-gray-400 mt-1">Suporte a JPEG e PNG. Máx. 10MB por imagem.</p>
+                <p class="text-xs text-gray-400 mt-4">Suporte a JPEG e PNG. Máx. 10MB por imagem.</p>
+            </div>
+        </div>
+
+        <!-- Controles do layout de imagens -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+            <h2 class="text-xl font-bold text-gray-800">Imagens Carregadas</h2>
+            <button id="clear-all-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors transform hover:scale-105 w-full sm:w-auto">
+                Limpar Tudo
+            </button>
+        </div>
+
+        <!-- Galeria de miniaturas de imagens -->
+        <div id="image-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+            <!-- As miniaturas serão adicionadas aqui via JavaScript -->
+        </div>
+
+        <!-- Controles e Opções -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="p-6 bg-white rounded-xl shadow-md">
+                <h2 class="text-lg font-bold mb-4 text-blue-800">Opções de Layout</h2>
+                <div class="flex flex-col space-y-3">
+                    <p class="text-gray-700 text-sm">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento otimizado.</p>
+                </div>
             </div>
 
-            <!-- Controles do layout de imagens -->
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4" mx-auto">
-                <h2 class="text-xl font-bold">Imagens Carregadas</h2>
-                <button id="clear-all-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors transform hover:scale-105 w-full sm:w-auto">
-                    Limpar Tudo
+            <!-- Visualização da Folha A4 em Mosaico -->
+            <div class="p-6 bg-white rounded-xl shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-blue-800">Pré-visualização</h2>
+                </div>
+                <div id="preview-gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- O mosaico de pré-visualizações será adicionado aqui via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Botões de Exportar e Pré-visualização -->
+        <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8">
+            <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
+                Pré-visualização de Exportação
+                <span class="tooltip-text">Visualizar todas as páginas antes de exportar</span>
+            </button>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button id="export-landscape-btn" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
+                    Gerar PDF
+                    <span class="tooltip-text">Exportar em formato PDF no modo paisagem</span>
+                </button>
+                <button id="export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
+                    Gerar JPG
+                    <span class="tooltip-text">Exportar em formato JPG no modo paisagem</span>
+                </button>
+            </div>
+        </div>
+        <div id="status-message" class="mt-4 text-center text-gray-600 font-medium"></div>
+        
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="spinner mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </div>
+            <p id="loading-text">Processando...</p>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
+            <!-- Área Principal de Edição e Painel de Ferramentas -->
+            <div class="flex-1 flex flex-col lg:flex-row overflow-hidden p-2 sm:p-0">
+                <!-- Área Principal do Canvas -->
+                <div class="flex-1 flex items-center justify-center relative min-h-[30vh] lg:min-h-96">
+                    <div id="editor-area" class="editor-container w-full h-full relative">
+                        <canvas id="editor-canvas" class="w-full h-full maintain-aspect-ratio"></canvas>
+                        <!-- Overlay com máscara e linhas tracejadas -->
+                        <div id="mask-overlay" class="mask-overlay">
+                            <!-- Linhas serão adicionadas via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel de Controles da Ferramenta -->
+                <div id="tool-controls-container" class="w-full lg:w-96 flex-shrink-0 lg:ml-6 mt-4 lg:mt-0 p-2 border-t lg:border-t-0 lg:border-l border-gray-200 overflow-y-auto">
+                    <!-- Controles da Ferramenta de Zoom -->
+                    <div id="zoom-controls" class="hidden">
+                        <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Zoom</h3>
+                        <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Ajuste o zoom para enquadrar a imagem como desejar.</p>
+                        
+                        <div class="flex items-center justify-between mb-4">
+                            <button id="zoom-out-btn" class="zoom-btn bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                                -
+                            </button>
+                            
+                            <div class="flex-1 mx-4">
+                                <input type="range" id="zoom-slider" min="50" max="300" value="100" class="w-full accent-blue-500 realtime-preview">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>50%</span>
+                                    <span id="zoom-value">100%</span>
+                                    <span>300%</span>
+                                </div>
+                            </div>
+                            
+                            <button id="zoom-in-btn" class="zoom-btn bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+                                +
+                            </button>
+                        </div>
+                        
+                        <div class="flex justify-center space-x-2 mb-4">
+                            <button id="zoom-reset-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+                                Redefinir
+                            </button>
+                        </div>
+                        
+                        <div class="flex justify-center lg:justify-end space-x-4 mt-4">
+                            <button id="discard-zoom-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                                Descartar Alterações
+                            </button>
+                            <button id="save-zoom-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Controles da Ferramenta de Legenda -->
+                    <div id="caption-controls" class="hidden">
+                        <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Legenda</h3>
+                        <div class="flex flex-wrap -mx-2 mb-4">
+                            <div class="px-2 w-full mb-4">
+                                <label class="block">
+                                    <span class="text-gray-700">Texto:</span>
+                                    <input type="text" id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 realtime-preview">
+                                </label>
+                            </div>
+                            <div class="px-2 w-1/2 mb-4">
+                                <label class="block">
+                                    <span class="text-gray-700">Cor:</span>
+                                    <input type="color" id="caption-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#000000">
+                                </label>
+                            </div>
+                            <div class="px-2 w-1/2 mb-4">
+                                <label class="block">
+                                    <span class="text-gray-700">Contorno:</span>
+                                    <input type="color" id="caption-outline-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#FFFFFF">
+                                </label>
+                            </div>
+                            <div class="px-2 w-full mb-4">
+                                <label class="block">
+                                    <span class="text-gray-700">Tamanho da Fonte:</span>
+                                    <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500 realtime-preview">
+                                    <p class="text-right text-sm text-gray-500" id="caption-size-value">20 px</p>
+                                </label>
+                            </div>
+                            <div class="px-2 w-full mb-4">
+                                <label class="block">
+                                    <span class="text-gray-700">Espessura do Contorno:</span>
+                                    <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500 realtime-preview">
+                                    <p class="text-right text-sm text-gray-500" id="caption-stroke-value">0 px</p>
+                                </label>
+                            </div>
+                            <div class="px-2 w-full mb-4">
+                                <label class="block">
+                                    <span class="text-gray-700">Fonte:</span>
+                                    <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm realtime-preview">
+                                        <option value="Valentine Baby, sans-serif">Valentine Baby</option>
+                                        <option value="Inter, sans-serif">Inter</option>
+                                        <option value="Arial, sans-serif">Arial</option>
+                                        <option value="Verdana, sans-serif">Verdana</option>
+                                        <option value="Times New Roman, serif">Times New Roman</option>
+                                        <option value="Courier New, monospace">Courier New</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex justify-center lg:justify-end space-x-4 mt-4">
+                            <button id="discard-caption-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                                Descartar Alterações
+                            </button>
+                            <button id="save-caption-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Controles de Edição de Fundo -->
+                    <div id="background-controls" class="hidden">
+                        <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Editar Fundo</h3>
+                        <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Ajuste o desfoque e o redimensionamento do fundo da imagem.</p>
+                        <label class="block mb-4">
+                            <span class="text-gray-700">Intensidade do Desfoque:</span>
+                            <input type="range" id="blur-slider" min="0" max="250" value="15" class="mt-1 w-full accent-indigo-500 realtime-preview">
+                            <p class="text-right text-sm text-gray-500" id="blur-value">15 px</p>
+                        </label>
+                        <label class="block mb-4">
+                            <span class="text-gray-700">Redimensionar Fundo (%):</span>
+                            <input type="range" id="background-size-slider" min="100" max="500" value="100" class="mt-1 w-full accent-indigo-500 realtime-preview">
+                            <p class="text-right text-sm text-gray-500" id="background-size-value">100 %</p>
+                        </label>
+                        <div class="flex justify-center lg:justify-end space-x-4 mt-4">
+                            <button id="discard-background-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                                Descartar Alterações
+                            </button>
+                            <button id="save-background-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação do Modal - Fundo do painel de edição -->
+            <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4 mt-6 border-t pt-4 border-gray-200">
+                <button id="back-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto">
+                    Voltar
+                </button>
+                <div class="flex flex-wrap justify-center lg:justify-end gap-2 w-full lg:w-auto">
+                    <button id="tool-zoom-btn" class="tool-btn bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors flex-1">
+                        Zoom
+                    </button>
+                    <button id="tool-caption-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                        Adicionar Legenda
+                    </button>
+                    <button id="tool-background-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                        Editar Fundo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Novo Modal de Pré-visualização de Exportação -->
+    <div id="full-preview-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Pré-visualização de Exportação</h2>
+                <button id="close-preview-btn" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                    Fechar
                 </button>
             </div>
 
-            <!-- Galeria de miniaturas de imagens -->
-            <div id="image-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mb-6">
-                <!-- As miniaturas serão adicionadas aqui via JavaScript -->
-            </div>
-
-            <!-- Controles e Opções -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div class="p-4 bg-gray-50 rounded-xl shadow-inner">
-                    <h2 class="text-lg font-bold mb-3">Opções de Layout</h2>
-                    <div class="flex flex-col space-y-3">
-                        <p class="text-gray-700 text-sm">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento de 40px na horizontal и 60px na vertical.</p>
-                    </div>
-                </div>
-
-                <!-- Visualização da Folha A4 em Mosaico -->
-                <div class="p-4 bg-gray-50 rounded-xl shadow-inner">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-lg font-bold">Pré-visualização</h2>
-                    </div>
-                    <div id="preview-gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <!-- O mosaico de pré-visualizações será adicionado aqui via JavaScript -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botões de Exportar e Pré-visualização -->
-            <div class="flex flex-col md:flex-row flex-wrap justify-center gap-3 mt-6">
-                <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
-                    Pré-visualização de Exportação
-                    <span class="tooltip-text">Visualizar todas as páginas antes de exportar</span>
-                </button>
-                <div class="flex flex-wrap justify-center gap-3">
-                    <button id="export-landscape-btn" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
-                        Gerar PDF
-                        <span class="tooltip-text">Exportar em formato PDF no modo paisagem</span>
-                    </button>
-                    <button id="export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
-                        Gerar JPG
-                        <span class="tooltip-text">Exportar em formato JPG no modo paisagem</span>
-                    </button>
-                </div>
-            </div>
-            <div id="status-message" class="mt-3 text-center text-gray-600 font-medium"></div>
-            
-            <!-- Loading Overlay -->
-            <div id="loading-overlay" class="loading-overlay hidden">
-                <div class="spinner mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            <!-- Controles de navegação do carrossel -->
+            <div id="full-preview-nav" class="flex justify-between items-center mb-4">
+                <button id="prev-page-btn" class="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
-                </div>
-                <p id="loading-text">Processando...</p>
+                </button>
+                <span id="page-indicator" class="text-xl font-bold text-gray-700"></span>
+                <button id="next-page-btn" class="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
             </div>
-        </div>
 
-        <!-- Modal de Edição -->
-        <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4 z-50">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
-                <!-- Área Principal de Edição e Painel de Ferramentas -->
-                <div class="flex-1 flex flex-col lg:flex-row overflow-hidden p-2 sm:p-0">
-                    <!-- Área Principal do Canvas -->
-                    <div class="flex-1 flex items-center justify-center relative min-h-[30vh] lg:min-h-96">
-                        <div id="editor-area" class="editor-container w-full h-full relative">
-                            <canvas id="editor-canvas" class="w-full h-full maintain-aspect-ratio"></canvas>
-                            <div id="crop-box" class="crop-box hidden">
-                                <div class="handle handle-tl"></div>
-                                <div class="handle handle-tr"></div>
-                                <div class="handle handle-bl"></div>
-                                <div class="handle handle-br"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Painel de Controles da Ferramenta -->
-                    <div id="tool-controls-container" class="w-full lg:w-96 flex-shrink-0 lg:ml-6 mt-4 lg:mt-0 p-2 border-t lg:border-t-0 lg:border-l border-gray-200 overflow-y-auto">
-                        <!-- Controles da Ferramenta de Recorte -->
-                        <div id="crop-controls" class="hidden">
-                            <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Recorte</h3>
-                            <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Arraste a caixa para selecionar a área de interesse.</p>
-                            <div class="flex justify-center lg:justify-end space-x-4 mt-4">
-                                <button id="discard-crop-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
-                                    Descartar Alterações
-                                </button>
-                                <button id="save-crop-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                    Salvar Alterações
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Controles da Ferramenta de Legenda -->
-                        <div id="caption-controls" class="hidden">
-                            <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Legenda</h3>
-                            <div class="flex flex-wrap -mx-2 mb-4">
-                                <div class="px-2 w-full mb-4">
-                                    <label class="block">
-                                        <span class="text-gray-700">Texto:</span>
-                                        <input type="text" id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 realtime-preview">
-                                    </label>
-                                </div>
-                                <div class="px-2 w-1/2 mb-4">
-                                    <label class="block">
-                                        <span class="text-gray-700">Cor:</span>
-                                        <input type="color" id="caption-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#000000">
-                                    </label>
-                                </div>
-                                <div class="px-2 w-1/2 mb-4">
-                                    <label class="block">
-                                        <span class="text-gray-700">Contorno:</span>
-                                        <input type="color" id="caption-outline-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#FFFFFF">
-                                    </label>
-                                </div>
-                                <div class="px-2 w-full mb-4">
-                                    <label class="block">
-                                        <span class="text-gray-700">Tamanho da Fonte:</span>
-                                        <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500 realtime-preview">
-                                        <p class="text-right text-sm text-gray-500" id="caption-size-value">20 px</p>
-                                    </label>
-                                </div>
-                                <div class="px-2 w-full mb-4">
-                                    <label class="block">
-                                        <span class="text-gray-700">Espessura do Contorno:</span>
-                                        <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500 realtime-preview">
-                                        <p class="text-right text-sm text-gray-500" id="caption-stroke-value">0 px</p>
-                                    </label>
-                                </div>
-                                <div class="px-2 w-full mb-4">
-                                    <label class="block">
-                                        <span class="text-gray-700">Fonte:</span>
-                                        <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm realtime-preview">
-                                            <option value="Valentine Baby, sans-serif">Valentine Baby</option>
-                                            <option value="Inter, sans-serif">Inter</option>
-                                            <option value="Arial, sans-serif">Arial</option>
-                                            <option value="Verdana, sans-serif">Verdana</option>
-                                            <option value="Times New Roman, serif">Times New Roman</option>
-                                            <option value="Courier New, monospace">Courier New</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="flex justify-center lg:justify-end space-x-4 mt-4">
-                                <button id="discard-caption-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
-                                    Descartar Alterações
-                                </button>
-                                <button id="save-caption-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                    Salvar Alterações
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Controles de Edição de Fundo -->
-                        <div id="background-controls" class="hidden">
-                            <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Editar Fundo</h3>
-                            <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Ajuste o desfoque e o redimensionamento do fundo da imagem.</p>
-                            <label class="block mb-4">
-                                <span class="text-gray-700">Intensidade do Desfoque:</span>
-                                <input type="range" id="blur-slider" min="0" max="250" value="15" class="mt-1 w-full accent-indigo-500 realtime-preview">
-                                <p class="text-right text-sm text-gray-500" id="blur-value">15 px</p>
-                            </label>
-                            <label class="block mb-4">
-                                <span class="text-gray-700">Redimensionar Fundo (%):</span>
-                                <input type="range" id="background-size-slider" min="100" max="500" value="100" class="mt-1 w-full accent-indigo-500 realtime-preview">
-                                <p class="text-right text-sm text-gray-500" id="background-size-value">100 %</p>
-                            </label>
-                            <div class="flex justify-center lg:justify-end space-x-4 mt-4">
-                                <button id="discard-background-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
-                                    Descartar Alterações
-                                </button>
-                                <button id="save-background-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                    Salvar Alterações
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botões de Ação do Modal - Fundo do painel de edição -->
-                <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4 mt-6 border-t pt-4 border-gray-200">
-                    <button id="back-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto">
-                        Voltar
+            <!-- MODIFICADO: Área de pré-visualização em grade 2x4 -->
+            <div id="full-preview-area" class="grid grid-cols-2 gap-4 overflow-y-auto">
+                <!-- As imagens de pré-visualização serão adicionadas aqui via JavaScript -->
+            </div>
+            
+            <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8 border-t pt-4">
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button id="modal-export-landscape-btn" class="bg-blue-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        Gerar PDF
                     </button>
-                    <div class="flex flex-wrap justify-center lg:justify-end gap-2 w-full lg:w-auto">
-                        <button id="tool-crop-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
-                            Recortar
-                        </button>
-                        <button id="tool-caption-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
-                            Adicionar Legenda
-                        </button>
-                        <button id="tool-background-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
-                            Editar Fundo
-                        </button>
-                    </div>
+                    <button id="modal-export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        Gerar JPG
+                    </button>
                 </div>
             </div>
         </div>
-
-        <!-- Novo Modal de Pré-visualização de Exportação -->
-        <div id="full-preview-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4 z-50">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-2xl font-bold">Pré-visualização de Exportação</h2>
-                    <button id="close-preview-btn" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
-                        Fechar
-                    </button>
-                </div>
-
-                <!-- Controles de navegação do carrossel -->
-                <div id="full-preview-nav" class="flex justify-between items-center mb-4">
-                    <button id="prev-page-btn" class="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <span id="page-indicator" class="text-xl font-bold text-gray-700"></span>
-                    <button id="next-page-btn" class="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </button>
-                </div>
-
-                <div id="full-preview-area" class="flex-1 flex items-center justify-start relative flex-col overflow-y-auto">
-                    <!-- O canvas ou imagem de pré-visualização será renderizado aqui -->
-                </div>
-                <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8 border-t pt-4">
-    
-                    <div class="flex flex-wrap justify-center gap-4">
-                        <button id="modal-export-landscape-btn" class="bg-blue-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
-                            Gerar PDF
-                        </button>
-                        <button id="modal-export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
-                            Gerar JPG
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Fim do código da aplicação SuecoEdit -->
     </div>
 
     <script>
@@ -589,24 +655,25 @@
             const clearAllBtn = document.getElementById('clear-all-btn');
             const exportLandscapeBtn = document.getElementById('export-landscape-btn');
             const exportLandscapeJpgBtn = document.getElementById('export-landscape-jpg-btn');
-            const exportPortraitBtn = document.getElementById('export-portrait-btn');
-            const exportPortraitJpgBtn = document.getElementById('export-portrait-jpg-btn');
             const statusMessage = document.getElementById('status-message');
             const previewGallery = document.getElementById('preview-gallery');
             const editModal = document.getElementById('edit-modal');
             const backBtn = document.getElementById('back-btn');
             const editorCanvas = document.getElementById('editor-canvas');
-            const toolCropBtn = document.getElementById('tool-crop-btn');
+            const toolZoomBtn = document.getElementById('tool-zoom-btn');
             const toolCaptionBtn = document.getElementById('tool-caption-btn');
             const toolBackgroundBtn = document.getElementById('tool-background-btn');
-            const cropControls = document.getElementById('crop-controls');
+            const zoomControls = document.getElementById('zoom-controls');
             const captionControls = document.getElementById('caption-controls');
             const backgroundControls = document.getElementById('background-controls');
-            const cropBox = document.getElementById('crop-box');
-            const blurSlider = document.getElementById('blur-slider');
-            const blurValueText = document.getElementById('blur-value');
-            const backgroundSizeSlider = document.getElementById('background-size-slider');
-            const backgroundSizeValueText = document.getElementById('background-size-value');
+            const maskOverlay = document.getElementById('mask-overlay');
+            const zoomSlider = document.getElementById('zoom-slider');
+            const zoomValue = document.getElementById('zoom-value');
+            const zoomInBtn = document.getElementById('zoom-in-btn');
+            const zoomOutBtn = document.getElementById('zoom-out-btn');
+            const zoomResetBtn = document.getElementById('zoom-reset-btn');
+            const saveZoomBtn = document.getElementById('save-zoom-btn');
+            const discardZoomBtn = document.getElementById('discard-zoom-btn');
             const captionTextInput = document.getElementById('caption-text-input');
             const captionColorInput = document.getElementById('caption-color-input');
             const captionOutlineColorInput = document.getElementById('caption-outline-color-input');
@@ -615,6 +682,10 @@
             const captionStrokeSlider = document.getElementById('caption-stroke-slider');
             const captionStrokeValueText = document.getElementById('caption-stroke-value');
             const captionFontSelect = document.getElementById('caption-font-select');
+            const blurSlider = document.getElementById('blur-slider');
+            const blurValueText = document.getElementById('blur-value');
+            const backgroundSizeSlider = document.getElementById('background-size-slider');
+            const backgroundSizeValueText = document.getElementById('background-size-value');
             const editorArea = document.getElementById('editor-area');
             const uploadSection = document.getElementById('upload-section');
             const loadingOverlay = document.getElementById('loading-overlay');
@@ -625,8 +696,6 @@
             const fullPreviewModal = document.getElementById('full-preview-modal');
             const closePreviewBtn = document.getElementById('close-preview-btn');
             const fullPreviewArea = document.getElementById('full-preview-area');
-            const modalExportPortraitBtn = document.getElementById('modal-export-portrait-btn');
-            const modalExportPortraitJpgBtn = document.getElementById('modal-export-portrait-jpg-btn');
             const modalExportLandscapeBtn = document.getElementById('modal-export-landscape-btn');
             const modalExportLandscapeJpgBtn = document.getElementById('modal-export-landscape-jpg-btn');
             
@@ -637,10 +706,7 @@
             const pageIndicator = document.getElementById('page-indicator');
             let currentPageIndex = 0;
 
-
             // New save/discard buttons for each tool
-            const saveCropBtn = document.getElementById('save-crop-btn');
-            const discardCropBtn = document.getElementById('discard-crop-btn');
             const saveCaptionBtn = document.getElementById('save-caption-btn');
             const discardCaptionBtn = document.getElementById('discard-caption-btn');
             const saveBackgroundBtn = document.getElementById('save-background-btn');
@@ -651,23 +717,17 @@
             let uploadedImages = [];
             let currentImageIndex = -1;
             let currentTool = null;
-            let dragTarget = null;
-            let dragStartX = 0;
-            let dragStartY = 0;
-            let isDragging = false;
             let initialCanvasSize = { width: 0, height: 0 };
 
-            const DEFAULT_BLUR = 30; // Default blur value
-            const DEFAULT_BG_SIZE = 180; // Novo valor padrão de redimensionamento de fundo
-            const BLUR_PADDING = 250; // Padding to prevent white borders on blurred images
+            const DEFAULT_BLUR = 30;
+            const DEFAULT_BG_SIZE = 180;
+            const BLUR_PADDING = 250;
 
             // Dimensões da folha A4 em 300 DPI
-            const A4_WIDTH_PX_PORTRAIT = 2480;
-            const A4_HEIGHT_PX_PORTRAIT = 3508;
             const A4_WIDTH_PX_LANDSCAPE = 3508;
             const A4_HEIGHT_PX_LANDSCAPE = 2480;
             
-            // Dimensões de cada foto na grade, com base no feedback do usuário
+            // Dimensões de cada foto na grade
             const IMAGE_WIDTH_PX = 832.32;
             const IMAGE_HEIGHT_PX = 1177.2;
 
@@ -680,6 +740,7 @@
                 const imageAspect = imgWidth / imgHeight;
                 const boxAspect = boxWidth / boxHeight;
                 let drawWidth, drawHeight, offsetX, offsetY;
+                
                 if (imageAspect > boxAspect) {
                     drawWidth = boxWidth;
                     drawHeight = boxWidth / imageAspect;
@@ -693,25 +754,6 @@
                 }
                 return { drawWidth, drawHeight, offsetX, offsetY };
             };
-            
-            // Helper to get proportional image dimensions for drawing (object-fit: cover)
-            const getProportionalCoverDimensions = (imgWidth, imgHeight, boxWidth, boxHeight) => {
-                const imageAspect = imgWidth / imgHeight;
-                const boxAspect = boxWidth / boxHeight;
-                let drawWidth, drawHeight, offsetX, offsetY;
-                if (imageAspect > boxAspect) {
-                    drawHeight = boxHeight;
-                    drawWidth = boxHeight * imageAspect;
-                    offsetX = (boxWidth - drawWidth) / 2;
-                    offsetY = 0;
-                } else {
-                    drawWidth = boxWidth;
-                    drawHeight = boxHeight * imageAspect;
-                    offsetX = 0;
-                    offsetY = (boxHeight - drawHeight) / 2;
-                }
-                return { drawWidth, drawHeight, offsetX, offsetY };
-            };
 
             // Renders the image gallery with thumbnails and buttons
             const renderImages = () => {
@@ -719,7 +761,6 @@
                 uploadedImages.forEach((image, index) => {
                     const card = document.createElement('div');
                     card.className = 'relative group w-full aspect-square rounded-xl overflow-hidden shadow-md border-2 border-gray-200 image-card';
-                    // Alterado para sempre usar 'object-contain' no thumbnail
                     card.innerHTML = `
                         <img src="${image.croppedUrl}" alt="Thumbnail" class="w-full h-full object-contain">
                         <div class="absolute inset-0 flex items-start justify-between p-2">
@@ -768,12 +809,8 @@
                 const hasImages = uploadedImages.length > 0;
                 exportLandscapeBtn.disabled = !hasImages;
                 exportLandscapeJpgBtn.disabled = !hasImages;
-                exportPortraitBtn.disabled = !hasImages;
-                exportPortraitJpgBtn.disabled = !hasImages;
                 fullPreviewBtn.disabled = !hasImages;
                 
-                modalExportPortraitBtn.disabled = !hasImages;
-                modalExportPortraitJpgBtn.disabled = !hasImages;
                 modalExportLandscapeBtn.disabled = !hasImages;
                 modalExportLandscapeJpgBtn.disabled = !hasImages;
 
@@ -792,8 +829,8 @@
                 previewGallery.innerHTML = '';
                 if (uploadedImages.length === 0) return;
 
-                const gridCols = orientation === 'landscape' ? 4 : 3;
-                const gridRows = orientation === 'landscape' ? 2 : 5;
+                const gridCols = 4;
+                const gridRows = 2;
                 const IMAGES_PER_PAGE = gridCols * gridRows;
                 const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
 
@@ -802,8 +839,8 @@
                     canvasWrapper.className = 'preview-canvas-wrapper aspect-[1.414/1] relative';
                     const canvas = document.createElement('canvas');
                     const scale = 10;
-                    const pageTotalWidth = orientation === 'landscape' ? A4_WIDTH_PX_LANDSCAPE : A4_HEIGHT_PX_PORTRAIT;
-                    const pageTotalHeight = orientation === 'landscape' ? A4_HEIGHT_PX_LANDSCAPE : A4_WIDTH_PX_PORTRAIT;
+                    const pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
+                    const pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
                     canvas.width = pageTotalWidth / scale;
                     canvas.height = pageTotalHeight / scale;
 
@@ -824,18 +861,14 @@
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                const gridCols = orientation === 'landscape' ? 4 : 3;
-                const gridRows = orientation === 'landscape' ? 2 : 5;
+                const gridCols = 4;
+                const gridRows = 2;
                 const IMAGES_PER_PAGE = gridCols * gridRows;
 
-                const pageTotalWidth = orientation === 'landscape' ? A4_WIDTH_PX_LANDSCAPE : A4_HEIGHT_PX_PORTRAIT;
-                const pageTotalHeight = orientation === 'landscape' ? A4_HEIGHT_PX_LANDSCAPE : A4_WIDTH_PX_PORTRAIT;
+                const pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
+                const pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
                 const scaleFactor = canvas.width / pageTotalWidth;
                 
-                // Dimensões e espaçamentos dinâmicos para o layout Retrato
-                const portraitMargin = (A4_HEIGHT_PX_PORTRAIT - (3 * IMAGE_WIDTH_PX)) / 4;
-                const portraitSpacing = (A4_WIDTH_PX_PORTRAIT - (5 * IMAGE_HEIGHT_PX)) / 6;
-
                 const startImageIndex = pageIndex * IMAGES_PER_PAGE;
                 const endImageIndex = Math.min(startImageIndex + IMAGES_PER_PAGE, uploadedImages.length);
                 const imagesToDraw = uploadedImages.slice(startImageIndex, endImageIndex);
@@ -847,13 +880,8 @@
                         const row = Math.floor(i / gridCols);
                         
                         let xPos, yPos;
-                        if (orientation === 'landscape') {
-                             xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
-                             yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
-                        } else { // portrait
-                            xPos = portraitMargin + col * (IMAGE_WIDTH_PX + portraitMargin);
-                            yPos = portraitSpacing + row * (IMAGE_HEIGHT_PX + portraitSpacing);
-                        }
+                        xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
+                        yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
 
                         // Cria um canvas temporário que funciona como a "máscara"
                         const compositeCanvas = document.createElement('canvas');
@@ -884,22 +912,32 @@
                     const checkReady = () => {
                         imagesLoaded++;
                         if (imagesLoaded === totalImages) {
-                            // Draw background if it exists, using 'cover' logic to fill the box completely
+                            // Draw background if it exists
                             if (imageObject.blurredUrl && imageObject.blurRadius > 0) {
-                                // MODIFICADO: Usar contain para manter a proporção do fundo
                                 const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(bgImg.width, bgImg.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
                                 const bgScale = imageObject.backgroundSize / 100;
                                 const finalBgWidth = drawWidth * bgScale;
                                 const finalBgHeight = drawHeight * bgScale;
-                                // MODIFICADO: Centralizar o fundo
                                 const finalBgOffsetX = offsetX + (drawWidth - finalBgWidth) / 2;
                                 const finalBgOffsetY = offsetY + (drawHeight - finalBgHeight) / 2;
                                 ctx.drawImage(bgImg, finalBgOffsetX, finalBgOffsetY, finalBgWidth, finalBgHeight);
                             }
 
-                            // Draw foreground image using 'contain' logic to prevent cropping
+                            // Draw foreground image with zoom applied
                             const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(img.width, img.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
-                            ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+                            
+                            // Apply zoom if exists
+                            let zoomFactor = 1;
+                            if (imageObject.zoom && imageObject.zoom !== 100) {
+                                zoomFactor = imageObject.zoom / 100;
+                            }
+
+                            const zoomedWidth = drawWidth * zoomFactor;
+                            const zoomedHeight = drawHeight * zoomFactor;
+                            const zoomOffsetX = offsetX - (zoomedWidth - drawWidth) / 2;
+                            const zoomOffsetY = offsetY - (zoomedHeight - drawHeight) / 2;
+
+                            ctx.drawImage(img, zoomOffsetX, zoomOffsetY, zoomedWidth, zoomedHeight);
 
                             // Draw captions
                             drawCaptionsOnCanvas(ctx, imageObject.captions, 0, 0, 1);
@@ -908,10 +946,10 @@
                     };
 
                     img.onload = checkReady;
-                    img.onerror = resolve; // Resolve even on error to continue the process
+                    img.onerror = resolve;
                     if (totalImages === 2) {
                         bgImg.onload = checkReady;
-                        bgImg.onerror = resolve; // Resolve even on error
+                        bgImg.onerror = resolve;
                     } else {
                         checkReady();
                     }
@@ -922,25 +960,51 @@
             const openEditModal = (image) => {
                 editModal.classList.remove('hidden');
 
-                // Load existing captions and blur data
+                // Load existing data
                 const existingCaptions = image.captions || [];
                 image.tempCaptions = JSON.parse(JSON.stringify(existingCaptions));
                 image.tempBlurRadius = image.blurRadius;
                 image.tempBackgroundSize = image.backgroundSize;
-                image.tempCrop = JSON.parse(JSON.stringify(image.crop));
+                image.tempZoom = image.zoom || 100;
 
                 blurSlider.value = image.tempBlurRadius;
                 blurValueText.textContent = `${image.tempBlurRadius} px`;
                 backgroundSizeSlider.value = image.tempBackgroundSize;
                 backgroundSizeValueText.textContent = `${image.tempBackgroundSize} %`;
+                zoomSlider.value = image.tempZoom;
+                zoomValue.textContent = `${image.tempZoom}%`;
 
                 initialCanvasSize = { width: image.imgElement.width, height: image.imgElement.height };
 
                 // Resize and draw canvas based on container
                 resizeCanvasAndDraw();
 
+                // Create mask lines
+                createMaskLines();
+
                 // Listen for window resize to make the canvas responsive
                 window.addEventListener('resize', resizeCanvasAndDraw);
+            };
+
+            // Create mask lines for the editor
+            const createMaskLines = () => {
+                maskOverlay.innerHTML = '';
+                
+                // Create vertical lines
+                for (let i = 1; i < 4; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'mask-line vertical';
+                    line.style.left = `${(i * 25)}%`;
+                    maskOverlay.appendChild(line);
+                }
+                
+                // Create horizontal lines
+                for (let i = 1; i < 2; i++) {
+                    const line = document.createElement('div');
+                    line.className = 'mask-line horizontal';
+                    line.style.top = `${(i * 50)}%`;
+                    maskOverlay.appendChild(line);
+                }
             };
 
             // Resizes the canvas to fit its container while maintaining aspect ratio
@@ -954,7 +1018,6 @@
                 const imageAspect = image.width / image.height;
                 const containerAspect = containerWidth / containerHeight;
 
-                // MODIFICADO: Manter a proporção da imagem no editor
                 if (containerAspect > imageAspect) {
                     canvasHeight = containerHeight;
                     canvasWidth = canvasHeight * imageAspect;
@@ -968,17 +1031,6 @@
 
                 // Redraw canvas with temp data
                 redrawEditorCanvas();
-
-                if (currentTool === 'crop') {
-                    // Recalculate crop box position
-                    const image = uploadedImages[currentImageIndex];
-                    const storedCrop = image.tempCrop;
-                    const scale = editorCanvas.width / initialCanvasSize.width;
-                    cropBox.style.width = `${storedCrop.width * scale}px`;
-                    cropBox.style.height = `${storedCrop.height * scale}px`;
-                    cropBox.style.left = `${storedCrop.x * scale}px`;
-                    cropBox.style.top = `${storedCrop.y * scale}px`;
-                }
             };
 
             // Redraws the editing canvas based on current state
@@ -986,29 +1038,39 @@
                 editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
                 const image = uploadedImages[currentImageIndex];
 
-                // Lógica de visualização para a ferramenta de "Editar Fundo"
+                // Draw background if needed
                 if (currentTool === 'background' && image.blurredUrl) {
                     const blurredImg = new Image();
                     blurredImg.src = image.blurredUrl;
                     blurredImg.onload = () => {
-                        // MODIFICADO: Manter a proporção da imagem de fundo
                         const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(blurredImg.width, blurredImg.height, editorCanvas.width, editorCanvas.height);
                         const bgScale = image.tempBackgroundSize / 100;
                         const bgWidth = drawWidth * bgScale;
                         const bgHeight = drawHeight * bgScale;
-                        // MODIFICADO: Centralizar o fundo
                         const bgOffsetX = offsetX + (drawWidth - bgWidth) / 2;
                         const bgOffsetY = offsetY + (drawHeight - bgHeight) / 2;
 
-                        // Desenha APENAS a imagem de fundo
                         editorCtx.drawImage(blurredImg, bgOffsetX, bgOffsetY, bgWidth, bgHeight);
                     };
                 } else {
-                    // Para outras ferramentas, desenha a imagem principal e as legendas temporárias
-                    // MODIFICADO: Manter a proporção da imagem principal
+                    // Draw foreground image with zoom applied
                     const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(image.imgElement.width, image.imgElement.height, editorCanvas.width, editorCanvas.height);
-                    editorCtx.drawImage(image.imgElement, offsetX, offsetY, drawWidth, drawHeight);
-                    drawCaptionsOnCanvas(editorCctx, image.tempCaptions, offsetX, offsetY, drawWidth / image.imgElement.width);
+                    
+                    // Apply zoom if exists
+                    let zoomFactor = 1;
+                    if (image.tempZoom && image.tempZoom !== 100) {
+                        zoomFactor = image.tempZoom / 100;
+                    }
+
+                    const zoomedWidth = drawWidth * zoomFactor;
+                    const zoomedHeight = drawHeight * zoomFactor;
+                    const zoomOffsetX = offsetX - (zoomedWidth - drawWidth) / 2;
+                    const zoomOffsetY = offsetY - (zoomedHeight - drawHeight) / 2;
+
+                    editorCtx.drawImage(image.imgElement, zoomOffsetX, zoomOffsetY, zoomedWidth, zoomedHeight);
+                    
+                    // Draw captions
+                    drawCaptionsOnCanvas(editorCtx, image.tempCaptions, offsetX, offsetY, drawWidth / image.imgElement.width);
                 }
             };
 
@@ -1020,9 +1082,7 @@
                     ctx.strokeStyle = caption.outlineColor;
                     ctx.lineWidth = caption.strokeWidth * scale;
                     ctx.lineJoin = 'round';
-                    // Para o contorno, usamos strokeText
                     ctx.strokeText(caption.text, xOffset + caption.x * scale, yOffset + caption.y * scale);
-                    // Para o preenchimento, usamos fillText
                     ctx.fillText(caption.text, xOffset + caption.x * scale, yOffset + caption.y * scale);
                 });
             };
@@ -1030,10 +1090,9 @@
             // Handles tool selection
             const setTool = (toolName) => {
                 currentTool = toolName;
-                cropControls.classList.add('hidden');
+                zoomControls.classList.add('hidden');
                 captionControls.classList.add('hidden');
                 backgroundControls.classList.add('hidden');
-                cropBox.classList.add('hidden');
 
                 document.querySelectorAll('.tool-btn').forEach(btn => {
                     btn.classList.remove('bg-blue-500', 'text-white');
@@ -1042,12 +1101,19 @@
 
                 const image = uploadedImages[currentImageIndex];
 
-                if (toolName === 'crop') {
-                    cropControls.classList.remove('hidden');
-                    cropBox.classList.remove('hidden');
-                    toolCropBtn.classList.remove('bg-gray-200', 'text-gray-700');
-                    toolCropBtn.classList.add('bg-blue-500', 'text-white');
-                    initCropperInteraction();
+                if (toolName === 'zoom') {
+                    zoomControls.classList.remove('hidden');
+                    toolZoomBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    toolZoomBtn.classList.add('bg-blue-500', 'text-white');
+                    
+                    // Initialize zoom if not exists
+                    if (image.tempZoom === undefined) {
+                        image.tempZoom = 100;
+                    }
+                    zoomSlider.value = image.tempZoom;
+                    zoomValue.textContent = `${image.tempZoom}%`;
+                    
+                    redrawEditorCanvas();
                 } else if (toolName === 'caption') {
                     captionControls.classList.remove('hidden');
                     toolCaptionBtn.classList.remove('bg-gray-200', 'text-gray-700');
@@ -1074,7 +1140,6 @@
                     captionStrokeValueText.textContent = `${image.tempCaptions[0].strokeWidth} px`;
                     captionFontSelect.value = image.tempCaptions[0].font;
                     
-                    // Adiciona event listeners para preview em tempo real
                     addCaptionRealtimePreview();
                     
                     redrawEditorCanvas();
@@ -1083,7 +1148,6 @@
                     toolBackgroundBtn.classList.remove('bg-gray-200', 'text-gray-700');
                     toolBackgroundBtn.classList.add('bg-blue-500', 'text-white');
                     
-                    // Adiciona event listeners para preview em tempo real
                     addBackgroundRealtimePreview();
                     
                     redrawEditorCanvas();
@@ -1133,147 +1197,60 @@
                 });
             };
 
-            toolCropBtn.addEventListener('click', () => setTool('crop'));
+            // Event listeners for tool buttons
+            toolZoomBtn.addEventListener('click', () => setTool('zoom'));
             toolCaptionBtn.addEventListener('click', () => setTool('caption'));
             toolBackgroundBtn.addEventListener('click', () => setTool('background'));
 
-
-            // Cropper interaction
-            const initCropperInteraction = () => {
+            // Event listeners for zoom controls
+            zoomSlider.addEventListener('input', () => {
                 const image = uploadedImages[currentImageIndex];
-                const storedCrop = image.tempCrop;
-                const scale = editorCanvas.width / initialCanvasSize.width;
-                cropBox.style.width = `${storedCrop.width * scale}px`;
-                cropBox.style.height = `${storedCrop.height * scale}px`;
-                cropBox.style.left = `${storedCrop.x * scale}px`;
-                cropBox.style.top = `${storedCrop.y * scale}px`;
-
-                let isResizing = false;
-                let resizeHandle;
-
-                const onMouseDown = (e) => {
-                    e.preventDefault();
-                    if (e.target.classList.contains('handle')) {
-                        isResizing = true;
-                        resizeHandle = e.target;
-                    } else {
-                        isDragging = true;
-                        dragStartX = e.clientX - cropBox.getBoundingClientRect().left;
-                        dragStartY = e.clientY - cropBox.getBoundingClientRect().top;
-                    }
-                };
-                const onMouseMove = (e) => {
-                    if (isDragging) {
-                        let newX = e.clientX - dragStartX;
-                        let newY = e.clientY - dragStartY;
-                        const editorRect = editorCanvas.getBoundingClientRect();
-                        newX = Math.max(0, Math.min(newX, editorRect.width - cropBox.offsetWidth));
-                        newY = Math.max(0, Math.min(newY, editorRect.offsetHeight - cropBox.offsetHeight));
-                        cropBox.style.left = `${newX}px`;
-                        cropBox.style.top = `${newY}px`;
-                    } else if (isResizing) {
-                        const rect = cropBox.getBoundingClientRect();
-                        const editorRect = editorCanvas.getBoundingClientRect();
-                        let newWidth = rect.width;
-                        let newHeight = rect.height;
-                        let newLeft = rect.left;
-                        let newTop = rect.top;
-                        if (resizeHandle.classList.contains('handle-br')) {
-                            newWidth = e.clientX - newLeft;
-                            newHeight = e.clientY - newTop;
-                        } else if (resizeHandle.classList.contains('handle-bl')) {
-                            newWidth = (rect.left + rect.width) - e.clientX;
-                            newHeight = e.clientY - newTop;
-                            newLeft = e.clientX;
-                        } else if (resizeHandle.classList.contains('handle-tr')) {
-                            newWidth = e.clientX - newLeft;
-                            newHeight = (rect.top + rect.height) - e.clientY;
-                            newTop = e.clientY;
-                        } else if (resizeHandle.classList.contains('handle-tl')) {
-                            newWidth = (rect.left + rect.width) - e.clientX;
-                            newHeight = (rect.top + rect.height) - e.clientY;
-                            newLeft = e.clientX;
-                            newTop = e.clientY;
-                        }
-                        newWidth = Math.max(12, newWidth);
-                        newHeight = Math.max(12, newHeight);
-                        newLeft = Math.max(editorRect.left, Math.min(newLeft, editorRect.right - newWidth));
-                        newTop = Math.max(editorRect.top, Math.min(newTop, editorRect.bottom - newHeight));
-                        cropBox.style.width = `${newWidth}px`;
-                        cropBox.style.height = `${newHeight}px`;
-                        cropBox.style.left = `${newLeft - editorRect.left}px`;
-                        cropBox.style.top = `${newTop - editorRect.top}px`;
-                    }
-                };
-                const onMouseUp = () => { isDragging = false; isResizing = false; };
-                cropBox.addEventListener('mousedown', onMouseDown);
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-            };
-
-            // --- Lógica para arrastar e editar legendas ---
-
-            // Variável para rastrear a legenda sendo arrastada
-            let draggedCaption = null;
-            let captionDragStart = { x: 0, y: 0 };
-
-            // Evento para começar a arrastar a legenda
-            editorCanvas.addEventListener('mousedown', (e) => {
-                const rect = editorCanvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-
-                if (currentTool !== 'caption') return;
-
-                const tempCaptions = uploadedImages[currentImageIndex].tempCaptions;
-                const scale = initialCanvasSize.width / editorCanvas.width;
-
-                draggedCaption = null;
-                // Encontra a legenda mais acima que foi clicada
-                for (let i = tempCaptions.length - 1; i >= 0; i--) {
-                    const caption = tempCaptions[i];
-                    editorCtx.font = `${caption.size / scale}px "${caption.font}"`;
-                    const metrics = editorCtx.measureText(caption.text);
-                    const textWidth = metrics.width;
-                    const textHeight = caption.size / scale;
-
-                    // Verifica se o clique está dentro dos limites do texto
-                    if (mouseX >= caption.x / scale && mouseX <= (caption.x / scale + textWidth) &&
-                        mouseY >= (caption.y - textHeight) / scale && mouseY <= caption.y / scale) {
-
-                        draggedCaption = caption;
-                        captionDragStart.x = mouseX - caption.x / scale;
-                        captionDragStart.y = mouseY - caption.y / scale;
-                        break;
-                    }
-                }
-            });
-
-            // Evento para mover a legenda
-            editorCanvas.addEventListener('mousemove', (e) => {
-                if (!draggedCaption || currentTool !== 'caption') return;
-
-                const rect = editorCanvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-
-                const scale = initialCanvasSize.width / editorCanvas.width;
-
-                draggedCaption.x = (mouseX - captionDragStart.x) * scale;
-                draggedCaption.y = (mouseY - captionDragStart.y) * scale;
-
+                image.tempZoom = parseInt(zoomSlider.value);
+                zoomValue.textContent = `${image.tempZoom}%`;
                 redrawEditorCanvas();
             });
 
-            // Evento para parar de arrastar a legenda
-            editorCanvas.addEventListener('mouseup', () => {
-                draggedCaption = null;
+            zoomInBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempZoom = Math.min(parseInt(image.tempZoom) + 10, 300);
+                zoomSlider.value = image.tempZoom;
+                zoomValue.textContent = `${image.tempZoom}%`;
+                redrawEditorCanvas();
+            });
+
+            zoomOutBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempZoom = Math.max(parseInt(image.tempZoom) - 10, 50);
+                zoomSlider.value = image.tempZoom;
+                zoomValue.textContent = `${image.tempZoom}%`;
+                redrawEditorCanvas();
+            });
+
+            zoomResetBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempZoom = 100;
+                zoomSlider.value = image.tempZoom;
+                zoomValue.textContent = `${image.tempZoom}%`;
+                redrawEditorCanvas();
+            });
+
+            saveZoomBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.zoom = image.tempZoom;
+                setTool(null);
+                renderImages();
+            });
+
+            discardZoomBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempZoom = image.zoom || 100;
+                redrawEditorCanvas();
+                setTool(null);
             });
 
             // Applies the blur effect and updates the image data
             const applyBlur = (imageElement, imageObject, blurRadius) => {
                 const tempCanvas = document.createElement('canvas');
-                // The canvas for the blurred background is sized to prevent white borders
                 tempCanvas.width = imageElement.width + BLUR_PADDING;
                 tempCanvas.height = imageElement.height + BLUR_PADDING;
                 const ctx = tempCanvas.getContext('2d');
@@ -1283,38 +1260,6 @@
             };
 
             // Save and Discard actions for each tool
-            saveCropBtn.addEventListener('click', () => {
-                const image = uploadedImages[currentImageIndex];
-                const rect = cropBox.getBoundingClientRect();
-                const editorRect = editorCanvas.getBoundingClientRect();
-                const scale = image.imgElement.width / editorRect.width;
-
-                const newCrop = {
-                    x: (rect.left - editorRect.left) * scale,
-                    y: (rect.top - editorRect.top) * scale,
-                    width: rect.width * scale,
-                    height: rect.height * scale
-                };
-
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = newCrop.width;
-                tempCanvas.height = newCrop.height;
-                const ctx = tempCanvas.getContext('2d');
-                ctx.drawImage(image.imgElement, newCrop.x, newCrop.y, newCrop.width, newCrop.height, 0, 0, newCrop.width, newCrop.height);
-                image.croppedUrl = tempCanvas.toDataURL('image/png');
-                image.crop = newCrop;
-
-                setTool(null);
-                renderImages();
-            });
-
-            discardCropBtn.addEventListener('click', () => {
-                const image = uploadedImages[currentImageIndex];
-                image.tempCrop = JSON.parse(JSON.stringify(image.crop));
-                setTool(null);
-                redrawEditorCanvas();
-            });
-
             saveCaptionBtn.addEventListener('click', () => {
                 const image = uploadedImages[currentImageIndex];
                 image.captions = JSON.parse(JSON.stringify(image.tempCaptions));
@@ -1351,14 +1296,13 @@
             backBtn.addEventListener('click', () => {
                 editModal.classList.add('hidden');
                 window.removeEventListener('resize', resizeCanvasAndDraw);
-                renderImages(); // Re-render gallery with original state
+                renderImages();
             });
 
             // Event listener for image upload
             imageUpload.addEventListener('change', (event) => {
                 const files = event.target.files;
                 if (files.length > 0) {
-                    // Mostra o overlay de carregamento
                     loadingOverlay.classList.remove('hidden');
                     loadingText.textContent = 'Carregando imagens...';
                     
@@ -1366,7 +1310,6 @@
                     const totalFiles = files.length;
                     
                     Array.from(files).forEach(file => {
-                        // Verifica se o arquivo é uma imagem
                         if (!file.type.match('image.*')) {
                             loadedCount++;
                             if (loadedCount === totalFiles) {
@@ -1376,7 +1319,6 @@
                             return;
                         }
                         
-                        // Verifica o tamanho do arquivo (limite de 10MB)
                         if (file.size > 10 * 1024 * 1024) {
                             loadedCount++;
                             if (loadedCount === totalFiles) {
@@ -1395,12 +1337,10 @@
                                 let imgWidth = img.width;
                                 let imgHeight = img.height;
 
-                                // Verifica a condição para rotação (largura >= altura + 250px)
                                 if (imgWidth - imgHeight >= 250) {
                                     const canvas = document.createElement('canvas');
                                     const ctx = canvas.getContext('2d');
                                     
-                                    // Troca as dimensões para a rotação
                                     canvas.width = imgHeight;
                                     canvas.height = imgWidth;
                                     
@@ -1412,8 +1352,6 @@
                                     processedImg.src = canvas.toDataURL('image/png');
                                     
                                     isRotated = true;
-                                    
-                                    // A imagem rotacionada tem as dimensões invertidas
                                     imgWidth = processedImg.width;
                                     imgHeight = processedImg.height;
                                 }
@@ -1427,17 +1365,16 @@
                                     blurredUrl: null,
                                     blurRadius: DEFAULT_BLUR,
                                     backgroundSize: DEFAULT_BG_SIZE,
+                                    zoom: 100,
                                     captions: [],
                                     isRotated: isRotated,
                                     tempCaptions: [],
                                     tempBlurRadius: DEFAULT_BLUR,
                                     tempBackgroundSize: DEFAULT_BG_SIZE,
-                                    tempCrop: { x: 0, y: 0, width: imgWidth, height: imgHeight },
+                                    tempZoom: 100,
                                 };
-                                // Aplica o desfoque padrão
                                 applyBlur(processedImg, newImage, DEFAULT_BLUR);
                                 
-                                // Adiciona as fotos rotacionadas no início do array, e as outras no final
                                 if (newImage.isRotated) {
                                     uploadedImages.unshift(newImage);
                                 } else {
@@ -1486,7 +1423,6 @@
                 const IMAGES_PER_PAGE = 8;
                 const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
 
-                // Mostra/esconde os botões de navegação
                 if (totalPages > 1) {
                     fullPreviewNav.classList.remove('hidden');
                     prevPageBtn.disabled = currentPageIndex === 0;
@@ -1497,7 +1433,6 @@
                 
                 pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
 
-                // Mostra overlay de carregamento
                 loadingOverlay.classList.remove('hidden');
                 loadingText.textContent = 'Gerando pré-visualização...';
 
@@ -1538,7 +1473,7 @@
                             drawPromiseChain.then(() => {
                                 const previewImage = new Image();
                                 previewImage.src = previewCanvas.toDataURL('image/png');
-                                previewImage.className = 'preview-page w-full h-auto mb-4 border border-gray-300 rounded-lg shadow-md';
+                                previewImage.className = 'preview-page';
                                 fullPreviewArea.appendChild(previewImage);
                                 resolvePage();
                             });
@@ -1548,10 +1483,6 @@
                 
                 renderPromiseChain.then(() => {
                     loadingOverlay.classList.add('hidden');
-                    
-                    // Scroll para a página atual
-                    const scrollDistance = fullPreviewArea.offsetWidth * currentPageIndex;
-                    fullPreviewArea.scrollTo({ left: scrollDistance, behavior: 'smooth' });
                 });
             });
 
@@ -1564,8 +1495,6 @@
                 const totalPages = Math.ceil(uploadedImages.length / 8);
                 if (currentPageIndex > 0) {
                     currentPageIndex--;
-                    const scrollDistance = fullPreviewArea.offsetWidth * currentPageIndex;
-                    fullPreviewArea.scrollTo({ left: scrollDistance, behavior: 'smooth' });
                     pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
                     nextPageBtn.disabled = false;
                     if (currentPageIndex === 0) {
@@ -1578,8 +1507,6 @@
                 const totalPages = Math.ceil(uploadedImages.length / 8);
                 if (currentPageIndex < totalPages - 1) {
                     currentPageIndex++;
-                    const scrollDistance = fullPreviewArea.offsetWidth * currentPageIndex;
-                    fullPreviewArea.scrollTo({ left: scrollDistance, behavior: 'smooth' });
                     pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
                     prevPageBtn.disabled = false;
                     if (currentPageIndex === totalPages - 1) {
@@ -1588,33 +1515,22 @@
                 }
             });
 
-
             // Common export function
             const exportDocument = (orientation, format) => {
-                let gridCols, gridRows, pageTotalWidth, pageTotalHeight;
-                if (orientation === 'landscape') {
-                    gridCols = 4;
-                    gridRows = 2;
-                    pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
-                    pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
-                } else { // Portrait
-                    gridCols = 3;
-                    gridRows = 5;
-                    pageTotalWidth = A4_HEIGHT_PX_PORTRAIT;
-                    pageTotalHeight = A4_WIDTH_PX_PORTRAIT;
-                }
+                let gridCols = 4;
+                let gridRows = 2;
+                let pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
+                let pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
+                
                 const IMAGES_PER_PAGE = gridCols * gridRows;
                 const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
 
-                // Mostra overlay de carregamento
                 loadingOverlay.classList.remove('hidden');
                 loadingText.textContent = `Gerando ${format.toUpperCase()}... Por favor, aguarde.`;
                 
                 statusMessage.textContent = `Gerando ${format.toUpperCase()}... Por favor, aguarde.`;
                 exportLandscapeBtn.disabled = true;
                 exportLandscapeJpgBtn.disabled = true;
-                exportPortraitBtn.disabled = true;
-                exportPortraitJpgBtn.disabled = true;
 
                 const doc = (format === 'pdf') ? new jsPDF({
                     orientation: orientation,
@@ -1632,8 +1548,6 @@
                         statusMessage.textContent = `${format.toUpperCase()} gerado com sucesso!`;
                         exportLandscapeBtn.disabled = false;
                         exportLandscapeJpgBtn.disabled = false;
-                        exportPortraitBtn.disabled = false;
-                        exportPortraitJpgBtn.disabled = false;
                         loadingOverlay.classList.add('hidden');
                         return;
                     }
@@ -1655,16 +1569,8 @@
                             const col = imageInPageIndex % gridCols;
                             const row = Math.floor(imageInPageIndex / gridCols);
                             
-                            let xPos, yPos;
-                            if (orientation === 'landscape') {
-                                xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
-                                yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
-                            } else { // portrait
-                                const portraitMargin = (A4_HEIGHT_PX_PORTRAIT - (3 * IMAGE_WIDTH_PX)) / 4;
-                                const portraitSpacing = (A4_WIDTH_PX_PORTRAIT - (5 * IMAGE_HEIGHT_PX)) / 6;
-                                xPos = portraitMargin + col * (IMAGE_WIDTH_PX + portraitMargin);
-                                yPos = portraitSpacing + row * (IMAGE_HEIGHT_PX + portraitSpacing);
-                            }
+                            let xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
+                            let yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
 
                             const compositeCanvas = document.createElement('canvas');
                             compositeCanvas.width = IMAGE_WIDTH_PX;
@@ -1679,11 +1585,11 @@
                     }
 
                     drawPromiseChain.then(() => {
-                        const dataUrl = pageCanvas.toDataURL(`image/${format}`, 1.0);
+                        const dataUrl = pageCanvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : 'png'}`, 1.0);
                         if (format === 'pdf') {
                             if (pageIndex > 0) doc.addPage();
                             doc.addImage(dataUrl, 'PNG', 0, 0, pageTotalWidth, pageTotalHeight);
-                        } else { // jpg
+                        } else {
                             const link = document.createElement('a');
                             link.href = dataUrl;
                             link.download = `documento_imagens_${orientation}_pagina_${pageIndex + 1}.jpg`;
@@ -1697,8 +1603,6 @@
                         statusMessage.textContent = `Erro ao carregar uma imagem para exportação.`;
                         exportLandscapeBtn.disabled = false;
                         exportLandscapeJpgBtn.disabled = false;
-                        exportPortraitBtn.disabled = false;
-                        exportPortraitJpgBtn.disabled = false;
                         loadingOverlay.classList.add('hidden');
                     });
                 }
@@ -1708,18 +1612,8 @@
             // Event listeners for the export buttons
             exportLandscapeBtn.addEventListener('click', () => exportDocument('landscape', 'pdf'));
             exportLandscapeJpgBtn.addEventListener('click', () => exportDocument('landscape', 'jpg'));
-            exportPortraitBtn.addEventListener('click', () => exportDocument('portrait', 'pdf'));
-            exportPortraitJpgBtn.addEventListener('click', () => exportDocument('portrait', 'jpg'));
 
             // Event listeners for the new modal export buttons
-            modalExportPortraitBtn.addEventListener('click', () => {
-                exportDocument('portrait', 'pdf');
-                fullPreviewModal.classList.add('hidden');
-            });
-            modalExportPortraitJpgBtn.addEventListener('click', () => {
-                exportDocument('portrait', 'jpg');
-                fullPreviewModal.classList.add('hidden');
-            });
             modalExportLandscapeBtn.addEventListener('click', () => {
                 exportDocument('landscape', 'pdf');
                 fullPreviewModal.classList.add('hidden');
@@ -1729,158 +1623,51 @@
                 fullPreviewModal.classList.add('hidden');
             });
 
-
-            // --- Carousel de Dicas - CORRIGIDO ---
-            const tips = [
-                {
-                    title: "Dica 1: Organize seu álbum",
-                    description: "Arraste e solte fotos para criar Fotos Polaroids com uma grade de 2x4.",
-                    color: "bg-white-100 text-black-800"
-                },
-                {
-                    title: "Dica 2: Edite o Recorte",
-                    description: "Selecione uma imagem para abrir o editor e use a ferramenta de recorte para focar no que importa.",
-                    color: "bg-white-100 text-Black-800"
-                },
-                {
-                    title: "Dica 3: Adicione Legendas",
-                    description: "Acréscente legendas às suas fotos com diferentes fontes, cores e contornos para um toque especial.",
-                    color: "bg-White-100 text-black-800"
-                },
-                {
-                    title: "Dica 4: Fundo Desfocado",
-                    description: "Use a ferramenta 'Editar Fundo' para desfocar o fundo de suas fotos e destacá-las.",
-                    color: "bg-white-100 text-black-800"
-                },
-                {
-                    title: "Dica 5: Redimensione o Fundo",
-                    description: "Ajuste o controle deslizante para ampliar o fundo e criar um efeito de zoom panorâmico.",
-                    color: "bg-white-100 text-black-800"
-                },
-                {
-                    title: "Dica 6: Salve em JPG",
-                    description: "Você não precisa de um PDF! Salve cada página do seu layout como uma imagem JPG de alta qualidade.",
-                    color: "bg-white-100 text-black-800"
-                },
-                {
-                    title: "Dica 7: Duas Orientações",
-                    description: "Escolha entre os formatos Retrato e Paisagem para exportar seu documento, perfeito para qualquer projeto.",
-                    color: "bg-white-200 text-black-800"
-                },
-                {
-                    title: "Dica 8: Pré-visualização Instantânea",
-                    description: "Visualize seu layout na hora para ver como seu documento final ficará, antes de exportar.",
-                    color: "bg-white-100 text-black-800"
-                },
-                {
-                    title: "Dica 9: Layout Otimizado",
-                    description: "O layout padrão de 2x4 foi otimizado para um aproveitamento máximo da página A4.",
-                    color: "bg-white-100 text-black-800"
-                },
-                {
-                    title: "Dica 10: Limpeza Rápida",
-                    description: "Clique em 'Limpar Tudo' para remover todas as fotos e começar um novo projeto.",
-                    color: "bg-white-100 text-black-800"
-                }
-            ];
-
-            const carouselSlidesContainer = document.getElementById('carousel-slides');
-            const carouselDotsContainer = document.getElementById('carousel-dots');
-            let currentSlideIndex = 0;
-            const totalSlides = tips.length;
-
-            // Cria os slides e os pontos
-            tips.forEach((tip, index) => {
-                const slide = document.createElement('div');
-                slide.className = `carousel-slide ${tip.color}`;
-                slide.innerHTML = `
-                    <h3 class="text-xl font-bold mb-2">${tip.title}</h3>
-                    <p class="text-sm">${tip.description}</p>
-                `;
-                carouselSlidesContainer.appendChild(slide);
-
-                const dot = document.createElement('span');
-                dot.className = "carousel-dot";
-                if (index === 0) dot.classList.add('active-dot');
-                dot.addEventListener('click', () => {
-                    currentSlideIndex = index;
-                    updateCarousel();
-                });
-                carouselDotsContainer.appendChild(dot);
-            });
-
-            // Função para atualizar o carrossel
-            const updateCarousel = () => {
-                carouselSlidesContainer.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-                
-                document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
-                    dot.classList.toggle('active-dot', index === currentSlideIndex);
-                });
-            };
-
-            // Avança para o próximo slide
-            const nextSlide = () => {
-                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-                updateCarousel();
-            };
-
-            // Inicia o carrossel
-            updateCarousel();
-            setInterval(nextSlide, 5000); // Muda de slide a cada 5 segundos
+            // Implementação do Drag & Drop
+            const uploadSectionElement = document.getElementById('upload-section');
             
-            // Adiciona evento de arrastar e soltar para a área de upload
-            uploadSection.addEventListener('dragover', (e) => {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadSectionElement.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
                 e.preventDefault();
-                uploadSection.classList.add('bg-blue-100', 'border-blue-400');
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadSectionElement.addEventListener(eventName, highlight, false);
             });
             
-            uploadSection.addEventListener('dragleave', () => {
-                uploadSection.classList.remove('bg-blue-100', 'border-blue-400');
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadSectionElement.addEventListener(eventName, unhighlight, false);
             });
             
-            uploadSection.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadSection.classList.remove('bg-blue-100', 'border-blue-400');
+            function highlight() {
+                uploadSectionElement.classList.add('drag-over');
+            }
+            
+            function unhighlight() {
+                uploadSectionElement.classList.remove('drag-over');
+            }
+            
+            uploadSectionElement.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
                 
-                if (e.dataTransfer.files.length > 0) {
-                    imageUpload.files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    imageUpload.files = files;
                     const event = new Event('change');
                     imageUpload.dispatchEvent(event);
                 }
-            });
+            }
 
-            // CORREÇÃO: Inicializar o carrossel após o carregamento da página
-            updateCarousel();
+            // Inicialização da aplicação
+            updateExportButtonState();
         };
     </script>
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(registration => {
-                    console.log('Service Worker registrado com sucesso:', registration);
-                })
-                .catch(error => {
-                    console.log('Falha ao registrar o Service Worker:', error);
-                });
-        });
-    }
-</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
