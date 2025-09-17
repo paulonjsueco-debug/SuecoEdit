@@ -14,26 +14,237 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
         .hero-section {
             background: linear-gradient(to bottom, #60a5fa, #3b82f6);
             border-bottom-left-radius: 50px;
             border-bottom-right-radius: 50px;
-            padding: 4rem 2rem;
+            padding: 3rem 2rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             text-align: center;
         }
         .icon-gradient-bg {
             background: linear-gradient(to bottom, #60a5fa, #3b82f6);
         }
+        
+        /* Estilos para a seção de dicas */
+        .tips-section {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tip-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tip-icon {
+            font-size: 1.75rem;
+            color: #3b82f6;
+            margin-bottom: 0.75rem;
+        }
+        
+        .tip-title {
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .tip-content {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        /* Estilos para os serviços */
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .service-item {
+            cursor: pointer;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .service-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .service-box {
+            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            aspect-ratio: 1/1;
+        }
+        
+        .service-icon {
+            font-size: 1.75rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Rodapé */
+        .footer {
+            background: linear-gradient(to bottom, #3b82f6, #2563eb);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+            width: 100%;
+        }
+        
+        @media (min-width: 480px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.25rem;
+            }
+            
+            .service-box {
+                padding: 1.5rem;
+            }
+            
+            .service-icon {
+                font-size: 2rem;
+            }
+            
+            .service-title {
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (min-width: 640px) {
+            .tips-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.5rem;
+            }
+            
+            .service-box {
+                padding: 1.75rem;
+            }
+            
+            .service-icon {
+                font-size: 2.25rem;
+            }
+            
+            .service-title {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .services-grid {
+                gap: 2rem;
+            }
+            
+            .service-box {
+                padding: 2rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .tips-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .services-grid {
+                max-width: 1000px;
+                margin: 2rem auto;
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .tips-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            
+            .service-box {
+                padding: 1rem;
+            }
+            
+            .service-icon {
+                font-size: 1.5rem;
+            }
+            
+            .service-title {
+                font-size: 0.8rem;
+            }
+            
+            .hero-section {
+                padding: 2rem 1rem;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.75rem;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center">
+<body class="bg-gray-100 text-gray-800">
 
-    <div class="flex items-center gap-3 p-4 bg-white shadow-md">   <!-- AQUIIIIIIIIIII AQUIIIIIIII LOGO EM CIMA-->
+   <div class="flex justify-center items-center gap-3 p-4 bg-white shadow-md">
   <img src="favicon.png" alt="Logo" class="w-8 h-8">
   <h1 class="text-xl font-bold text-gray-700">SuecoEdit</h1>
-    </div> <!-- ESTE ,A DIREITA,É O CLASS ANTIGO PARA O CABEÇALHO, COLOQUEI FORA DO BODY. class="bg-gray-100 min-h-screen flex flex-col items-center"-->
+</div>
 
     <!-- Cabeçalho -->
     <div class="w-full hero-section">
@@ -42,87 +253,158 @@
     </div>
 
     <!-- Seção principal -->
-    <div class="w-full flex flex-col items-center mt-12 px-4">
+    <div class="w-full flex flex-col items-center mt-8 px-4">
         <h2 class="text-2xl sm:text-3xl font-semibold text-blue-800 mb-2 text-center">Vamos Começar 😎</h2>
-        <div class="text-sm sm:text-base text-gray-600 mb-8 text-center">O que gostarias de Criar?</div>
+        <div class="text-sm sm:text-base text-gray-600 mb-6 text-center">O que gostarias de Criar?</div>
     </div>
 
-    <!-- Atalhos com ícones -->
-    <div class="w-full grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-8 max-w-5xl">
-        
-        <!-- Fotos Polaroides -->
-        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="window.location.href='polaroides.html'"> <!-- Substitua o '#' pelo link da sua página de Fotos Polaroides -->
-            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
-                <i class="fas fa-camera text-white text-3xl sm:text-4xl mb-2"></i>
-                <h3 class="text-sm sm:text-base font-medium text-white">Fotos Polaroides</h3>
+    <!-- Serviços -->
+    <div class="services-container">
+        <div class="services-grid">
+            <!-- Fotos Polaroides -->
+            <div class="service-item" onclick="window.location.href='polaroides.html'">
+                <div class="service-box">
+                    <i class="fas fa-camera service-icon"></i>
+                    <h3 class="service-title">Fotos Polaroides</h3>
+                </div>
             </div>
-        </div>
 
-        <!-- Quadros Personalizados -->
-        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="window.location.href='quadrospersonalizados.html'">
-            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
-                <i class="fas fa-image text-white text-3xl sm:text-4xl mb-2"></i>
-                <h3 class="text-sm sm:text-base font-medium text-white">Quadros Personalizados</h3>
+            <!-- Quadros Personalizados -->
+            <div class="service-item" onclick="window.location.href='quadrospersonalizados.html'">
+                <div class="service-box">
+                    <i class="fas fa-image service-icon"></i>
+                    <h3 class="service-title">Quadros Personalizados</h3>
+                </div>
             </div>
-        </div>
-        
-        <!-- Fotos Tipo Passe -->
-        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
-            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
-                <i class="fas fa-id-card text-white text-3xl sm:text-4xl mb-2"></i>
-                <h3 class="text-sm sm:text-base font-medium text-white">Fotos Tipo Passe</h3>
+            
+            <!-- Fotos Tipo Passe -->
+            <div class="service-item" onclick="showComingSoonModal()">
+                <div class="service-box">
+                    <i class="fas fa-id-card service-icon"></i>
+                    <h3 class="service-title">Fotos Tipo Passe</h3>
+                </div>
             </div>
-        </div>
 
-        <!-- Converter Formato de Imagem -->
-        <div class="cursor-pointer transform hover:scale-105 transition-transform duration-300" onclick="showComingSoonModal()">
-            <div class="icon-gradient-bg rounded-xl shadow-md p-4 sm:p-6 flex flex-col items-center justify-center text-center w-full aspect-square">
-                <i class="fas fa-sync-alt text-white text-3xl sm:text-4xl mb-2"></i>
-                <h3 class="text-sm sm:text-base font-medium text-white">Converter Formato</h3>
+            <!-- Converter Formato de Imagem -->
+            <div class="service-item" onclick="showComingSoonModal()">
+                <div class="service-box">
+                    <i class="fas fa-sync-alt service-icon"></i>
+                    <h3 class="service-title">Converter Formato</h3>
+                </div>
+            </div>
+            
+            <!-- Novos serviços adicionados -->
+            <!-- Design de Logotipos -->
+            <div class="service-item" onclick="showComingSoonModal()">
+                <div class="service-box">
+                    <i class="fas fa-pencil-alt service-icon"></i>
+                    <h3 class="service-title">Design de Logotipos</h3>
+                </div>
+            </div>
+            
+            <!-- Cartões de Visita -->
+            <div class="service-item" onclick="showComingSoonModal()">
+                <div class="service-box">
+                    <i class="fas fa-address-card service-icon"></i>
+                    <h3 class="service-title">Cartões de Visita</h3>
+                </div>
+            </div>
+            
+            <!-- Panfletos e Flyers -->
+            <div class="service-item" onclick="showComingSoonModal()">
+                <div class="service-box">
+                    <i class="fas fa-newspaper service-icon"></i>
+                    <h3 class="service-title">Panfletos e Flyers</h3>
+                </div>
+            </div>
+            
+            <!-- Convites Personalizados -->
+            <div class="service-item" onclick="showComingSoonModal()">
+                <div class="service-box">
+                    <i class="fas fa-envelope-open-text service-icon"></i>
+                    <h3 class="service-title">Convites Personalizados</h3>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Seção de Dicas (Carrossel) -->
-    <div class="max-w-xl mx-auto mt-12 mb-8 px-4 relative">
-        <h2 class="text-xl sm:text-2xl font-semibold text-blue-800 mb-4 text-center">Dicas SuecoEdit</h2>
-        <div id="carousel-container" class="relative overflow-hidden rounded-xl shadow-md">
-            <div id="carousel-cards" class="flex transition-transform duration-300 ease-in-out">
-                <!-- Dica 1 -->
-                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
-                    <h4 class="font-bold text-gray-800 mb-1">Dica de Polaroid</h4>
-                    <p class="text-sm text-gray-600">Para fotos mais autênticas, use filtros com cores quentes.</p>
+    <!-- Seção de Dicas -->
+    <div class="tips-section">
+        <h2 class="text-xl sm:text-2xl font-semibold text-blue-800 mb-4 text-center">Vantagens do SuecoEdit</h2>
+        
+        <div class="tips-grid">
+            <!-- Dica 1 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-globe"></i>
                 </div>
-                <!-- Dica 2 -->
-                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
-                    <h4 class="font-bold text-gray-800 mb-1">Moldura Perfeita</h4>
-                    <p class="text-sm text-gray-600">Siga as proporções 3:4 para um enquadramento ideal.</p>
+                <h3 class="tip-title">Edição em Qualquer Lugar</h3>
+                <p class="tip-content">Trabalhe de casa ou de qualquer lugar com nossa plataforma online.</p>
+            </div>
+            
+            <!-- Dica 2 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-brain"></i>
                 </div>
-                <!-- Dica 3 -->
-                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
-                    <h4 class="font-bold text-gray-800 mb-1">Iluminação</h4>
-                    <p class="text-sm text-gray-600">Aproveite a luz natural para evitar sombras indesejadas.</p>
+                <h3 class="tip-title">Interface Intuitiva</h3>
+                <p class="tip-content">Fácil de usar, mesmo para iniciantes em edição de imagens.</p>
+            </div>
+            
+            <!-- Dica 3 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-bolt"></i>
                 </div>
-                <!-- Dica 4 -->
-                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
-                    <h4 class="font-bold text-gray-800 mb-1">Fundo Simples</h4>
-                    <p class="text-sm text-gray-600">Um fundo liso destaca o objeto principal da foto.</p>
+                <h3 class="tip-title">Processo Rápido</h3>
+                <p class="tip-content">Crie e edite projetos em minutos, sem software complexo.</p>
+            </div>
+            
+            <!-- Dica 4 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-medal"></i>
                 </div>
-                <!-- Dica 5 -->
-                <div class="flex-none w-full p-4 sm:p-6 bg-white cursor-pointer transform transition-transform duration-300 text-center">
-                    <h4 class="font-bold text-gray-800 mb-1">Fotos Panorâmicas</h4>
-                    <p class="text-sm text-gray-600">Mantenha a câmera nivelada para um resultado uniforme.</p>
+                <h3 class="tip-title">Qualidade Profissional</h3>
+                <p class="tip-content">Resultados com alta resolução para impressão profissional.</p>
+            </div>
+            
+            <!-- Dica 5 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-palette"></i>
                 </div>
+                <h3 class="tip-title">Diversos Modelos</h3>
+                <p class="tip-content">Templates pré-prontos para polaroides, quadros e mais.</p>
+            </div>
+            
+            <!-- Dica 6 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <h3 class="tip-title">Personalização Total</h3>
+                <p class="tip-content">Altere textos, cores e elementos conforme sua necessidade.</p>
+            </div>
+            
+            <!-- Dica 7 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-save"></i>
+                </div>
+                <h3 class="tip-title">Salvamento Automático</h3>
+                <p class="tip-content">Seu trabalho é salvo automaticamente, evitando perdas.</p>
+            </div>
+            
+            <!-- Dica 8 -->
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <i class="fas fa-file-export"></i>
+                </div>
+                <h3 class="tip-title">Formatos Variados</h3>
+                <p class="tip-content">Exporte nos formatos JPG, PNG, PDF e muito mais.</p>
             </div>
         </div>
-        
-        <!-- Botões de Navegação do Carrossel -->
-        <button id="prev-btn" class="absolute top-1/2 left-0 -mt-2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors z-10 -ml-2">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button id="next-btn" class="absolute top-1/2 right-0 -mt-2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors z-10 -mr-2">
-            <i class="fas fa-chevron-right"></i>
-        </button>
     </div>
 
     <!-- Modal "Em Breve" -->
@@ -136,6 +418,12 @@
         </div>
     </div>
 
+    <!-- Rodapé -->
+    <footer class="footer">
+        <p>&copy; 2023 SuecoEdit - Todos os direitos reservados</p>
+        <p class="mt-2">Desenvolvido por <strong>Paulo Sueco</strong></p>
+    </footer>
+
     <script>
         // Funções para mostrar/ocultar o modal
         function showComingSoonModal() {
@@ -145,79 +433,21 @@
         function hideComingSoonModal() {
             document.getElementById('coming-soon-modal').classList.add('hidden');
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const carouselContainer = document.getElementById('carousel-container');
-            const carouselCards = document.getElementById('carousel-cards');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const cards = Array.from(carouselCards.children);
-            let currentIndex = 0;
-            let intervalId;
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            function updateCarousel() {
-                const offset = -currentIndex * 100;
-                carouselCards.style.transform = `translateX(${offset}%)`;
-            }
-
-            function startInterval() {
-                intervalId = setInterval(() => {
-                    nextBtn.click();
-                }, 2000);
-            }
-
-            function stopInterval() {
-                clearInterval(intervalId);
-            }
-
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex > 0) ? currentIndex - 1 : cards.length - 1;
-                updateCarousel();
-            });
-
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex < cards.length - 1) ? currentIndex + 1 : 0;
-                updateCarousel();
-            });
-
-            // Lidar com a interação do mouse para pausar o carrossel
-            carouselContainer.addEventListener('mouseenter', stopInterval);
-            carouselContainer.addEventListener('mouseleave', startInterval);
-
-            // Lidar com gestos de toque para navegação
-            carouselContainer.addEventListener('touchstart', (e) => {
-                stopInterval();
-                touchStartX = e.changedTouches[0].screenX;
-            });
-
-            carouselContainer.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-                startInterval();
-            });
-
-            function handleSwipe() {
-                const swipeThreshold = 50; // Mínimo de pixels para deslizar
-                if (touchEndX < touchStartX - swipeThreshold) {
-                    // Deslizar para a esquerda
-                    nextBtn.click();
-                } else if (touchEndX > touchStartX + swipeThreshold) {
-                    // Deslizar para a direita
-                    prevBtn.click();
-                }
-            }
+        
+        // Melhorar a interatividade em dispositivos móveis
+        document.addEventListener('DOMContentLoaded', function() {
+            const serviceItems = document.querySelectorAll('.service-item');
             
-            // Inicia o carrossel ao carregar a página
-            startInterval();
+            serviceItems.forEach(item => {
+                item.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                item.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
