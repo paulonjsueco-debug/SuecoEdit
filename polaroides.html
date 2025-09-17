@@ -332,7 +332,7 @@
             </div>
 
             <!-- Controles do layout de imagens -->
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4" mx-auto>
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4" mx-auto">
                 <h2 class="text-xl font-bold">Imagens Carregadas</h2>
                 <button id="clear-all-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors transform hover:scale-105 w-full sm:w-auto">
                     Limpar Tudo
@@ -356,8 +356,7 @@
                 <!-- Visualização da Folha A4 em Mosaico -->
                 <div class="p-4 bg-gray-50 rounded-xl shadow-inner">
                     <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-lg font-bold">Pré-visualização (Mosaico)</h2>
-                        <span class="text-sm font-semibold text-blue-600">Zoom: 100%</span>
+                        <h2 class="text-lg font-bold">Pré-visualização</h2>
                     </div>
                     <div id="preview-gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <!-- O mosaico de pré-visualizações será adicionado aqui via JavaScript -->
@@ -367,16 +366,6 @@
 
             <!-- Botões de Exportar e Pré-visualização -->
             <div class="flex flex-col md:flex-row flex-wrap justify-center gap-3 mt-6">
-                <div class="flex flex-wrap justify-center gap-3">
-                    <button id="export-portrait-btn" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg text-sm shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
-                        Gerar PDF (Retrato)
-                        <span class="tooltip-text">Exportar em formato PDF no modo retrato</span>
-                    </button>
-                    <button id="export-portrait-jpg-btn" class="bg-green-500 text-white font-bold py-2 px-4 rounded-lg text-sm shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
-                        Gerar JPG (Retrato)
-                        <span class="tooltip-text">Exportar em formato JPG no modo retrato</span>
-                    </button>
-                </div>
                 <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
                     Pré-visualização de Exportação
                     <span class="tooltip-text">Visualizar todas as páginas antes de exportar</span>
@@ -1886,6 +1875,7 @@
 </script>
 </body>
 </html>
+
 
 
 
