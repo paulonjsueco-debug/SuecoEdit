@@ -13,19 +13,9 @@
     <!-- Font Awesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos anteriores mantidos */
-        @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Cinzel:wght@400..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+        /* Estilos personalizados */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
         
-        @font-face {
-            font-family: 'Valentine Baby';
-            src: url('https://fonts.cdnfonts.com/s/72225/Valentine Baby.woff') format('woff');
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -319,13 +309,6 @@
             border: 0;
         }
         
-        /* Melhorias para os controles de legenda */
-        .caption-preview {
-            position: absolute;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
         /* Manter proporção da imagem */
         .maintain-aspect-ratio {
             object-fit: contain;
@@ -352,56 +335,11 @@
             font-weight: bold;
         }
         
-        /* Novos estilos para o editor de legendas */
-        .caption-editable {
-            position: absolute;
-            cursor: move;
-            user-select: none;
-            z-index: 20;
-            padding: 5px;
-            border: 1px dashed transparent;
-        }
-        
-        .caption-editable:hover {
-            border-color: #3b82f6;
-        }
-        
-        .caption-editable.selected {
-            border-color: #3b82f6;
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-        
-        .caption-controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .caption-control-group {
-            display: flex;
-            flex-direction: column;
-            min-width: 120px;
-        }
-        
-        .color-preview {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        
         .drawing-canvas {
             position: absolute;
             top: 0;
             left: 0;
             z-index: 15;
-        }
-        
-        .drawing-controls {
-            display: flex;
-            gap: 10px;
-            margin: 10px 0;
         }
         
         .grid-option {
@@ -411,6 +349,12 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         .grid-option:hover {
@@ -425,15 +369,15 @@
         
         .grid-preview {
             width: 100%;
-            height: 100px;
+            height: 60px;
             display: grid;
-            gap: 5px;
-            margin-bottom: 10px;
+            gap: 3px;
+            margin-bottom: 5px;
         }
         
         .grid-preview-cell {
             background-color: #3b82f6;
-            border-radius: 3px;
+            border-radius: 2px;
         }
         
         /* Estilos para as opções de grade */
@@ -500,13 +444,64 @@
         .reset-btn:hover {
             background-color: #dc2626;
         }
+        
+        /* Estilos para botões menores e melhor organização */
+        .compact-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+        }
+        
+        .tool-btn {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            margin: 0.1rem;
+            min-width: 80px;
+        }
+        
+        /* Layout reorganizado para edição */
+        .editor-layout {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .editor-image-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+        
+        .editor-controls-area {
+            width: 320px;
+            padding: 1rem;
+            overflow-y: auto;
+            border-left: 1px solid #e5e7eb;
+        }
+        
+        @media (max-width: 1024px) {
+            .editor-layout {
+                flex-direction: column;
+            }
+            
+            .editor-controls-area {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid #e5e7eb;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
     <div class="flex items-center gap-3 p-4 bg-white shadow-md">
-        <img src="favicon.png" alt="Logo" class="w-8 h-8">
+     <a href="index.html">
+         <img src="favicon.png" alt="Logo" class="w-8 h-8">
         <h1 class="text-xl font-bold text-gray-700">SuecoEdit</h1>
+     </a> 
     </div>
     
     <!-- Início do código da aplicação SuecoEdit -->
@@ -536,7 +531,7 @@
         <!-- Controles do layout de imagens -->
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
             <h2 class="text-xl font-bold text-gray-800">Imagens Carregadas</h2>
-            <button id="clear-all-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors transform hover:scale-105 w-full sm:w-auto">
+            <button id="clear-all-btn" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors transform hover:scale-105 w-full sm:w-auto compact-btn">
                 Limpar Tudo
             </button>
         </div>
@@ -573,7 +568,7 @@
                                 <div class="grid-preview-cell"></div>
                                 <div class="grid-preview-cell"></div>
                             </div>
-                            <span>2x4</span>
+                            <span class="text-sm">2x4</span>
                         </div>
                         
                         <div class="grid-option" data-grid="2x2">
@@ -583,7 +578,7 @@
                                 <div class="grid-preview-cell"></div>
                                 <div class="grid-preview-cell"></div>
                             </div>
-                            <span>2x2</span>
+                            <span class="text-sm">2x2</span>
                         </div>
                         
                         <div class="grid-option" data-grid="1x2">
@@ -591,7 +586,7 @@
                                 <div class="grid-preview-cell"></div>
                                 <div class="grid-preview-cell"></div>
                             </div>
-                            <span>1x2</span>
+                            <span class="text-sm">1x2</span>
                         </div>
 
                         <div class="grid-option" data-grid="3x3">
@@ -606,7 +601,7 @@
                                 <div class="grid-preview-cell"></div>
                                 <div class="grid-preview-cell"></div>
                             </div>
-                            <span>3x3</span>
+                            <span class="text-sm">3x3</span>
                         </div>
                     </div>
                 </div>
@@ -625,16 +620,16 @@
 
         <!-- Botões de Exportar e Pré-visualização -->
         <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8">
-            <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
+            <button id="full-preview-btn" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-indigo-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip compact-btn">
                 Pré-visualização de Exportação
                 <span class="tooltip-text">Visualizar todas as páginas antes de exportar</span>
             </button>
             <div class="flex flex-wrap justify-center gap-4">
-                <button id="export-landscape-btn" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
+                <button id="export-landscape-btn" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-blue-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip compact-btn">
                     Gerar PDF
                     <span class="tooltip-text">Exportar em formato PDF no modo paisagem</span>
                 </button>
-                <button id="export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip">
+                <button id="export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg hover:bg-green-600 transition-colors transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed w-full sm:w-auto tooltip compact-btn">
                     Gerar JPG
                     <span class="tooltip-text">Exportar em formato JPG no modo paisagem</span>
                 </button>
@@ -657,9 +652,9 @@
     <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center p-2 sm:p-4 z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
             <!-- Área Principal de Edição e Painel de Ferramentas -->
-            <div class="flex-1 flex flex-col lg:flex-row overflow-hidden p-2 sm:p-0">
-                <!-- Área Principal do Canvas -->
-                <div class="flex-1 flex items-center justify-center relative min-h-[30vh] lg:min-h-96">
+            <div class="flex-1 flex flex-col lg:flex-row overflow-hidden p-2 sm:p-0 editor-layout">
+                <!-- Área Principal do Canvas - ESQUERDA -->
+                <div class="editor-image-area">
                     <div id="editor-area" class="editor-container w-full h-full relative">
                         <canvas id="editor-canvas" class="w-full h-full maintain-aspect-ratio"></canvas>
                         <canvas id="drawing-canvas" class="drawing-canvas"></canvas>
@@ -670,8 +665,8 @@
                     </div>
                 </div>
 
-                <!-- Painel de Controles da Ferramenta -->
-                <div id="tool-controls-container" class="w-full lg:w-96 flex-shrink-0 lg:ml-6 mt-4 lg:mt-0 p-2 border-t lg:border-t-0 lg:border-l border-gray-200 overflow-y-auto">
+                <!-- Painel de Controles da Ferramenta - DIREITA -->
+                <div id="tool-controls-container" class="editor-controls-area">
                     <!-- Controles da Ferramenta de Zoom -->
                     <div id="zoom-controls" class="hidden">
                         <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Zoom</h3>
@@ -697,107 +692,16 @@
                         </div>
                         
                         <div class="flex justify-center space-x-2 mb-4">
-                            <button id="zoom-reset-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
+                            <button id="zoom-reset-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors compact-btn">
                                 Redefinir
                             </button>
                         </div>
                         
                         <div class="flex justify-center lg:justify-end space-x-4 mt-4">
-                            <button id="discard-zoom-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
-                                Descartar Alterações
-                            </button>
-                            <button id="save-zoom-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                Salvar Alterações
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Controles da Ferramenta de Legenda - MODIFICADO -->
-                    <div id="caption-controls" class="hidden">
-                        <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Editor de Legendas</h3>
-                        
-                        <div class="caption-controls">
-                            <div class="caption-control-group">
-                                <label class="text-gray-700 text-sm">Texto:</label>
-                                <textarea id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 realtime-preview" rows="3"></textarea>
-                            </div>
-                            
-                            <div class="caption-control-group">
-                                <label class="text-gray-700 text-sm">Cor do Texto:</label>
-                                <div class="flex items-center gap-2">
-                                    <input type="color" id="caption-color-input" class="mt-1 block h-8 rounded-md border-gray-300 realtime-preview" value="#000000">
-                                    <div class="color-preview" id="text-color-preview" style="background-color: #000000;"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="caption-control-group">
-                                <label class="text-gray-700 text-sm">Cor do Contorno:</label>
-                                <div class="flex items-center gap-2">
-                                    <input type="color" id="caption-outline-color-input" class="mt-1 block h-8 rounded-md border-gray-300 realtime-preview" value="#FFFFFF">
-                                    <div class="color-preview" id="outline-color-preview" style="background-color: #FFFFFF;"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="caption-controls mt-3">
-                            <div class="caption-control-group">
-                                <label class="text-gray-700 text-sm">Tamanho da Fonte:</label>
-                                <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500 realtime-preview">
-                                <p class="text-right text-sm text-gray-500" id="caption-size-value">20 px</p>
-                            </div>
-                            
-                            <div class="caption-control-group">
-                                <label class="text-gray-700 text-sm">Espessura do Contorno:</label>
-                                <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500 realtime-preview">
-                                <p class="text-right text-sm text-gray-500" id="caption-stroke-value">0 px</p>
-                            </div>
-                            
-                            <div class="caption-control-group">
-                                <label class="text-gray-700 text-sm">Fonte:</label>
-                                <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm realtime-preview">
-                                    <option value="Valentine Baby, sans-serif">Valentine Baby</option>
-                                    <option value="'Dancing Script', cursive">Dancing Script</option>
-                                    <option value="'Pacifico', cursive">Pacifico</option>
-                                    <option value="'Shadows Into Light', cursive">Shadows Into Light</option>
-                                    <option value="'Indie Flower', cursive">Indie Flower</option>
-                                    <option value="Inter, sans-serif">Inter</option>
-                                    <option value="Arial, sans-serif">Arial</option>
-                                    <option value="Verdana, sans-serif">Verdana</option>
-                                    <option value="'Times New Roman', serif">Times New Roman</option>
-                                    <option value="'Courier New', monospace">Courier New</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="caption-controls mt-3">
-                            <div class="caption-control-group">
-                                <label class="text-gray-700 text-sm">Alinhamento:</label>
-                                <div class="flex gap-2 mt-1">
-                                    <button class="alignment-btn p-2 bg-gray-200 rounded" data-align="left" title="Alinhar à esquerda">
-                                        <i class="fas fa-align-left"></i>
-                                    </button>
-                                    <button class="alignment-btn p-2 bg-gray-200 rounded" data-align="center" title="Centralizar">
-                                        <i class="fas fa-align-center"></i>
-                                    </button>
-                                    <button class="alignment-btn p-2 bg-gray-200 rounded" data-align="right" title="Alinhar à direita">
-                                        <i class="fas fa-align-right"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Botão de reset para legendas -->
-                        <div class="flex justify-center mt-4">
-                            <button id="reset-caption-btn" class="reset-btn font-semibold py-2 px-4 rounded-lg">
-                                Resetar Legendas
-                            </button>
-                        </div>
-                        
-                        <div class="flex justify-center lg:justify-end space-x-4 mt-4">
-                            <button id="discard-caption-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                            <button id="discard-zoom-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors compact-btn">
                                 Descartar
                             </button>
-                            <button id="save-caption-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                            <button id="save-zoom-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors compact-btn">
                                 Salvar
                             </button>
                         </div>
@@ -811,10 +715,10 @@
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm mb-2">Carregar foto de fundo:</label>
                             <input type="file" id="background-upload" accept="image/*" class="hidden">
-                            <button id="background-upload-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg w-full mb-2">
+                            <button id="background-upload-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg w-full mb-2 compact-btn">
                                 Selecionar Foto
                             </button>
-                            <button id="use-same-photo-btn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg w-full">
+                            <button id="use-same-photo-btn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg w-full compact-btn">
                                 Usar mesma foto como fundo
                             </button>
                         </div>
@@ -830,40 +734,12 @@
                             <p class="text-right text-sm text-gray-500" id="background-size-value">100 %</p>
                         </label>
                         
-                        <!-- Novos controles de edição para o fundo -->
-                        <div class="advanced-controls">
-                            <div class="advanced-control-group">
-                                <label>Matriz</label>
-                                <input type="range" id="matrix-slider" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Saturação</label>
-                                <input type="range" id="saturation-slider" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Brilho</label>
-                                <input type="range" id="brightness-slider" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Contraste</label>
-                                <input type="range" id="contrast-slider" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Nitidez</label>
-                                <input type="range" id="sharpness-slider" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Desfoque</label>
-                                <input type="range" id="blur-advanced-slider" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                        </div>
-                        
                         <div class="flex justify-center lg:justify-end space-x-4 mt-4">
-                            <button id="discard-background-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
-                                Descartar Alterações
+                            <button id="discard-background-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors compact-btn">
+                                Descartar
                             </button>
-                            <button id="save-background-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                Salvar Alterações
+                            <button id="save-background-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors compact-btn">
+                                Salvar
                             </button>
                         </div>
                     </div>
@@ -872,38 +748,11 @@
                     <div id="advanced-controls" class="hidden">
                         <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustes Avançados</h3>
                         
-                        <div class="advanced-controls">
-                            <div class="advanced-control-group">
-                                <label>Matriz</label>
-                                <input type="range" id="matrix-slider-main" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Saturação</label>
-                                <input type="range" id="saturation-slider-main" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Brilho</label>
-                                <input type="range" id="brightness-slider-main" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Contraste</label>
-                                <input type="range" id="contrast-slider-main" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Nitidez</label>
-                                <input type="range" id="sharpness-slider-main" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                            <div class="advanced-control-group">
-                                <label>Desfoque</label>
-                                <input type="range" id="blur-advanced-slider-main" min="-50" max="50" value="0" class="realtime-preview">
-                            </div>
-                        </div>
-                        
                         <div class="flex justify-center lg:justify-end space-x-4 mt-4">
-                            <button id="discard-advanced-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                            <button id="discard-advanced-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors compact-btn">
                                 Descartar
                             </button>
-                            <button id="save-advanced-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                            <button id="save-advanced-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors compact-btn">
                                 Salvar
                             </button>
                         </div>
@@ -914,27 +763,27 @@
             <!-- Botões de Ação do Modal - Fundo do painel de edição -->
             <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4 mt-6 border-t pt-4 border-gray-200">
                 <div class="flex flex-wrap gap-2 w-full lg:w-auto">
-                    <button id="back-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto">
+                    <button id="back-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto compact-btn">
                         Voltar
                     </button>
-                    <button id="next-image-btn" class="next-image-btn font-semibold py-2 px-6 rounded-lg shadow-md transition-colors w-full lg:w-auto">
+                    <button id="prev-image-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto compact-btn">
+                        Rever Foto Anterior
+                    </button>
+                    <button id="next-image-btn" class="next-image-btn font-semibold py-2 px-6 rounded-lg shadow-md transition-colors w-full lg:w-auto compact-btn">
                         Editar Próxima Foto
                     </button>
-                    <button id="reset-all-btn" class="reset-btn font-semibold py-2 px-6 rounded-lg shadow-md transition-colors w-full lg:w-auto">
+                    <button id="reset-all-btn" class="reset-btn font-semibold py-2 px-6 rounded-lg shadow-md transition-colors w-full lg:w-auto compact-btn">
                         Resetar Tudo
                     </button>
                 </div>
                 <div class="flex flex-wrap justify-center lg:justify-end gap-2 w-full lg:w-auto">
-                    <button id="tool-zoom-btn" class="tool-btn bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors flex-1">
+                    <button id="tool-zoom-btn" class="tool-btn bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
                         Zoom
                     </button>
-                    <button id="tool-caption-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
-                        Legendas
-                    </button>
-                    <button id="tool-background-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                    <button id="tool-background-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
                         Editar Fundo
                     </button>
-                    <button id="tool-advanced-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                    <button id="tool-advanced-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
                         Ajustes Avançados
                     </button>
                 </div>
@@ -947,7 +796,7 @@
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl h-full p-2 sm:p-6 transform transition-transform duration-300 flex flex-col">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-2xl font-bold">Pré-visualização de Exportação</h2>
-                <button id="close-preview-btn" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                <button id="close-preview-btn" class="bg-gray-400 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-500 transition-colors compact-btn">
                     Fechar
                 </button>
             </div>
@@ -974,10 +823,10 @@
             
             <div class="flex flex-col md:flex-row flex-wrap justify-center gap-4 mt-8 border-t pt-4">
                 <div class="flex flex-wrap justify-center gap-4">
-                    <button id="modal-export-landscape-btn" class="bg-blue-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    <button id="modal-export-landscape-btn" class="bg-blue-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed compact-btn">
                         Gerar PDF
                     </button>
-                    <button id="modal-export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    <button id="modal-export-landscape-jpg-btn" class="bg-green-500 text-white font-bold py-4 px-10 rounded-lg text-xl shadow-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed compact-btn">
                         Gerar JPG
                     </button>
                 </div>
@@ -1003,11 +852,9 @@
             const editorCanvas = document.getElementById('editor-canvas');
             const drawingCanvas = document.getElementById('drawing-canvas');
             const toolZoomBtn = document.getElementById('tool-zoom-btn');
-            const toolCaptionBtn = document.getElementById('tool-caption-btn');
             const toolBackgroundBtn = document.getElementById('tool-background-btn');
             const toolAdvancedBtn = document.getElementById('tool-advanced-btn');
             const zoomControls = document.getElementById('zoom-controls');
-            const captionControls = document.getElementById('caption-controls');
             const backgroundControls = document.getElementById('background-controls');
             const advancedControls = document.getElementById('advanced-controls');
             const maskOverlay = document.getElementById('mask-overlay');
@@ -1018,14 +865,6 @@
             const zoomResetBtn = document.getElementById('zoom-reset-btn');
             const saveZoomBtn = document.getElementById('save-zoom-btn');
             const discardZoomBtn = document.getElementById('discard-zoom-btn');
-            const captionTextInput = document.getElementById('caption-text-input');
-            const captionColorInput = document.getElementById('caption-color-input');
-            const captionOutlineColorInput = document.getElementById('caption-outline-color-input');
-            const captionSizeSlider = document.getElementById('caption-size-slider');
-            const captionSizeValueText = document.getElementById('caption-size-value');
-            const captionStrokeSlider = document.getElementById('caption-stroke-slider');
-            const captionStrokeValueText = document.getElementById('caption-stroke-value');
-            const captionFontSelect = document.getElementById('caption-font-select');
             const blurSlider = document.getElementById('blur-slider');
             const blurValueText = document.getElementById('blur-value');
             const backgroundSizeSlider = document.getElementById('background-size-slider');
@@ -1037,13 +876,11 @@
             const gridTypeSelect = document.getElementById('grid-type-select');
             const gridOptions = document.querySelectorAll('.grid-option');
             const nextImageBtn = document.getElementById('next-image-btn');
+            const prevImageBtn = document.getElementById('prev-image-btn');
             const resetAllBtn = document.getElementById('reset-all-btn');
-            const resetCaptionBtn = document.getElementById('reset-caption-btn');
             const backgroundUpload = document.getElementById('background-upload');
             const backgroundUploadBtn = document.getElementById('background-upload-btn');
             const useSamePhotoBtn = document.getElementById('use-same-photo-btn');
-            const saveCaptionBtn = document.getElementById('save-caption-btn');
-            const discardCaptionBtn = document.getElementById('discard-caption-btn');
             const saveBackgroundBtn = document.getElementById('save-background-btn');
             const discardBackgroundBtn = document.getElementById('discard-background-btn');
             const saveAdvancedBtn = document.getElementById('save-advanced-btn');
@@ -1062,25 +899,6 @@
             const prevPageBtn = document.getElementById('prev-page-btn');
             const nextPageBtn = document.getElementById('next-page-btn');
             const pageIndicator = document.getElementById('page-indicator');
-            
-            // Elementos do editor de legendas
-            const alignmentButtons = document.querySelectorAll('.alignment-btn');
-            const textColorPreview = document.getElementById('text-color-preview');
-            const outlineColorPreview = document.getElementById('outline-color-preview');
-
-            // Controles avançados
-            const matrixSlider = document.getElementById('matrix-slider');
-            const saturationSlider = document.getElementById('saturation-slider');
-            const brightnessSlider = document.getElementById('brightness-slider');
-            const contrastSlider = document.getElementById('contrast-slider');
-            const sharpnessSlider = document.getElementById('sharpness-slider');
-            const blurAdvancedSlider = document.getElementById('blur-advanced-slider');
-            const matrixSliderMain = document.getElementById('matrix-slider-main');
-            const saturationSliderMain = document.getElementById('saturation-slider-main');
-            const brightnessSliderMain = document.getElementById('brightness-slider-main');
-            const contrastSliderMain = document.getElementById('contrast-slider-main');
-            const sharpnessSliderMain = document.getElementById('sharpness-slider-main');
-            const blurAdvancedSliderMain = document.getElementById('blur-advanced-slider-main');
 
             const editorCtx = editorCanvas.getContext('2d');
             const drawingCtx = drawingCanvas.getContext('2d');
@@ -1092,8 +910,6 @@
             let currentPageIndex = 0;
             let gridType = '2x4'; // Padrão: 2x4
             let isDragging = false;
-            let selectedCaptionIndex = -1;
-            let dragOffset = { x: 0, y: 0 };
             let isDrawing = false;
             let drawMode = null; // 'rectangle', 'circle'
             let startX, startY;
@@ -1364,23 +1180,6 @@
                             const zoomOffsetY = offsetY - (zoomedHeight - drawHeight) / 2;
 
                             ctx.drawImage(img, zoomOffsetX, zoomOffsetY, zoomedWidth, zoomedHeight);
-
-                            // Draw captions
-                            drawCaptionsOnCanvas(ctx, imageObject.captions, 0, 0, 1);
-                            
-                            // Draw drawings
-                            if (imageObject.drawings && imageObject.drawings.length > 0) {
-                                imageObject.drawings.forEach(drawing => {
-                                    ctx.fillStyle = drawing.color;
-                                    if (drawing.type === 'rectangle') {
-                                        ctx.fillRect(drawing.x, drawing.y, drawing.width, drawing.height);
-                                    } else if (drawing.type === 'circle') {
-                                        ctx.beginPath();
-                                        ctx.arc(drawing.x + drawing.width/2, drawing.y + drawing.height/2, drawing.width/2, 0, 2 * Math.PI);
-                                        ctx.fill();
-                                    }
-                                });
-                            }
                             
                             resolve();
                         }
@@ -1404,12 +1203,9 @@
                 saveToHistory();
 
                 // Load existing data
-                const existingCaptions = image.captions || [];
-                image.tempCaptions = JSON.parse(JSON.stringify(existingCaptions));
                 image.tempBlurRadius = image.blurRadius;
                 image.tempBackgroundSize = image.backgroundSize;
                 image.tempZoom = image.zoom || 100;
-                image.tempDrawings = image.drawings || [];
                 image.tempMatrix = image.matrix || 0;
                 image.tempSaturation = image.saturation || 0;
                 image.tempBrightness = image.brightness || 0;
@@ -1423,21 +1219,6 @@
                 backgroundSizeValueText.textContent = `${image.tempBackgroundSize} %`;
                 zoomSlider.value = image.tempZoom;
                 zoomValue.textContent = `${image.tempZoom}%`;
-
-                // Configurar controles avançados
-                matrixSlider.value = image.tempMatrix;
-                saturationSlider.value = image.tempSaturation;
-                brightnessSlider.value = image.tempBrightness;
-                contrastSlider.value = image.tempContrast;
-                sharpnessSlider.value = image.tempSharpness;
-                blurAdvancedSlider.value = image.tempBlurAdvanced;
-
-                matrixSliderMain.value = image.tempMatrix;
-                saturationSliderMain.value = image.tempSaturation;
-                brightnessSliderMain.value = image.tempBrightness;
-                contrastSliderMain.value = image.tempContrast;
-                sharpnessSliderMain.value = image.tempSharpness;
-                blurAdvancedSliderMain.value = image.tempBlurAdvanced;
 
                 initialCanvasSize = { width: image.imgElement.width, height: image.imgElement.height };
 
@@ -1460,8 +1241,6 @@
                         editHistory.shift();
                     }
                     editHistory.push(JSON.parse(JSON.stringify({
-                        captions: image.captions,
-                        drawings: image.drawings,
                         blurRadius: image.blurRadius,
                         backgroundSize: image.backgroundSize,
                         zoom: image.zoom,
@@ -1484,8 +1263,6 @@
                     const image = uploadedImages[currentImageIndex];
                     
                     // Restaurar estado anterior
-                    image.captions = JSON.parse(JSON.stringify(previousState.captions));
-                    image.drawings = JSON.parse(JSON.stringify(previousState.drawings));
                     image.blurRadius = previousState.blurRadius;
                     image.backgroundSize = previousState.backgroundSize;
                     image.zoom = previousState.zoom;
@@ -1503,20 +1280,6 @@
                     backgroundSizeValueText.textContent = `${image.backgroundSize} %`;
                     zoomSlider.value = image.zoom;
                     zoomValue.textContent = `${image.zoom}%`;
-                    
-                    matrixSlider.value = image.matrix;
-                    saturationSlider.value = image.saturation;
-                    brightnessSlider.value = image.brightness;
-                    contrastSlider.value = image.contrast;
-                    sharpnessSlider.value = image.sharpness;
-                    blurAdvancedSlider.value = image.blurAdvanced;
-                    
-                    matrixSliderMain.value = image.matrix;
-                    saturationSliderMain.value = image.saturation;
-                    brightnessSliderMain.value = image.brightness;
-                    contrastSliderMain.value = image.contrast;
-                    sharpnessSliderMain.value = image.sharpness;
-                    blurAdvancedSliderMain.value = image.blurAdvanced;
                     
                     // Redesenhar
                     redrawEditorCanvas();
@@ -1610,77 +1373,13 @@
                     const zoomOffsetY = offsetY - (zoomedHeight - drawHeight) / 2;
 
                     editorCtx.drawImage(image.imgElement, zoomOffsetX, zoomOffsetY, zoomedWidth, zoomedHeight);
-                    
-                    // Draw captions
-                    drawCaptionsOnCanvas(editorCtx, image.tempCaptions, offsetX, offsetY, drawWidth / image.imgElement.width);
-                    
-                    // Draw drawings
-                    if (image.tempDrawings && image.tempDrawings.length > 0) {
-                        const scale = drawWidth / image.imgElement.width;
-                        image.tempDrawings.forEach(drawing => {
-                            editorCtx.fillStyle = drawing.color;
-                            if (drawing.type === 'rectangle') {
-                                editorCtx.fillRect(offsetX + drawing.x * scale, offsetY + drawing.y * scale, drawing.width * scale, drawing.height * scale);
-                            } else if (drawing.type === 'circle') {
-                                editorCtx.beginPath();
-                                editorCtx.arc(
-                                    offsetX + (drawing.x + drawing.width/2) * scale, 
-                                    offsetY + (drawing.y + drawing.height/2) * scale, 
-                                    drawing.width/2 * scale, 
-                                    0, 
-                                    2 * Math.PI
-                                );
-                                editorCtx.fill();
-                            }
-                        });
-                    }
                 }
-            };
-
-            // Draws captions on a given canvas
-            const drawCaptionsOnCanvas = (ctx, captions, xOffset = 0, yOffset = 0, scale = 1) => {
-                captions.forEach((caption, index) => {
-                    ctx.font = `${caption.size * scale}px ${caption.font}`;
-                    ctx.fillStyle = caption.color;
-                    ctx.strokeStyle = caption.outlineColor;
-                    ctx.lineWidth = caption.strokeWidth * scale;
-                    ctx.lineJoin = 'round';
-                    
-                    // Calcular largura do texto para alinhamento
-                    const textWidth = ctx.measureText(caption.text).width;
-                    let xPos = xOffset + caption.x * scale;
-                    
-                    // Aplicar alinhamento
-                    if (caption.align === 'center') {
-                        xPos = xOffset + (initialCanvasSize.width * scale - textWidth) / 2;
-                    } else if (caption.align === 'right') {
-                        xPos = xOffset + initialCanvasSize.width * scale - textWidth - 10;
-                    }
-                    
-                    ctx.strokeText(caption.text, xPos, yOffset + caption.y * scale);
-                    ctx.fillText(caption.text, xPos, yOffset + caption.y * scale);
-                    
-                    // Desenhar caixa de seleção se estiver selecionada
-                    if (index === selectedCaptionIndex && currentTool === 'caption') {
-                        ctx.strokeStyle = '#3b82f6';
-                        ctx.lineWidth = 2;
-                        ctx.setLineDash([5, 5]);
-                        ctx.strokeRect(
-                            xPos - 5, 
-                            yOffset + caption.y * scale - caption.size * scale - 5, 
-                            textWidth + 10, 
-                            caption.size * scale + 10
-                        );
-                        ctx.setLineDash([]);
-                    }
-                });
             };
 
             // Handles tool selection
             const setTool = (toolName) => {
                 currentTool = toolName;
                 zoomControls.classList.add('hidden');
-                captionControls.classList.add('hidden');
                 backgroundControls.classList.add('hidden');
                 advancedControls.classList.add('hidden');
 
@@ -1704,45 +1403,6 @@
                     zoomValue.textContent = `${image.tempZoom}%`;
                     
                     redrawEditorCanvas();
-                } else if (toolName === 'caption') {
-                    captionControls.classList.remove('hidden');
-                    toolCaptionBtn.classList.remove('bg-gray-200', 'text-gray-700');
-                    toolCaptionBtn.classList.add('bg-blue-500', 'text-white');
-
-                    if (image.tempCaptions.length === 0) {
-                        image.tempCaptions.push({
-                            text: 'Sua Legenda',
-                            x: 50,
-                            y: initialCanvasSize.height - 50,
-                            color: '#000000',
-                            outlineColor: '#FFFFFF',
-                            size: 20,
-                            strokeWidth: 0,
-                            font: 'Valentine Baby, sans-serif',
-                            align: 'left'
-                        });
-                    }
-                    
-                    // Selecionar a primeira legenda por padrão
-                    selectedCaptionIndex = 0;
-                    const caption = image.tempCaptions[selectedCaptionIndex];
-                    
-                    captionTextInput.value = caption.text;
-                    captionColorInput.value = caption.color;
-                    captionOutlineColorInput.value = caption.outlineColor;
-                    captionSizeSlider.value = caption.size;
-                    captionSizeValueText.textContent = `${caption.size} px`;
-                    captionStrokeSlider.value = caption.strokeWidth;
-                    captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
-                    captionFontSelect.value = caption.font;
-                    
-                    // Atualizar visualização de cores
-                    textColorPreview.style.backgroundColor = caption.color;
-                    outlineColorPreview.style.backgroundColor = caption.outlineColor;
-                    
-                    addCaptionRealtimePreview();
-                    
-                    redrawEditorCanvas();
                 } else if (toolName === 'background') {
                     backgroundControls.classList.remove('hidden');
                     toolBackgroundBtn.classList.remove('bg-gray-200', 'text-gray-700');
@@ -1756,37 +1416,8 @@
                     toolAdvancedBtn.classList.remove('bg-gray-200', 'text-gray-700');
                     toolAdvancedBtn.classList.add('bg-blue-500', 'text-white');
                     
-                    addAdvancedRealtimePreview();
-                    
                     redrawEditorCanvas();
                 }
-            };
-
-            // Adiciona preview em tempo real para controles de legenda
-            const addCaptionRealtimePreview = () => {
-                const realtimeElements = document.querySelectorAll('#caption-controls .realtime-preview');
-                realtimeElements.forEach(element => {
-                    element.addEventListener('input', () => {
-                        if (uploadedImages[currentImageIndex].tempCaptions.length > 0 && selectedCaptionIndex >= 0) {
-                            const caption = uploadedImages[currentImageIndex].tempCaptions[selectedCaptionIndex];
-                            caption.text = captionTextInput.value;
-                            caption.color = captionColorInput.value;
-                            caption.outlineColor = captionOutlineColorInput.value;
-                            caption.size = parseInt(captionSizeSlider.value);
-                            caption.strokeWidth = parseInt(captionStrokeSlider.value);
-                            caption.font = captionFontSelect.value;
-                            
-                            // Atualizar visualização de cores
-                            textColorPreview.style.backgroundColor = caption.color;
-                            outlineColorPreview.style.backgroundColor = caption.outlineColor;
-                            
-                            captionSizeValueText.textContent = `${caption.size} px`;
-                            captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
-                            
-                            redrawEditorCanvas();
-                        }
-                    });
-                });
             };
 
             // Adiciona preview em tempo real para controles de fundo
@@ -1797,12 +1428,6 @@
                         const image = uploadedImages[currentImageIndex];
                         image.tempBlurRadius = parseInt(blurSlider.value);
                         image.tempBackgroundSize = parseInt(backgroundSizeSlider.value);
-                        image.tempMatrix = parseInt(matrixSlider.value);
-                        image.tempSaturation = parseInt(saturationSlider.value);
-                        image.tempBrightness = parseInt(brightnessSlider.value);
-                        image.tempContrast = parseInt(contrastSlider.value);
-                        image.tempSharpness = parseInt(sharpnessSlider.value);
-                        image.tempBlurAdvanced = parseInt(blurAdvancedSlider.value);
                         
                         blurValueText.textContent = `${image.tempBlurRadius} px`;
                         backgroundSizeValueText.textContent = `${image.tempBackgroundSize} %`;
@@ -1815,27 +1440,8 @@
                 });
             };
 
-            // Adiciona preview em tempo real para controles avançados
-            const addAdvancedRealtimePreview = () => {
-                const realtimeElements = document.querySelectorAll('#advanced-controls .realtime-preview');
-                realtimeElements.forEach(element => {
-                    element.addEventListener('input', () => {
-                        const image = uploadedImages[currentImageIndex];
-                        image.tempMatrix = parseInt(matrixSliderMain.value);
-                        image.tempSaturation = parseInt(saturationSliderMain.value);
-                        image.tempBrightness = parseInt(brightnessSliderMain.value);
-                        image.tempContrast = parseInt(contrastSliderMain.value);
-                        image.tempSharpness = parseInt(sharpnessSliderMain.value);
-                        image.tempBlurAdvanced = parseInt(blurAdvancedSliderMain.value);
-                        
-                        redrawEditorCanvas();
-                    });
-                });
-            };
-
             // Event listeners for tool buttons
             toolZoomBtn.addEventListener('click', () => setTool('zoom'));
-            toolCaptionBtn.addEventListener('click', () => setTool('caption'));
             toolBackgroundBtn.addEventListener('click', () => setTool('background'));
             toolAdvancedBtn.addEventListener('click', () => setTool('advanced'));
 
@@ -1897,32 +1503,10 @@
             };
 
             // Save and Discard actions for each tool
-            saveCaptionBtn.addEventListener('click', () => {
-                const image = uploadedImages[currentImageIndex];
-                image.captions = JSON.parse(JSON.stringify(image.tempCaptions));
-                image.drawings = JSON.parse(JSON.stringify(image.tempDrawings));
-                setTool(null);
-                renderImages();
-            });
-
-            discardCaptionBtn.addEventListener('click', () => {
-                const image = uploadedImages[currentImageIndex];
-                image.tempCaptions = JSON.parse(JSON.stringify(image.captions));
-                image.tempDrawings = JSON.parse(JSON.stringify(image.drawings || []));
-                setTool(null);
-                redrawEditorCanvas();
-            });
-
             saveBackgroundBtn.addEventListener('click', () => {
                 const image = uploadedImages[currentImageIndex];
                 image.blurRadius = image.tempBlurRadius;
                 image.backgroundSize = image.tempBackgroundSize;
-                image.matrix = image.tempMatrix;
-                image.saturation = image.tempSaturation;
-                image.brightness = image.tempBrightness;
-                image.contrast = image.tempContrast;
-                image.sharpness = image.tempSharpness;
-                image.blurAdvanced = image.tempBlurAdvanced;
                 applyBlur(image.imgElement, image, image.blurRadius);
                 setTool(null);
                 renderImages();
@@ -1932,12 +1516,6 @@
                 const image = uploadedImages[currentImageIndex];
                 image.tempBlurRadius = image.blurRadius;
                 image.tempBackgroundSize = image.backgroundSize;
-                image.tempMatrix = image.matrix;
-                image.tempSaturation = image.saturation;
-                image.tempBrightness = image.brightness;
-                image.tempContrast = image.contrast;
-                image.tempSharpness = image.sharpness;
-                image.tempBlurAdvanced = image.blurAdvanced;
                 applyBlur(image.imgElement, image, image.tempBlurRadius);
                 setTool(null);
                 redrawEditorCanvas();
@@ -1978,8 +1556,6 @@
             nextImageBtn.addEventListener('click', () => {
                 // Salvar as alterações da imagem atual
                 const image = uploadedImages[currentImageIndex];
-                image.captions = JSON.parse(JSON.stringify(image.tempCaptions));
-                image.drawings = JSON.parse(JSON.stringify(image.tempDrawings));
                 image.blurRadius = image.tempBlurRadius;
                 image.backgroundSize = image.tempBackgroundSize;
                 image.zoom = image.tempZoom;
@@ -1995,6 +1571,25 @@
                 openEditModal(uploadedImages[currentImageIndex]);
             });
 
+            // Previous image button
+            prevImageBtn.addEventListener('click', () => {
+                // Salvar as alterações da imagem atual
+                const image = uploadedImages[currentImageIndex];
+                image.blurRadius = image.tempBlurRadius;
+                image.backgroundSize = image.tempBackgroundSize;
+                image.zoom = image.tempZoom;
+                image.matrix = image.tempMatrix;
+                image.saturation = image.tempSaturation;
+                image.brightness = image.tempBrightness;
+                image.contrast = image.tempContrast;
+                image.sharpness = image.tempSharpness;
+                image.blurAdvanced = image.tempBlurAdvanced;
+                
+                // Ir para a imagem anterior
+                currentImageIndex = (currentImageIndex - 1 + uploadedImages.length) % uploadedImages.length;
+                openEditModal(uploadedImages[currentImageIndex]);
+            });
+
             // Reset all button
             resetAllBtn.addEventListener('click', () => {
                 if (confirm('Tem certeza que deseja resetar todas as alterações desta imagem?')) {
@@ -2002,8 +1597,6 @@
                     // Restaurar os valores originais
                     image.crop = { x: 0, y: 0, width: image.imgElement.width, height: image.imgElement.height };
                     image.zoom = 100;
-                    image.captions = [];
-                    image.drawings = [];
                     image.blurRadius = DEFAULT_BLUR;
                     image.backgroundSize = DEFAULT_BG_SIZE;
                     image.matrix = 0;
@@ -2018,15 +1611,6 @@
                     // Fechar o modal e recarregar
                     editModal.classList.add('hidden');
                     renderImages();
-                }
-            });
-
-            // Reset caption button
-            resetCaptionBtn.addEventListener('click', () => {
-                if (confirm('Tem certeza que deseja resetar todas as legendas?')) {
-                    const image = uploadedImages[currentImageIndex];
-                    image.tempCaptions = [];
-                    redrawEditorCanvas();
                 }
             });
 
@@ -2097,8 +1681,6 @@
                                     blurRadius: DEFAULT_BLUR,
                                     backgroundSize: DEFAULT_BG_SIZE,
                                     zoom: 100,
-                                    captions: [],
-                                    drawings: [],
                                     matrix: 0,
                                     saturation: 0,
                                     brightness: 0,
@@ -2106,8 +1688,6 @@
                                     sharpness: 0,
                                     blurAdvanced: 0,
                                     isRotated: isRotated,
-                                    tempCaptions: [],
-                                    tempDrawings: [],
                                     tempBlurRadius: DEFAULT_BLUR,
                                     tempBackgroundSize: DEFAULT_BG_SIZE,
                                     tempZoom: 100,
@@ -2399,7 +1979,7 @@
             // Implementação do Drag & Drop
             const uploadSectionElement = document.getElementById('upload-section');
             
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            ['dragenter', 'dragoover', 'dragleave', 'drop'].forEach(eventName => {
                 uploadSectionElement.addEventListener(eventName, preventDefaults, false);
                 document.body.addEventListener(eventName, preventDefaults, false);
             });
@@ -2438,26 +2018,6 @@
                 }
             }
 
-            // Funções para o editor de legendas
-            captionColorInput.addEventListener('input', () => {
-                textColorPreview.style.backgroundColor = captionColorInput.value;
-            });
-            
-            captionOutlineColorInput.addEventListener('input', () => {
-                outlineColorPreview.style.backgroundColor = captionOutlineColorInput.value;
-            });
-            
-            // Alinhamento de texto
-            alignmentButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const align = btn.dataset.align;
-                    if (uploadedImages[currentImageIndex].tempCaptions.length > 0 && selectedCaptionIndex >= 0) {
-                        uploadedImages[currentImageIndex].tempCaptions[selectedCaptionIndex].align = align;
-                        redrawEditorCanvas();
-                    }
-                });
-            });
-            
             // Seleção de tipo de grade
             gridTypeSelect.addEventListener('change', () => {
                 gridType = gridTypeSelect.value;
@@ -2483,178 +2043,6 @@
                     
                     renderImages();
                 });
-            });
-
-            // Eventos para arrastar legendas
-            editorCanvas.addEventListener('mousedown', (e) => {
-                if (currentTool === 'caption' && uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    const rect = editorCanvas.getBoundingClientRect();
-                    const mouseX = e.clientX - rect.left;
-                    const mouseY = e.clientY - rect.top;
-                    
-                    // Calcular escala
-                    const image = uploadedImages[currentImageIndex];
-                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
-                        image.imgElement.width, 
-                        image.imgElement.height, 
-                        editorCanvas.width, 
-                        editorCanvas.height
-                    );
-                    const scale = drawWidth / image.imgElement.width;
-                    
-                    // Verificar se o clique foi em uma legenda
-                    for (let i = 0; i < image.tempCaptions.length; i++) {
-                        const caption = image.tempCaptions[i];
-                        const xPos = offsetX + caption.x * scale;
-                        const yPos = offsetY + caption.y * scale;
-                        
-                        editorCtx.font = `${caption.size * scale}px ${caption.font}`;
-                        const textWidth = editorCtx.measureText(caption.text).width;
-                        
-                        if (
-                            mouseX >= xPos - 5 && 
-                            mouseX <= xPos + textWidth + 5 && 
-                            mouseY >= yPos - caption.size * scale - 5 && 
-                            mouseY <= yPos + 5
-                        ) {
-                            isDragging = true;
-                            selectedCaptionIndex = i;
-                            dragOffset.x = mouseX - xPos;
-                            dragOffset.y = mouseY - yPos;
-                            
-                            // Atualizar controles com a legenda selecionada
-                            captionTextInput.value = caption.text;
-                            captionColorInput.value = caption.color;
-                            captionOutlineColorInput.value = caption.outlineColor;
-                            captionSizeSlider.value = caption.size;
-                            captionSizeValueText.textContent = `${caption.size} px`;
-                            captionStrokeSlider.value = caption.strokeWidth;
-                            captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
-                            captionFontSelect.value = caption.font;
-                            
-                            redrawEditorCanvas();
-                            break;
-                        }
-                    }
-                }
-            });
-            
-            editorCanvas.addEventListener('mousemove', (e) => {
-                if (isDragging && selectedCaptionIndex >= 0) {
-                    const rect = editorCanvas.getBoundingClientRect();
-                    const mouseX = e.clientX - rect.left;
-                    const mouseY = e.clientY - rect.top;
-                    
-                    // Calcular escala
-                    const image = uploadedImages[currentImageIndex];
-                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
-                        image.imgElement.width, 
-                        image.imgElement.height, 
-                        editorCanvas.width, 
-                        editorCanvas.height
-                    );
-                    const scale = image.imgElement.width / drawWidth;
-                    
-                    // Atualizar posição da legenda
-                    const caption = image.tempCaptions[selectedCaptionIndex];
-                    caption.x = (mouseX - offsetX - dragOffset.x) * scale;
-                    caption.y = (mouseY - offsetY - dragOffset.y) * scale;
-                    
-                    redrawEditorCanvas();
-                }
-            });
-            
-            editorCanvas.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-            
-            editorCanvas.addEventListener('mouseleave', () => {
-                isDragging = false;
-            });
-            
-            // Eventos de toque para dispositivos móveis
-            editorCanvas.addEventListener('touchstart', (e) => {
-                if (currentTool === 'caption' && uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                    e.preventDefault();
-                    const rect = editorCanvas.getBoundingClientRect();
-                    const touchX = e.touches[0].clientX - rect.left;
-                    const touchY = e.touches[0].clientY - rect.top;
-                    
-                    // Calcular escala
-                    const image = uploadedImages[currentImageIndex];
-                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
-                        image.imgElement.width, 
-                        image.imgElement.height, 
-                        editorCanvas.width, 
-                        editorCanvas.height
-                    );
-                    const scale = drawWidth / image.imgElement.width;
-                    
-                    // Verificar se o toque foi em uma legenda
-                    for (let i = 0; i < image.tempCaptions.length; i++) {
-                        const caption = image.tempCaptions[i];
-                        const xPos = offsetX + caption.x * scale;
-                        const yPos = offsetY + caption.y * scale;
-                        
-                        editorCtx.font = `${caption.size * scale}px ${caption.font}`;
-                        const textWidth = editorCtx.measureText(caption.text).width;
-                        
-                        if (
-                            touchX >= xPos - 5 && 
-                            touchX <= xPos + textWidth + 5 && 
-                            touchY >= yPos - caption.size * scale - 5 && 
-                            touchY <= yPos + 5
-                        ) {
-                            isDragging = true;
-                            selectedCaptionIndex = i;
-                            dragOffset.x = touchX - xPos;
-                            dragOffset.y = touchY - yPos;
-                            
-                            // Atualizar controles com a legenda selecionada
-                            captionTextInput.value = caption.text;
-                            captionColorInput.value = caption.color;
-                            captionOutlineColorInput.value = caption.outlineColor;
-                            captionSizeSlider.value = caption.size;
-                            captionSizeValueText.textContent = `${caption.size} px`;
-                            captionStrokeSlider.value = caption.strokeWidth;
-                            captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
-                            captionFontSelect.value = caption.font;
-                            
-                            redrawEditorCanvas();
-                            break;
-                        }
-                    }
-                }
-            });
-            
-            editorCanvas.addEventListener('touchmove', (e) => {
-                if (isDragging && selectedCaptionIndex >= 0) {
-                    e.preventDefault();
-                    const rect = editorCanvas.getBoundingClientRect();
-                    const touchX = e.touches[0].clientX - rect.left;
-                    const touchY = e.touches[0].clientY - rect.top;
-                    
-                    // Calcular escala
-                    const image = uploadedImages[currentImageIndex];
-                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
-                        image.imgElement.width, 
-                        image.imgElement.height, 
-                        editorCanvas.width, 
-                        editorCanvas.height
-                    );
-                    const scale = image.imgElement.width / drawWidth;
-                    
-                    // Atualizar posição da legenda
-                    const caption = image.tempCaptions[selectedCaptionIndex];
-                    caption.x = (touchX - offsetX - dragOffset.x) * scale;
-                    caption.y = (touchY - offsetY - dragOffset.y) * scale;
-                    
-                    redrawEditorCanvas();
-                }
-            });
-            
-            editorCanvas.addEventListener('touchend', () => {
-                isDragging = false;
             });
 
             // Implementar Ctrl+Z para desfazer
