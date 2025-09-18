@@ -348,6 +348,29 @@
             font-weight: 500;
             color: #374151;
         }
+        
+        /* Novos estilos para a área de upload responsiva */
+        .upload-section {
+            transition: all 0.3s ease;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .upload-section.dragover {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+            transform: scale(1.02);
+        }
+        .upload-section-content {
+            padding: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .upload-section {
+                margin: 0 1rem;
+            }
+            .upload-section-content {
+                padding: 1rem;
+            }
+        }
         @media (max-width: 640px) {
             .prancheta-overlay {
                 opacity: 0;
@@ -378,107 +401,129 @@
             .editor-controls {
                 grid-template-columns: 1fr;
             }
-           
+        }
+        
+        /* Estilos para a nova organização */
+        .preview-tab {
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        .export-options {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+        .export-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+        }
+        .unit-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .format-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Estilos para a visualização de pré-visualização */
+        .preview-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f8fafc;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
         }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-    <!--  adicionei agora, novo -->
-     <!-- Removendo essa <div class="flex justify-center items-center gap-3 p-4 bg-transparent">
-              <img src="favicon.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain">
-              <h1 class="text-2xl md:text-3xl font-bold text-white">SuecoEdit</h1>
-        </div> -->
-    
-<!-- até aqui -->
-
-   <!-- original com fundo  <div class="flex items-center gap-3 p-4 bg-white shadow-md">
-  <img src="favicon.png" alt="Logo" class="w-8 h-8">
-  <h1 class="text-xl font-bold text-gray-700">SuecoEdit</h1>
-    </div> -->
-
-
     <div class="flex items-center gap-3 p-4 bg-white shadow-md">
-     <a href="index.html" class="flex items-center gap-2">
-      <img src="favicon.png" alt="Logo" class="w-10 h-10">
-      <h1 class="text-2xl font-bold text-gray-700">SuecoEdit</h1>
-    </a>
+        <a href="index.html" class="flex items-center gap-2">
+            <img src="favicon.png" alt="Logo" class="w-10 h-10">
+            <h1 class="text-2xl font-bold text-gray-700">SuecoEdit</h1>
+        </a>
     </div>
 
-
-  <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-4 py-6">
         <!-- Título -->
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold text-blue-800">Personalizar Quadros 🖼️</h2>
             <p class="text-gray-600 mt-2">Carregue suas fotos e exporte-as em um formato para quadros personalizados, prontas para impressão.</p>
             <p class="text-gray-600 mt-2">Exporta em PNG, JGP ou PDF.</p>
         </div>
-  </div>
+    </div>
 
-
-
-<!-- <div>
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Personalizar Quadros 🖼️</h1>
-        <p class="text-base sm:text-lg text-white opacity-90">Carregue suas fotos e exporte-as em um formato para quadros personalizados, prontas para impressão. </p>
-        <p class="text-base sm:text-lg text-white opacity-90">Exporta em PNG, JGP ou PDF.</p>
-</div> -->
-
-     <div id="upload-section" class="mt-6 mb-6 p-8 border-2 border-dashed border-gray-300 rounded-xl text-center bg-white transition-colors duration-300">
-            <div class="flex flex-col items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <p class="text-lg font-medium text-gray-700 mb-2">Arraste e solte suas imagens aqui</p>
-                <p class="text-sm text-gray-500 mb-4">ou</p>
-                <label for="file-input" class="file-input-label bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors inline-block cursor-pointer">
-                    <span>Selecionar Imagens</span>
-                    <input type="file-input" id="image-upload" accept="image/*" multiple class="hidden">
-                </label>
-                <p class="text-xs text-gray-400 mt-4">Suporte a JPEG e PNG. Máx. 10MB por imagem.</p>
-            </div>
-        </div>
-    
-
-    <div class="w-full max-w-4xl mx-auto mt-8 px-4">
-        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-            <div class="flex items-center gap-4 w-full sm:w-auto">
-                <label class="text-gray-700 font-medium">Unidade:</label>
-                <select id="unit-select" class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="cm">cm</option>
-                    <option value="mm">mm</option>
-                
-                </select>
-           <!-- </div> original este!!!!!!!!
-            <label for="file-input" class="cursor-pointer bg-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300 w-full text-center sm:w-auto mt-4 sm:mt-0">
-                <i class="fas fa-upload mr-2"></i> Selecionar Imagem
+    <!-- Área de upload com drag and drop -->
+    <div id="upload-section" class="upload-section mt-6 mb-6 p-6 border-2 border-dashed border-gray-300 rounded-xl text-center bg-white transition-all duration-300">
+        <div class="upload-section-content flex flex-col items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <p class="text-md font-medium text-gray-700 mb-2">Arraste e solte suas imagens aqui</p>
+            <p class="text-sm text-gray-500 mb-3">ou</p>
+            <label for="image-upload" class="file-input-label bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-600 transition-colors inline-block cursor-pointer">
+                <span>Selecionar Imagens</span>
+                <input type="file" id="image-upload" accept="image/*" multiple class="hidden">
             </label>
-            <input id="file-input" type="file" accept="image/*" multiple class="hidden">
-        </div> -->  
+            <p class="text-xs text-gray-400 mt-3">Suporte a JPEG e PNG. Máx. 10MB por imagem.</p>
+        </div>
+    </div>
 
-        <div id="preview-panel" class="bg-white p-6 rounded-xl shadow-md mb-8 hidden">
+    <div class="w-full max-w-6xl mx-auto mt-8 px-4">
+        <!-- Painel de pré-visualização reorganizado -->
+        <div id="preview-panel" class="preview-tab hidden">
             <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Fotos Carregadas</h3>
-            <div id="thumbnails-container" class="flex flex-wrap justify-center gap-8">
+            <div id="thumbnails-container" class="flex flex-wrap justify-center gap-6">
+                <!-- As miniaturas serão adicionadas aqui via JavaScript -->
             </div>
         </div>
 
-        <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Pré-visualização</h3>
-        <div id="pranchetas-container" class="flex flex-wrap justify-center gap-6">
+        <!-- Seção de pré-visualização abaixo das fotos carregadas -->
+        <div id="preview-display" class="preview-section hidden">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Pré-visualização</h3>
+            <div id="pranchetas-container" class="flex flex-wrap justify-center gap-6">
+                <!-- As pranchetas serão adicionadas aqui via JavaScript -->
+            </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row justify-center items-center mt-8 gap-4">
-            <div class="flex items-center gap-2">
-                 <label for="download-format-select" class="text-gray-700 font-medium whitespace-nowrap">Exportar em:</label>
-                <select id="download-format-select" class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="png">PNG</option>
-                    <option value="jpg">JPG</option>
-                    <option value="pdf">PDF</option>
-                </select>
+        <!-- Opções de unidade e exportação reorganizadas -->
+        <div class="export-options">
+            <div class="export-controls">
+                <div class="unit-selector">
+                    <label for="unit-select" class="text-gray-700 font-medium whitespace-nowrap">Unidade:</label>
+                    <select id="unit-select" class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="cm">cm</option>
+                        <option value="mm">mm</option>
+                    </select>
+                </div>
+                
+                <div class="format-selector">
+                    <label for="download-format-select" class="text-gray-700 font-medium whitespace-nowrap">Exportar em:</label>
+                    <select id="download-format-select" class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="png">PNG</option>
+                        <option value="jpg">JPG</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </div>
+                
+                <button id="download-btn" class="bg-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300 hidden">
+                    <i class="fas fa-download mr-2"></i> Baixar Todas as Fotos
+                </button>
             </div>
-            <button id="download-btn" class="bg-blue-500 text-white px-8 py-4 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300 w-full sm:w-auto hidden">
-                <i class="fas fa-download mr-2"></i> Baixar Todas as Fotos
-            </button>
         </div>
     </div>
     
+    <!-- Modal do editor -->
     <div id="editor-modal" class="editor-modal hidden">
         <div class="editor-content">
             <button id="close-editor" class="close-editor">
@@ -527,6 +572,7 @@
         </div>
     </div>
     
+    <!-- Modal do visualizador -->
     <div id="viewer-modal" class="viewer-modal hidden">
         <div class="viewer-content">
             <button id="close-viewer" class="close-viewer">
@@ -546,15 +592,15 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const fileInput = document.getElementById('file-input');
+            const fileInput = document.getElementById('image-upload');
+            const uploadSection = document.getElementById('upload-section');
             const unitSelect = document.getElementById('unit-select');
             const pranchetasContainer = document.getElementById('pranchetas-container');
             const downloadBtn = document.getElementById('download-btn');
             const previewPanel = document.getElementById('preview-panel');
+            const previewDisplay = document.getElementById('preview-display');
             const thumbnailsContainer = document.getElementById('thumbnails-container');
             const downloadFormatSelect = document.getElementById('download-format-select');
-            const backToTopButton = document.getElementById('backToTop');
-            const goBackButton = document.getElementById('goBack');
             const editorMainPreview = document.getElementById('editor-main-preview');
             const closeEditorBtn = document.getElementById('close-editor');
             const viewerModal = document.getElementById('viewer-modal');
@@ -570,7 +616,6 @@
             const resetBtn = document.getElementById('reset-btn');
             const saveEditBtn = document.getElementById('save-edit-btn');
             const cancelEditBtn = document.getElementById('cancel-edit-btn');
-
             const editorModal = document.getElementById('editor-modal');
             
             let photos = [];
@@ -583,58 +628,87 @@
             const PPI = 300;
             const CM_PER_INCH = 2.54;
             
-            // Função para mostrar/ocultar o botão de voltar ao topo
-            function toggleBackToTopButton() {
-                if (window.scrollY > 300) {
-                    backToTopButton.classList.add('visible');
-                } else {
-                    backToTopButton.classList.remove('visible');
-                }
+            // Funções para drag and drop
+            ['dragenter', 'dragoover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadSection.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
             
-            // Função para rolar suavemente até o topo
-            function scrollToTop() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadSection.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadSection.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                uploadSection.classList.add('dragover');
+            }
+            
+            function unhighlight() {
+                uploadSection.classList.remove('dragover');
+            }
+            
+            uploadSection.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+            
+            function handleFiles(files) {
+                if (photos.length + files.length > MAX_FILES) {
+                    alert(`Você pode carregar no máximo ${MAX_FILES} fotos.`);
+                    return;
+                }
+                
+                Array.from(files).forEach(file => {
+                    if (!file.type.match('image.*')) {
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            photos.push({
+                                file: { name: file.name, type: file.type },
+                                url: e.target.result,
+                                width: DEFAULT_WIDTH,
+                                height: DEFAULT_HEIGHT,
+                                locked: false,
+                                originalAspectRatio: img.width / img.height,
+                                cropFactor: 1,
+                                brightness: 1.0,
+                                contrast: 1.0,
+                                grayscale: false,
+                                sepia: false
+                            });
+                            renderUI();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
                 });
             }
             
-            // Função para voltar à página anterior
-            function goBack() {
-                window.history.back();
-            }
-            
-            // Adicionar event listeners para os botões
-            window.addEventListener('scroll', toggleBackToTopButton);
-            backToTopButton.addEventListener('click', scrollToTop);
-            goBackButton.addEventListener('click', goBack);
-            closeEditorBtn.addEventListener('click', () => editorModal.classList.add('hidden'));
-            closeViewerBtn.addEventListener('click', () => viewerModal.classList.add('hidden'));
-            closeViewerBtn2.addEventListener('click', () => viewerModal.classList.add('hidden'));
-
-            // Função para abrir o visualizador
-            function openViewer(index) {
-                const photo = photos[index];
-                viewerImage.src = photo.url;
-                viewerModal.classList.remove('hidden');
-                
-                // Configurar o botão de editar para abrir o editor para esta foto
-                editFromViewerBtn.onclick = () => {
-                    viewerModal.classList.add('hidden');
-                    openEditor(index);
-                };
-            }
-
             // Função para renderizar a interface
             function renderUI() {
                 renderThumbnails();
                 renderPranchetas();
                 if (photos.length > 0) {
                     previewPanel.classList.remove('hidden');
+                    previewDisplay.classList.remove('hidden');
                     downloadBtn.classList.remove('hidden');
                 } else {
                     previewPanel.classList.add('hidden');
+                    previewDisplay.classList.add('hidden');
                     downloadBtn.classList.add('hidden');
                 }
             }
@@ -644,13 +718,13 @@
                 thumbnailsContainer.innerHTML = '';
                 photos.forEach((photo, index) => {
                     const thumbnailItem = document.createElement('div');
-                    thumbnailItem.className = 'thumbnail-item flex flex-row items-center gap-4';
+                    thumbnailItem.className = 'thumbnail-item flex flex-row items-center gap-4 mb-4 p-3 bg-gray-50 rounded-lg';
 
                     const dimensionControls = document.createElement('div');
                     dimensionControls.className = 'dimension-controls';
 
                     const linkBtn = document.createElement('button');
-                    linkBtn.className = 'text-gray-400 hover:text-blue-500 transition-colors duration-200';
+                    linkBtn.className = 'text-gray-400 hover:text-blue-500 transition-colors duration-200 mb-2';
                     linkBtn.innerHTML = `<i class="fas fa-${photo.locked ? 'link' : 'unlink'}"></i>`;
                     linkBtn.title = photo.locked ? 'Desvincular dimensões' : 'Vincular dimensões';
                     linkBtn.onclick = () => {
@@ -704,11 +778,11 @@
                     
                     const unitSpan = document.createElement('span');
                     unitSpan.textContent = unitSelect.value;
-                    unitSpan.className = 'text-gray-600 font-medium text-xs mt-2';
+                    unitSpan.className = 'text-gray-600 font-medium text-xs mt-2 text-center';
 
+                    dimensionControls.appendChild(linkBtn);
                     dimensionControls.appendChild(heightInputWrapper);
                     dimensionControls.appendChild(widthInputWrapper);
-                    dimensionControls.appendChild(linkBtn);
                     dimensionControls.appendChild(unitSpan);
 
                     const thumbnailContainer = document.createElement('div');
@@ -772,7 +846,7 @@
 
                 photos.forEach((photo, index) => {
                     const frameCard = document.createElement('div');
-                    frameCard.className = 'frame-card';
+                    frameCard.className = 'frame-card mb-6';
 
                     const pranchetaDiv = document.createElement('div');
                     pranchetaDiv.className = 'prancheta rounded-lg shadow-md';
@@ -826,7 +900,7 @@
                     }
 
                     const frameInfo = document.createElement('div');
-                    frameInfo.className = 'frame-info';
+                    frameInfo.className = 'frame-info mt-2';
                     frameInfo.innerHTML = sizeText;
 
                     const pranchetaOverlay = document.createElement('div');
@@ -869,22 +943,22 @@
                 });
             }
 
-            // Função para aplicar recorte centralizado (zoom)
+            // Função para aplicar recorte centralizado (zoom) mantendo a proporção
             function applyCentralCrop(img, cropFactor) {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 
-                // Define as dimensões do canvas como as dimensões originais da imagem
-                canvas.width = img.width;
-                canvas.height = img.height;
-                
-                // Calcula as novas dimensões com base no fator de recorte
+                // Calcula as novas dimensões mantendo a proporção
                 const newWidth = img.width / cropFactor;
                 const newHeight = img.height / cropFactor;
                 
                 // Calcula a posição para recorte centralizado
                 const x = (img.width - newWidth) / 2;
                 const y = (img.height - newHeight) / 2;
+                
+                // Define as dimensões do canvas como as dimensões originais da imagem
+                canvas.width = img.width;
+                canvas.height = img.height;
                 
                 // Desenha a parte recortada da imagem no canvas
                 ctx.drawImage(
@@ -956,7 +1030,7 @@
                     offsetY = (targetHeightPx - drawHeight) / 2;
                 }
                 
-                // Aplica o recorte se necessário
+                // Aplica o recorte se necessário, mantendo a proporção
                 if (photo.cropFactor && photo.cropFactor > 1) {
                     const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
                     ctx.drawImage(croppedCanvas, offsetX, offsetY, drawWidth, drawHeight);
@@ -1003,7 +1077,7 @@
                     tempCanvas.width = img.width;
                     tempCanvas.height = img.height;
                     
-                    // Aplica o recorte se necessário
+                    // Aplica o recorte se necessário, mantendo a proporção
                     if (photo.cropFactor && photo.cropFactor > 1) {
                         const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
                         tempCtx.drawImage(croppedCanvas, 0, 0);
@@ -1093,37 +1167,22 @@
                 editorModal.classList.remove('hidden');
             }
 
+            // Função para abrir o visualizador
+            function openViewer(index) {
+                const photo = photos[index];
+                viewerImage.src = photo.url;
+                viewerModal.classList.remove('hidden');
+                
+                // Configurar o botão de editar para abrir o editor para esta foto
+                editFromViewerBtn.onclick = () => {
+                    viewerModal.classList.add('hidden');
+                    openEditor(index);
+                };
+            }
+
             // Ouve a mudança no input de arquivo
             fileInput.addEventListener('change', (e) => {
-                const newFiles = Array.from(e.target.files);
-                if (photos.length + newFiles.length > MAX_FILES) {
-                    alert(`Você pode carregar no máximo ${MAX_FILES} fotos.`);
-                    return;
-                }
-                newFiles.forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            photos.push({
-                                file: { name: file.name, type: file.type },
-                                url: e.target.result,
-                                width: DEFAULT_WIDTH,
-                                height: DEFAULT_HEIGHT,
-                                locked: false,
-                                originalAspectRatio: img.width / img.height,
-                                cropFactor: 1,
-                                brightness: 1.0,
-                                contrast: 1.0,
-                                grayscale: false,
-                                sepia: false
-                            });
-                            renderUI();
-                        };
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
+                handleFiles(e.target.files);
                 e.target.value = '';
             });
 
@@ -1188,7 +1247,7 @@
                     canvas.width = img.width;
                     canvas.height = img.height;
                     
-                    // Aplica o recorte se necessário
+                    // Aplica o recorte se necessário, mantendo a proporção
                     if (photo.cropFactor > 1) {
                         const croppedCanvas = applyCentralCrop(img, photo.cropFactor);
                         ctx.drawImage(croppedCanvas, 0, 0);
@@ -1274,6 +1333,11 @@
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
             });
+
+            // Fechar modais
+            closeEditorBtn.addEventListener('click', () => editorModal.classList.add('hidden'));
+            closeViewerBtn.addEventListener('click', () => viewerModal.classList.add('hidden'));
+            closeViewerBtn2.addEventListener('click', () => viewerModal.classList.add('hidden'));
 
             // Inicia o aplicativo
             renderUI();
