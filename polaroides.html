@@ -10,9 +10,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- jsPDF CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Estilos anteriores mantidos */
         @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Cinzel:wght@400..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+        
         @font-face {
             font-family: 'Valentine Baby';
             src: url('https://fonts.cdnfonts.com/s/72225/Valentine Baby.woff') format('woff');
@@ -74,7 +82,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #f3f4f6;
+            background-color: #3b82f6; /* Fundo azul para diferenciar */
         }
         
         /* Novos estilos para a visualização com máscara e linhas */
@@ -113,7 +121,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #fff;
+            background-color: #3b82f6; /* Fundo azul para diferenciar */
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             border-radius: 0.5rem;
             border: 1px solid #e5e7eb;
@@ -172,7 +180,7 @@
 
         @keyframes spin {
             from { transform: rotate(0deg); }
-            to { transform: rotate(-360deg); }
+            to { transform: rotate(360deg); }
         }
         .spinner {
             animation: spin 1s linear infinite;
@@ -188,6 +196,7 @@
             align-items: start;
             justify-items: center;
             max-height: 70vh;
+            background-color: #3b82f6; /* Fundo azul para diferenciar */
         }
         
         #full-preview-area .preview-page {
@@ -342,6 +351,155 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
+        
+        /* Novos estilos para o editor de legendas */
+        .caption-editable {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            z-index: 20;
+            padding: 5px;
+            border: 1px dashed transparent;
+        }
+        
+        .caption-editable:hover {
+            border-color: #3b82f6;
+        }
+        
+        .caption-editable.selected {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        .caption-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .caption-control-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 120px;
+        }
+        
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        .drawing-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 15;
+        }
+        
+        .drawing-controls {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .grid-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .grid-option:hover {
+            border-color: #3b82f6;
+            background-color: #f0f7ff;
+        }
+        
+        .grid-option.selected {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+        }
+        
+        .grid-preview {
+            width: 100%;
+            height: 100px;
+            display: grid;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .grid-preview-cell {
+            background-color: #3b82f6;
+            border-radius: 3px;
+        }
+        
+        /* Estilos para as opções de grade */
+        .grid-options-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        /* Novos estilos para os controles de edição avançada */
+        .advanced-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .advanced-control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .advanced-control-group label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .advanced-control-group input {
+            width: 100%;
+        }
+        
+        .color-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .color-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        
+        /* Estilo para botão de próxima imagem */
+        .next-image-btn {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .next-image-btn:hover {
+            background-color: #059669;
+        }
+        
+        /* Estilo para botão de reset */
+        .reset-btn {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #dc2626;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -356,7 +514,7 @@
         <!-- Título -->
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold text-blue-800">Criar Fotos Polaroides</h2>
-            <p class="text-gray-600 mt-2">Arraste e solte fotos para criar fotos polaroides com uma grade de 2x4.</p>
+            <p class="text-gray-600 mt-2">Arraste e solte fotos para criar fotos polaroides com diferentes formatos de grade.</p>
         </div>
 
         <!-- Seção de Upload com Drag & Drop -->
@@ -393,7 +551,64 @@
             <div class="p-6 bg-white rounded-xl shadow-md">
                 <h2 class="text-lg font-bold mb-4 text-blue-800">Opções de Layout</h2>
                 <div class="flex flex-col space-y-3">
-                    <p class="text-gray-700 text-sm">O layout das fotos está fixo em uma grade de 2x4 (duas linhas, quatro colunas) com espaçamento otimizado.</p>
+                    <label class="block">
+                        <span class="text-gray-700">Tipo de Grade:</span>
+                        <select id="grid-type-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <option value="2x4">2x4 (8 fotos por página)</option>
+                            <option value="2x2">2x2 (4 fotos por página)</option>
+                            <option value="1x2">1x2 (2 fotos por página)</option>
+                            <option value="3x3">3x3 (9 fotos por página)</option>
+                        </select>
+                    </label>
+                    
+                    <div class="grid-options-container">
+                        <div class="grid-option selected" data-grid="2x4">
+                            <div class="grid-preview" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);">
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                            </div>
+                            <span>2x4</span>
+                        </div>
+                        
+                        <div class="grid-option" data-grid="2x2">
+                            <div class="grid-preview" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr);">
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                            </div>
+                            <span>2x2</span>
+                        </div>
+                        
+                        <div class="grid-option" data-grid="1x2">
+                            <div class="grid-preview" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr;">
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                            </div>
+                            <span>1x2</span>
+                        </div>
+
+                        <div class="grid-option" data-grid="3x3">
+                            <div class="grid-preview" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);">
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                                <div class="grid-preview-cell"></div>
+                            </div>
+                            <span>3x3</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -447,6 +662,7 @@
                 <div class="flex-1 flex items-center justify-center relative min-h-[30vh] lg:min-h-96">
                     <div id="editor-area" class="editor-container w-full h-full relative">
                         <canvas id="editor-canvas" class="w-full h-full maintain-aspect-ratio"></canvas>
+                        <canvas id="drawing-canvas" class="drawing-canvas"></canvas>
                         <!-- Overlay com máscara e linhas tracejadas -->
                         <div id="mask-overlay" class="mask-overlay">
                             <!-- Linhas serão adicionadas via JavaScript -->
@@ -496,62 +712,93 @@
                         </div>
                     </div>
 
-                    <!-- Controles da Ferramenta de Legenda -->
+                    <!-- Controles da Ferramenta de Legenda - MODIFICADO -->
                     <div id="caption-controls" class="hidden">
-                        <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustar Legenda</h3>
-                        <div class="flex flex-wrap -mx-2 mb-4">
-                            <div class="px-2 w-full mb-4">
-                                <label class="block">
-                                    <span class="text-gray-700">Texto:</span>
-                                    <input type="text" id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 realtime-preview">
-                                </label>
+                        <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Editor de Legendas</h3>
+                        
+                        <div class="caption-controls">
+                            <div class="caption-control-group">
+                                <label class="text-gray-700 text-sm">Texto:</label>
+                                <textarea id="caption-text-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 realtime-preview" rows="3"></textarea>
                             </div>
-                            <div class="px-2 w-1/2 mb-4">
-                                <label class="block">
-                                    <span class="text-gray-700">Cor:</span>
-                                    <input type="color" id="caption-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#000000">
-                                </label>
+                            
+                            <div class="caption-control-group">
+                                <label class="text-gray-700 text-sm">Cor do Texto:</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="color" id="caption-color-input" class="mt-1 block h-8 rounded-md border-gray-300 realtime-preview" value="#000000">
+                                    <div class="color-preview" id="text-color-preview" style="background-color: #000000;"></div>
+                                </div>
                             </div>
-                            <div class="px-2 w-1/2 mb-4">
-                                <label class="block">
-                                    <span class="text-gray-700">Contorno:</span>
-                                    <input type="color" id="caption-outline-color-input" class="mt-1 block w-full h-10 rounded-md border-gray-300 realtime-preview" value="#FFFFFF">
-                                </label>
-                            </div>
-                            <div class="px-2 w-full mb-4">
-                                <label class="block">
-                                    <span class="text-gray-700">Tamanho da Fonte:</span>
-                                    <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500 realtime-preview">
-                                    <p class="text-right text-sm text-gray-500" id="caption-size-value">20 px</p>
-                                </label>
-                            </div>
-                            <div class="px-2 w-full mb-4">
-                                <label class="block">
-                                    <span class="text-gray-700">Espessura do Contorno:</span>
-                                    <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500 realtime-preview">
-                                    <p class="text-right text-sm text-gray-500" id="caption-stroke-value">0 px</p>
-                                </label>
-                            </div>
-                            <div class="px-2 w-full mb-4">
-                                <label class="block">
-                                    <span class="text-gray-700">Fonte:</span>
-                                    <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm realtime-preview">
-                                        <option value="Valentine Baby, sans-serif">Valentine Baby</option>
-                                        <option value="Inter, sans-serif">Inter</option>
-                                        <option value="Arial, sans-serif">Arial</option>
-                                        <option value="Verdana, sans-serif">Verdana</option>
-                                        <option value="Times New Roman, serif">Times New Roman</option>
-                                        <option value="Courier New, monospace">Courier New</option>
-                                    </select>
-                                </label>
+                            
+                            <div class="caption-control-group">
+                                <label class="text-gray-700 text-sm">Cor do Contorno:</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="color" id="caption-outline-color-input" class="mt-1 block h-8 rounded-md border-gray-300 realtime-preview" value="#FFFFFF">
+                                    <div class="color-preview" id="outline-color-preview" style="background-color: #FFFFFF;"></div>
+                                </div>
                             </div>
                         </div>
+                        
+                        <div class="caption-controls mt-3">
+                            <div class="caption-control-group">
+                                <label class="text-gray-700 text-sm">Tamanho da Fonte:</label>
+                                <input type="range" id="caption-size-slider" min="10" max="100" value="20" class="mt-1 w-full accent-blue-500 realtime-preview">
+                                <p class="text-right text-sm text-gray-500" id="caption-size-value">20 px</p>
+                            </div>
+                            
+                            <div class="caption-control-group">
+                                <label class="text-gray-700 text-sm">Espessura do Contorno:</label>
+                                <input type="range" id="caption-stroke-slider" min="0" max="100" value="0" class="mt-1 w-full accent-blue-500 realtime-preview">
+                                <p class="text-right text-sm text-gray-500" id="caption-stroke-value">0 px</p>
+                            </div>
+                            
+                            <div class="caption-control-group">
+                                <label class="text-gray-700 text-sm">Fonte:</label>
+                                <select id="caption-font-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm realtime-preview">
+                                    <option value="Valentine Baby, sans-serif">Valentine Baby</option>
+                                    <option value="'Dancing Script', cursive">Dancing Script</option>
+                                    <option value="'Pacifico', cursive">Pacifico</option>
+                                    <option value="'Shadows Into Light', cursive">Shadows Into Light</option>
+                                    <option value="'Indie Flower', cursive">Indie Flower</option>
+                                    <option value="Inter, sans-serif">Inter</option>
+                                    <option value="Arial, sans-serif">Arial</option>
+                                    <option value="Verdana, sans-serif">Verdana</option>
+                                    <option value="'Times New Roman', serif">Times New Roman</option>
+                                    <option value="'Courier New', monospace">Courier New</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="caption-controls mt-3">
+                            <div class="caption-control-group">
+                                <label class="text-gray-700 text-sm">Alinhamento:</label>
+                                <div class="flex gap-2 mt-1">
+                                    <button class="alignment-btn p-2 bg-gray-200 rounded" data-align="left" title="Alinhar à esquerda">
+                                        <i class="fas fa-align-left"></i>
+                                    </button>
+                                    <button class="alignment-btn p-2 bg-gray-200 rounded" data-align="center" title="Centralizar">
+                                        <i class="fas fa-align-center"></i>
+                                    </button>
+                                    <button class="alignment-btn p-2 bg-gray-200 rounded" data-align="right" title="Alinhar à direita">
+                                        <i class="fas fa-align-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botão de reset para legendas -->
+                        <div class="flex justify-center mt-4">
+                            <button id="reset-caption-btn" class="reset-btn font-semibold py-2 px-4 rounded-lg">
+                                Resetar Legendas
+                            </button>
+                        </div>
+                        
                         <div class="flex justify-center lg:justify-end space-x-4 mt-4">
                             <button id="discard-caption-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
-                                Descartar Alterações
+                                Descartar
                             </button>
                             <button id="save-caption-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                Salvar Alterações
+                                Salvar
                             </button>
                         </div>
                     </div>
@@ -560,6 +807,18 @@
                     <div id="background-controls" class="hidden">
                         <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Editar Fundo</h3>
                         <p class="text-sm text-gray-600 mb-4 text-center lg:text-left">Ajuste o desfoque e o redimensionamento do fundo da imagem.</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm mb-2">Carregar foto de fundo:</label>
+                            <input type="file" id="background-upload" accept="image/*" class="hidden">
+                            <button id="background-upload-btn" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg w-full mb-2">
+                                Selecionar Foto
+                            </button>
+                            <button id="use-same-photo-btn" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg w-full">
+                                Usar mesma foto como fundo
+                            </button>
+                        </div>
+                        
                         <label class="block mb-4">
                             <span class="text-gray-700">Intensidade do Desfoque:</span>
                             <input type="range" id="blur-slider" min="0" max="250" value="15" class="mt-1 w-full accent-indigo-500 realtime-preview">
@@ -570,6 +829,35 @@
                             <input type="range" id="background-size-slider" min="100" max="500" value="100" class="mt-1 w-full accent-indigo-500 realtime-preview">
                             <p class="text-right text-sm text-gray-500" id="background-size-value">100 %</p>
                         </label>
+                        
+                        <!-- Novos controles de edição para o fundo -->
+                        <div class="advanced-controls">
+                            <div class="advanced-control-group">
+                                <label>Matriz</label>
+                                <input type="range" id="matrix-slider" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Saturação</label>
+                                <input type="range" id="saturation-slider" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Brilho</label>
+                                <input type="range" id="brightness-slider" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Contraste</label>
+                                <input type="range" id="contrast-slider" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Nitidez</label>
+                                <input type="range" id="sharpness-slider" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Desfoque</label>
+                                <input type="range" id="blur-advanced-slider" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                        </div>
+                        
                         <div class="flex justify-center lg:justify-end space-x-4 mt-4">
                             <button id="discard-background-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
                                 Descartar Alterações
@@ -579,23 +867,75 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- Novos controles de edição avançada -->
+                    <div id="advanced-controls" class="hidden">
+                        <h3 class="text-xl font-bold mb-2 text-center lg:text-left">Ajustes Avançados</h3>
+                        
+                        <div class="advanced-controls">
+                            <div class="advanced-control-group">
+                                <label>Matriz</label>
+                                <input type="range" id="matrix-slider-main" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Saturação</label>
+                                <input type="range" id="saturation-slider-main" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Brilho</label>
+                                <input type="range" id="brightness-slider-main" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Contraste</label>
+                                <input type="range" id="contrast-slider-main" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Nitidez</label>
+                                <input type="range" id="sharpness-slider-main" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                            <div class="advanced-control-group">
+                                <label>Desfoque</label>
+                                <input type="range" id="blur-advanced-slider-main" min="-50" max="50" value="0" class="realtime-preview">
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center lg:justify-end space-x-4 mt-4">
+                            <button id="discard-advanced-btn" class="bg-gray-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-500 transition-colors">
+                                Descartar
+                            </button>
+                            <button id="save-advanced-btn" class="bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                Salvar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Botões de Ação do Modal - Fundo do painel de edição -->
             <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 lg:space-x-4 mt-6 border-t pt-4 border-gray-200">
-                <button id="back-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto">
-                    Voltar
-                </button>
+                <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+                    <button id="back-btn" class="bg-blue-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-500 transition-colors w-full lg:w-auto">
+                        Voltar
+                    </button>
+                    <button id="next-image-btn" class="next-image-btn font-semibold py-2 px-6 rounded-lg shadow-md transition-colors w-full lg:w-auto">
+                        Editar Próxima Foto
+                    </button>
+                    <button id="reset-all-btn" class="reset-btn font-semibold py-2 px-6 rounded-lg shadow-md transition-colors w-full lg:w-auto">
+                        Resetar Tudo
+                    </button>
+                </div>
                 <div class="flex flex-wrap justify-center lg:justify-end gap-2 w-full lg:w-auto">
                     <button id="tool-zoom-btn" class="tool-btn bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors flex-1">
                         Zoom
                     </button>
                     <button id="tool-caption-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
-                        Adicionar Legenda
+                        Legendas
                     </button>
                     <button id="tool-background-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
                         Editar Fundo
+                    </button>
+                    <button id="tool-advanced-btn" class="tool-btn bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors flex-1">
+                        Ajustes Avançados
                     </button>
                 </div>
             </div>
@@ -650,6 +990,7 @@
         window.onload = function() {
             const { jsPDF } = window.jspdf;
 
+            // Elementos do DOM
             const imageUpload = document.getElementById('image-upload');
             const imageGallery = document.getElementById('image-gallery');
             const clearAllBtn = document.getElementById('clear-all-btn');
@@ -660,12 +1001,15 @@
             const editModal = document.getElementById('edit-modal');
             const backBtn = document.getElementById('back-btn');
             const editorCanvas = document.getElementById('editor-canvas');
+            const drawingCanvas = document.getElementById('drawing-canvas');
             const toolZoomBtn = document.getElementById('tool-zoom-btn');
             const toolCaptionBtn = document.getElementById('tool-caption-btn');
             const toolBackgroundBtn = document.getElementById('tool-background-btn');
+            const toolAdvancedBtn = document.getElementById('tool-advanced-btn');
             const zoomControls = document.getElementById('zoom-controls');
             const captionControls = document.getElementById('caption-controls');
             const backgroundControls = document.getElementById('background-controls');
+            const advancedControls = document.getElementById('advanced-controls');
             const maskOverlay = document.getElementById('mask-overlay');
             const zoomSlider = document.getElementById('zoom-slider');
             const zoomValue = document.getElementById('zoom-value');
@@ -690,6 +1034,20 @@
             const uploadSection = document.getElementById('upload-section');
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingText = document.getElementById('loading-text');
+            const gridTypeSelect = document.getElementById('grid-type-select');
+            const gridOptions = document.querySelectorAll('.grid-option');
+            const nextImageBtn = document.getElementById('next-image-btn');
+            const resetAllBtn = document.getElementById('reset-all-btn');
+            const resetCaptionBtn = document.getElementById('reset-caption-btn');
+            const backgroundUpload = document.getElementById('background-upload');
+            const backgroundUploadBtn = document.getElementById('background-upload-btn');
+            const useSamePhotoBtn = document.getElementById('use-same-photo-btn');
+            const saveCaptionBtn = document.getElementById('save-caption-btn');
+            const discardCaptionBtn = document.getElementById('discard-caption-btn');
+            const saveBackgroundBtn = document.getElementById('save-background-btn');
+            const discardBackgroundBtn = document.getElementById('discard-background-btn');
+            const saveAdvancedBtn = document.getElementById('save-advanced-btn');
+            const discardAdvancedBtn = document.getElementById('discard-advanced-btn');
 
             // Novos botões e modais de pré-visualização
             const fullPreviewBtn = document.getElementById('full-preview-btn');
@@ -704,36 +1062,106 @@
             const prevPageBtn = document.getElementById('prev-page-btn');
             const nextPageBtn = document.getElementById('next-page-btn');
             const pageIndicator = document.getElementById('page-indicator');
-            let currentPageIndex = 0;
+            
+            // Elementos do editor de legendas
+            const alignmentButtons = document.querySelectorAll('.alignment-btn');
+            const textColorPreview = document.getElementById('text-color-preview');
+            const outlineColorPreview = document.getElementById('outline-color-preview');
 
-            // New save/discard buttons for each tool
-            const saveCaptionBtn = document.getElementById('save-caption-btn');
-            const discardCaptionBtn = document.getElementById('discard-caption-btn');
-            const saveBackgroundBtn = document.getElementById('save-background-btn');
-            const discardBackgroundBtn = document.getElementById('discard-background-btn');
+            // Controles avançados
+            const matrixSlider = document.getElementById('matrix-slider');
+            const saturationSlider = document.getElementById('saturation-slider');
+            const brightnessSlider = document.getElementById('brightness-slider');
+            const contrastSlider = document.getElementById('contrast-slider');
+            const sharpnessSlider = document.getElementById('sharpness-slider');
+            const blurAdvancedSlider = document.getElementById('blur-advanced-slider');
+            const matrixSliderMain = document.getElementById('matrix-slider-main');
+            const saturationSliderMain = document.getElementById('saturation-slider-main');
+            const brightnessSliderMain = document.getElementById('brightness-slider-main');
+            const contrastSliderMain = document.getElementById('contrast-slider-main');
+            const sharpnessSliderMain = document.getElementById('sharpness-slider-main');
+            const blurAdvancedSliderMain = document.getElementById('blur-advanced-slider-main');
 
             const editorCtx = editorCanvas.getContext('2d');
+            const drawingCtx = drawingCanvas.getContext('2d');
 
             let uploadedImages = [];
             let currentImageIndex = -1;
             let currentTool = null;
             let initialCanvasSize = { width: 0, height: 0 };
-
-            const DEFAULT_BLUR = 30;
-            const DEFAULT_BG_SIZE = 180;
-            const BLUR_PADDING = 250;
+            let currentPageIndex = 0;
+            let gridType = '2x4'; // Padrão: 2x4
+            let isDragging = false;
+            let selectedCaptionIndex = -1;
+            let dragOffset = { x: 0, y: 0 };
+            let isDrawing = false;
+            let drawMode = null; // 'rectangle', 'circle'
+            let startX, startY;
+            let editHistory = [];
+            let historyIndex = -1;
 
             // Dimensões da folha A4 em 300 DPI
             const A4_WIDTH_PX_LANDSCAPE = 3508;
             const A4_HEIGHT_PX_LANDSCAPE = 2480;
             
-            // Dimensões de cada foto na grade
-            const IMAGE_WIDTH_PX = 832.32;
-            const IMAGE_HEIGHT_PX = 1177.2;
+            // Dimensões de cada foto na grade (para 2x4)
+            const IMAGE_WIDTH_PX_2x4 = 832.32;
+            const IMAGE_HEIGHT_PX_2x4 = 1177.2;
+            
+            // Dimensões para outras grades
+            const IMAGE_WIDTH_PX_2x2 = 1664.64;
+            const IMAGE_HEIGHT_PX_2x2 = 2354.4;
+            
+            const IMAGE_WIDTH_PX_1x2 = 1664.64;
+            const IMAGE_HEIGHT_PX_1x2 = 2354.4;
 
-            // Espaçamentos calculados para o layout
-            const HORIZONTAL_SPACING_PX = (A4_WIDTH_PX_LANDSCAPE - (4 * IMAGE_WIDTH_PX)) / 5;
-            const VERTICAL_SPACING_PX = (A4_HEIGHT_PX_LANDSCAPE - (2 * IMAGE_HEIGHT_PX)) / 3;
+            // Dimensões para grade 3x3
+            const IMAGE_WIDTH_PX_3x3 = 1102.67;
+            const IMAGE_HEIGHT_PX_3x3 = 1102.67;
+
+            const DEFAULT_BLUR = 30;
+            const DEFAULT_BG_SIZE = 180;
+            const BLUR_PADDING = 250;
+
+            // Configuração das grades
+            const gridConfigs = {
+                '2x4': {
+                    cols: 4,
+                    rows: 2,
+                    imageWidth: IMAGE_WIDTH_PX_2x4,
+                    imageHeight: IMAGE_HEIGHT_PX_2x4,
+                    horizontalSpacing: (A4_WIDTH_PX_LANDSCAPE - (4 * IMAGE_WIDTH_PX_2x4)) / 5,
+                    verticalSpacing: (A4_HEIGHT_PX_LANDSCAPE - (2 * IMAGE_HEIGHT_PX_2x4)) / 3,
+                    orientation: 'portrait'
+                },
+                '2x2': {
+                    cols: 2,
+                    rows: 2,
+                    imageWidth: IMAGE_WIDTH_PX_2x2,
+                    imageHeight: IMAGE_HEIGHT_PX_2x2,
+                    horizontalSpacing: (A4_WIDTH_PX_LANDSCAPE - (2 * IMAGE_WIDTH_PX_2x2)) / 3,
+                    verticalSpacing: (A4_HEIGHT_PX_LANDSCAPE - (2 * IMAGE_HEIGHT_PX_2x2)) / 3,
+                    orientation: 'portrait'
+                },
+                '1x2': {
+                    cols: 2,
+                    rows: 1,
+                    imageWidth: IMAGE_WIDTH_PX_1x2,
+                    imageHeight: IMAGE_HEIGHT_PX_1x2,
+                    horizontalSpacing: (A4_WIDTH_PX_LANDSCAPE - (2 * IMAGE_WIDTH_PX_1x2)) / 3,
+                    verticalSpacing: (A4_HEIGHT_PX_LANDSCAPE - (1 * IMAGE_HEIGHT_PX_1x2)) / 2,
+                    orientation: 'portrait'
+                },
+                '3x3': {
+                    cols: 3,
+                    rows: 3,
+                    imageWidth: IMAGE_WIDTH_PX_3x3,
+                    imageHeight: IMAGE_HEIGHT_PX_3x3,
+                    horizontalSpacing: (A4_WIDTH_PX_LANDSCAPE - (3 * IMAGE_WIDTH_PX_3x3)) / 4,
+                    verticalSpacing: (A4_HEIGHT_PX_LANDSCAPE - (3 * IMAGE_HEIGHT_PX_3x3)) / 4,
+                    orientation: 'portrait'
+                }
+            };
 
             // Helper to get proportional image dimensions for drawing (object-fit: contain)
             const getProportionalContainDimensions = (imgWidth, imgHeight, boxWidth, boxHeight) => {
@@ -829,9 +1257,8 @@
                 previewGallery.innerHTML = '';
                 if (uploadedImages.length === 0) return;
 
-                const gridCols = 4;
-                const gridRows = 2;
-                const IMAGES_PER_PAGE = gridCols * gridRows;
+                const config = gridConfigs[gridType];
+                const IMAGES_PER_PAGE = config.cols * config.rows;
                 const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
 
                 for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
@@ -861,9 +1288,8 @@
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                const gridCols = 4;
-                const gridRows = 2;
-                const IMAGES_PER_PAGE = gridCols * gridRows;
+                const config = gridConfigs[gridType];
+                const IMAGES_PER_PAGE = config.cols * config.rows;
 
                 const pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
                 const pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
@@ -876,29 +1302,29 @@
                 let imagePromiseChain = Promise.resolve();
                 imagesToDraw.forEach((image, i) => {
                     imagePromiseChain = imagePromiseChain.then(() => {
-                        const col = i % gridCols;
-                        const row = Math.floor(i / gridCols);
+                        const col = i % config.cols;
+                        const row = Math.floor(i / config.cols);
                         
                         let xPos, yPos;
-                        xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
-                        yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
+                        xPos = config.horizontalSpacing + col * (config.imageWidth + config.horizontalSpacing);
+                        yPos = config.verticalSpacing + row * (config.imageHeight + config.verticalSpacing);
 
                         // Cria um canvas temporário que funciona como a "máscara"
                         const compositeCanvas = document.createElement('canvas');
-                        compositeCanvas.width = IMAGE_WIDTH_PX;
-                        compositeCanvas.height = IMAGE_HEIGHT_PX;
+                        compositeCanvas.width = config.imageWidth;
+                        compositeCanvas.height = config.imageHeight;
                         const compositeCtx = compositeCanvas.getContext('2d');
 
-                        return drawCompositeImage(compositeCtx, image)
+                        return drawCompositeImage(compositeCtx, image, config)
                             .then(() => {
-                                ctx.drawImage(compositeCanvas, xPos * scaleFactor, yPos * scaleFactor, IMAGE_WIDTH_PX * scaleFactor, IMAGE_HEIGHT_PX * scaleFactor);
+                                ctx.drawImage(compositeCanvas, xPos * scaleFactor, yPos * scaleFactor, config.imageWidth * scaleFactor, config.imageHeight * scaleFactor);
                             });
                     });
                 });
             };
 
             // Draws a single image, its background and captions on a canvas
-            const drawCompositeImage = (ctx, imageObject) => {
+            const drawCompositeImage = (ctx, imageObject, config) => {
                 return new Promise((resolve) => {
                     const img = new Image();
                     img.src = imageObject.croppedUrl;
@@ -914,7 +1340,7 @@
                         if (imagesLoaded === totalImages) {
                             // Draw background if it exists
                             if (imageObject.blurredUrl && imageObject.blurRadius > 0) {
-                                const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(bgImg.width, bgImg.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
+                                const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(bgImg.width, bgImg.height, config.imageWidth, config.imageHeight);
                                 const bgScale = imageObject.backgroundSize / 100;
                                 const finalBgWidth = drawWidth * bgScale;
                                 const finalBgHeight = drawHeight * bgScale;
@@ -924,7 +1350,7 @@
                             }
 
                             // Draw foreground image with zoom applied
-                            const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(img.width, img.height, IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX);
+                            const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(img.width, img.height, config.imageWidth, config.imageHeight);
                             
                             // Apply zoom if exists
                             let zoomFactor = 1;
@@ -941,6 +1367,21 @@
 
                             // Draw captions
                             drawCaptionsOnCanvas(ctx, imageObject.captions, 0, 0, 1);
+                            
+                            // Draw drawings
+                            if (imageObject.drawings && imageObject.drawings.length > 0) {
+                                imageObject.drawings.forEach(drawing => {
+                                    ctx.fillStyle = drawing.color;
+                                    if (drawing.type === 'rectangle') {
+                                        ctx.fillRect(drawing.x, drawing.y, drawing.width, drawing.height);
+                                    } else if (drawing.type === 'circle') {
+                                        ctx.beginPath();
+                                        ctx.arc(drawing.x + drawing.width/2, drawing.y + drawing.height/2, drawing.width/2, 0, 2 * Math.PI);
+                                        ctx.fill();
+                                    }
+                                });
+                            }
+                            
                             resolve();
                         }
                     };
@@ -959,6 +1400,8 @@
             // Function to open the main edit modal
             const openEditModal = (image) => {
                 editModal.classList.remove('hidden');
+                // Salvar estado atual no histórico
+                saveToHistory();
 
                 // Load existing data
                 const existingCaptions = image.captions || [];
@@ -966,6 +1409,13 @@
                 image.tempBlurRadius = image.blurRadius;
                 image.tempBackgroundSize = image.backgroundSize;
                 image.tempZoom = image.zoom || 100;
+                image.tempDrawings = image.drawings || [];
+                image.tempMatrix = image.matrix || 0;
+                image.tempSaturation = image.saturation || 0;
+                image.tempBrightness = image.brightness || 0;
+                image.tempContrast = image.contrast || 0;
+                image.tempSharpness = image.sharpness || 0;
+                image.tempBlurAdvanced = image.blurAdvanced || 0;
 
                 blurSlider.value = image.tempBlurRadius;
                 blurValueText.textContent = `${image.tempBlurRadius} px`;
@@ -973,6 +1423,21 @@
                 backgroundSizeValueText.textContent = `${image.tempBackgroundSize} %`;
                 zoomSlider.value = image.tempZoom;
                 zoomValue.textContent = `${image.tempZoom}%`;
+
+                // Configurar controles avançados
+                matrixSlider.value = image.tempMatrix;
+                saturationSlider.value = image.tempSaturation;
+                brightnessSlider.value = image.tempBrightness;
+                contrastSlider.value = image.tempContrast;
+                sharpnessSlider.value = image.tempSharpness;
+                blurAdvancedSlider.value = image.tempBlurAdvanced;
+
+                matrixSliderMain.value = image.tempMatrix;
+                saturationSliderMain.value = image.tempSaturation;
+                brightnessSliderMain.value = image.tempBrightness;
+                contrastSliderMain.value = image.tempContrast;
+                sharpnessSliderMain.value = image.tempSharpness;
+                blurAdvancedSliderMain.value = image.tempBlurAdvanced;
 
                 initialCanvasSize = { width: image.imgElement.width, height: image.imgElement.height };
 
@@ -986,23 +1451,96 @@
                 window.addEventListener('resize', resizeCanvasAndDraw);
             };
 
+            // Save current state to history for undo functionality
+            const saveToHistory = () => {
+                if (currentImageIndex >= 0) {
+                    const image = uploadedImages[currentImageIndex];
+                    // Limitar o histórico aos últimos 20 estados
+                    if (editHistory.length >= 20) {
+                        editHistory.shift();
+                    }
+                    editHistory.push(JSON.parse(JSON.stringify({
+                        captions: image.captions,
+                        drawings: image.drawings,
+                        blurRadius: image.blurRadius,
+                        backgroundSize: image.backgroundSize,
+                        zoom: image.zoom,
+                        matrix: image.matrix,
+                        saturation: image.saturation,
+                        brightness: image.brightness,
+                        contrast: image.contrast,
+                        sharpness: image.sharpness,
+                        blurAdvanced: image.blurAdvanced
+                    })));
+                    historyIndex = editHistory.length - 1;
+                }
+            };
+
+            // Undo last action
+            const undoLastAction = () => {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    const previousState = editHistory[historyIndex];
+                    const image = uploadedImages[currentImageIndex];
+                    
+                    // Restaurar estado anterior
+                    image.captions = JSON.parse(JSON.stringify(previousState.captions));
+                    image.drawings = JSON.parse(JSON.stringify(previousState.drawings));
+                    image.blurRadius = previousState.blurRadius;
+                    image.backgroundSize = previousState.backgroundSize;
+                    image.zoom = previousState.zoom;
+                    image.matrix = previousState.matrix;
+                    image.saturation = previousState.saturation;
+                    image.brightness = previousState.brightness;
+                    image.contrast = previousState.contrast;
+                    image.sharpness = previousState.sharpness;
+                    image.blurAdvanced = previousState.blurAdvanced;
+                    
+                    // Atualizar controles
+                    blurSlider.value = image.blurRadius;
+                    blurValueText.textContent = `${image.blurRadius} px`;
+                    backgroundSizeSlider.value = image.backgroundSize;
+                    backgroundSizeValueText.textContent = `${image.backgroundSize} %`;
+                    zoomSlider.value = image.zoom;
+                    zoomValue.textContent = `${image.zoom}%`;
+                    
+                    matrixSlider.value = image.matrix;
+                    saturationSlider.value = image.saturation;
+                    brightnessSlider.value = image.brightness;
+                    contrastSlider.value = image.contrast;
+                    sharpnessSlider.value = image.sharpness;
+                    blurAdvancedSlider.value = image.blurAdvanced;
+                    
+                    matrixSliderMain.value = image.matrix;
+                    saturationSliderMain.value = image.saturation;
+                    brightnessSliderMain.value = image.brightness;
+                    contrastSliderMain.value = image.contrast;
+                    sharpnessSliderMain.value = image.sharpness;
+                    blurAdvancedSliderMain.value = image.blurAdvanced;
+                    
+                    // Redesenhar
+                    redrawEditorCanvas();
+                }
+            };
+
             // Create mask lines for the editor
             const createMaskLines = () => {
                 maskOverlay.innerHTML = '';
                 
                 // Create vertical lines
-                for (let i = 1; i < 4; i++) {
+                const config = gridConfigs[gridType];
+                for (let i = 1; i < config.cols; i++) {
                     const line = document.createElement('div');
                     line.className = 'mask-line vertical';
-                    line.style.left = `${(i * 25)}%`;
+                    line.style.left = `${(i * (100 / config.cols))}%`;
                     maskOverlay.appendChild(line);
                 }
                 
                 // Create horizontal lines
-                for (let i = 1; i < 2; i++) {
+                for (let i = 1; i < config.rows; i++) {
                     const line = document.createElement('div');
                     line.className = 'mask-line horizontal';
-                    line.style.top = `${(i * 50)}%`;
+                    line.style.top = `${(i * (100 / config.rows))}%`;
                     maskOverlay.appendChild(line);
                 }
             };
@@ -1028,6 +1566,8 @@
 
                 editorCanvas.width = canvasWidth;
                 editorCanvas.height = canvasHeight;
+                drawingCanvas.width = canvasWidth;
+                drawingCanvas.height = canvasHeight;
 
                 // Redraw canvas with temp data
                 redrawEditorCanvas();
@@ -1036,6 +1576,8 @@
             // Redraws the editing canvas based on current state
             const redrawEditorCanvas = () => {
                 editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
+                drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                
                 const image = uploadedImages[currentImageIndex];
 
                 // Draw background if needed
@@ -1071,19 +1613,66 @@
                     
                     // Draw captions
                     drawCaptionsOnCanvas(editorCtx, image.tempCaptions, offsetX, offsetY, drawWidth / image.imgElement.width);
+                    
+                    // Draw drawings
+                    if (image.tempDrawings && image.tempDrawings.length > 0) {
+                        const scale = drawWidth / image.imgElement.width;
+                        image.tempDrawings.forEach(drawing => {
+                            editorCtx.fillStyle = drawing.color;
+                            if (drawing.type === 'rectangle') {
+                                editorCtx.fillRect(offsetX + drawing.x * scale, offsetY + drawing.y * scale, drawing.width * scale, drawing.height * scale);
+                            } else if (drawing.type === 'circle') {
+                                editorCtx.beginPath();
+                                editorCtx.arc(
+                                    offsetX + (drawing.x + drawing.width/2) * scale, 
+                                    offsetY + (drawing.y + drawing.height/2) * scale, 
+                                    drawing.width/2 * scale, 
+                                    0, 
+                                    2 * Math.PI
+                                );
+                                editorCtx.fill();
+                            }
+                        });
+                    }
                 }
             };
 
             // Draws captions on a given canvas
             const drawCaptionsOnCanvas = (ctx, captions, xOffset = 0, yOffset = 0, scale = 1) => {
-                captions.forEach(caption => {
-                    ctx.font = `${caption.size * scale}px "${caption.font}"`;
+                captions.forEach((caption, index) => {
+                    ctx.font = `${caption.size * scale}px ${caption.font}`;
                     ctx.fillStyle = caption.color;
                     ctx.strokeStyle = caption.outlineColor;
                     ctx.lineWidth = caption.strokeWidth * scale;
                     ctx.lineJoin = 'round';
-                    ctx.strokeText(caption.text, xOffset + caption.x * scale, yOffset + caption.y * scale);
-                    ctx.fillText(caption.text, xOffset + caption.x * scale, yOffset + caption.y * scale);
+                    
+                    // Calcular largura do texto para alinhamento
+                    const textWidth = ctx.measureText(caption.text).width;
+                    let xPos = xOffset + caption.x * scale;
+                    
+                    // Aplicar alinhamento
+                    if (caption.align === 'center') {
+                        xPos = xOffset + (initialCanvasSize.width * scale - textWidth) / 2;
+                    } else if (caption.align === 'right') {
+                        xPos = xOffset + initialCanvasSize.width * scale - textWidth - 10;
+                    }
+                    
+                    ctx.strokeText(caption.text, xPos, yOffset + caption.y * scale);
+                    ctx.fillText(caption.text, xPos, yOffset + caption.y * scale);
+                    
+                    // Desenhar caixa de seleção se estiver selecionada
+                    if (index === selectedCaptionIndex && currentTool === 'caption') {
+                        ctx.strokeStyle = '#3b82f6';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([5, 5]);
+                        ctx.strokeRect(
+                            xPos - 5, 
+                            yOffset + caption.y * scale - caption.size * scale - 5, 
+                            textWidth + 10, 
+                            caption.size * scale + 10
+                        );
+                        ctx.setLineDash([]);
+                    }
                 });
             };
 
@@ -1093,6 +1682,7 @@
                 zoomControls.classList.add('hidden');
                 captionControls.classList.add('hidden');
                 backgroundControls.classList.add('hidden');
+                advancedControls.classList.add('hidden');
 
                 document.querySelectorAll('.tool-btn').forEach(btn => {
                     btn.classList.remove('bg-blue-500', 'text-white');
@@ -1128,17 +1718,27 @@
                             outlineColor: '#FFFFFF',
                             size: 20,
                             strokeWidth: 0,
-                            font: 'Valentine Baby, sans-serif'
+                            font: 'Valentine Baby, sans-serif',
+                            align: 'left'
                         });
                     }
-                    captionTextInput.value = image.tempCaptions[0].text;
-                    captionColorInput.value = image.tempCaptions[0].color;
-                    captionOutlineColorInput.value = image.tempCaptions[0].outlineColor;
-                    captionSizeSlider.value = image.tempCaptions[0].size;
-                    captionSizeValueText.textContent = `${image.tempCaptions[0].size} px`;
-                    captionStrokeSlider.value = image.tempCaptions[0].strokeWidth;
-                    captionStrokeValueText.textContent = `${image.tempCaptions[0].strokeWidth} px`;
-                    captionFontSelect.value = image.tempCaptions[0].font;
+                    
+                    // Selecionar a primeira legenda por padrão
+                    selectedCaptionIndex = 0;
+                    const caption = image.tempCaptions[selectedCaptionIndex];
+                    
+                    captionTextInput.value = caption.text;
+                    captionColorInput.value = caption.color;
+                    captionOutlineColorInput.value = caption.outlineColor;
+                    captionSizeSlider.value = caption.size;
+                    captionSizeValueText.textContent = `${caption.size} px`;
+                    captionStrokeSlider.value = caption.strokeWidth;
+                    captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
+                    captionFontSelect.value = caption.font;
+                    
+                    // Atualizar visualização de cores
+                    textColorPreview.style.backgroundColor = caption.color;
+                    outlineColorPreview.style.backgroundColor = caption.outlineColor;
                     
                     addCaptionRealtimePreview();
                     
@@ -1151,6 +1751,14 @@
                     addBackgroundRealtimePreview();
                     
                     redrawEditorCanvas();
+                } else if (toolName === 'advanced') {
+                    advancedControls.classList.remove('hidden');
+                    toolAdvancedBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    toolAdvancedBtn.classList.add('bg-blue-500', 'text-white');
+                    
+                    addAdvancedRealtimePreview();
+                    
+                    redrawEditorCanvas();
                 }
             };
 
@@ -1159,14 +1767,18 @@
                 const realtimeElements = document.querySelectorAll('#caption-controls .realtime-preview');
                 realtimeElements.forEach(element => {
                     element.addEventListener('input', () => {
-                        if (uploadedImages[currentImageIndex].tempCaptions.length > 0) {
-                            const caption = uploadedImages[currentImageIndex].tempCaptions[0];
+                        if (uploadedImages[currentImageIndex].tempCaptions.length > 0 && selectedCaptionIndex >= 0) {
+                            const caption = uploadedImages[currentImageIndex].tempCaptions[selectedCaptionIndex];
                             caption.text = captionTextInput.value;
                             caption.color = captionColorInput.value;
                             caption.outlineColor = captionOutlineColorInput.value;
                             caption.size = parseInt(captionSizeSlider.value);
                             caption.strokeWidth = parseInt(captionStrokeSlider.value);
                             caption.font = captionFontSelect.value;
+                            
+                            // Atualizar visualização de cores
+                            textColorPreview.style.backgroundColor = caption.color;
+                            outlineColorPreview.style.backgroundColor = caption.outlineColor;
                             
                             captionSizeValueText.textContent = `${caption.size} px`;
                             captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
@@ -1185,6 +1797,12 @@
                         const image = uploadedImages[currentImageIndex];
                         image.tempBlurRadius = parseInt(blurSlider.value);
                         image.tempBackgroundSize = parseInt(backgroundSizeSlider.value);
+                        image.tempMatrix = parseInt(matrixSlider.value);
+                        image.tempSaturation = parseInt(saturationSlider.value);
+                        image.tempBrightness = parseInt(brightnessSlider.value);
+                        image.tempContrast = parseInt(contrastSlider.value);
+                        image.tempSharpness = parseInt(sharpnessSlider.value);
+                        image.tempBlurAdvanced = parseInt(blurAdvancedSlider.value);
                         
                         blurValueText.textContent = `${image.tempBlurRadius} px`;
                         backgroundSizeValueText.textContent = `${image.tempBackgroundSize} %`;
@@ -1197,10 +1815,29 @@
                 });
             };
 
+            // Adiciona preview em tempo real para controles avançados
+            const addAdvancedRealtimePreview = () => {
+                const realtimeElements = document.querySelectorAll('#advanced-controls .realtime-preview');
+                realtimeElements.forEach(element => {
+                    element.addEventListener('input', () => {
+                        const image = uploadedImages[currentImageIndex];
+                        image.tempMatrix = parseInt(matrixSliderMain.value);
+                        image.tempSaturation = parseInt(saturationSliderMain.value);
+                        image.tempBrightness = parseInt(brightnessSliderMain.value);
+                        image.tempContrast = parseInt(contrastSliderMain.value);
+                        image.tempSharpness = parseInt(sharpnessSliderMain.value);
+                        image.tempBlurAdvanced = parseInt(blurAdvancedSliderMain.value);
+                        
+                        redrawEditorCanvas();
+                    });
+                });
+            };
+
             // Event listeners for tool buttons
             toolZoomBtn.addEventListener('click', () => setTool('zoom'));
             toolCaptionBtn.addEventListener('click', () => setTool('caption'));
             toolBackgroundBtn.addEventListener('click', () => setTool('background'));
+            toolAdvancedBtn.addEventListener('click', () => setTool('advanced'));
 
             // Event listeners for zoom controls
             zoomSlider.addEventListener('input', () => {
@@ -1263,6 +1900,7 @@
             saveCaptionBtn.addEventListener('click', () => {
                 const image = uploadedImages[currentImageIndex];
                 image.captions = JSON.parse(JSON.stringify(image.tempCaptions));
+                image.drawings = JSON.parse(JSON.stringify(image.tempDrawings));
                 setTool(null);
                 renderImages();
             });
@@ -1270,6 +1908,7 @@
             discardCaptionBtn.addEventListener('click', () => {
                 const image = uploadedImages[currentImageIndex];
                 image.tempCaptions = JSON.parse(JSON.stringify(image.captions));
+                image.tempDrawings = JSON.parse(JSON.stringify(image.drawings || []));
                 setTool(null);
                 redrawEditorCanvas();
             });
@@ -1278,6 +1917,12 @@
                 const image = uploadedImages[currentImageIndex];
                 image.blurRadius = image.tempBlurRadius;
                 image.backgroundSize = image.tempBackgroundSize;
+                image.matrix = image.tempMatrix;
+                image.saturation = image.tempSaturation;
+                image.brightness = image.tempBrightness;
+                image.contrast = image.tempContrast;
+                image.sharpness = image.tempSharpness;
+                image.blurAdvanced = image.tempBlurAdvanced;
                 applyBlur(image.imgElement, image, image.blurRadius);
                 setTool(null);
                 renderImages();
@@ -1287,7 +1932,37 @@
                 const image = uploadedImages[currentImageIndex];
                 image.tempBlurRadius = image.blurRadius;
                 image.tempBackgroundSize = image.backgroundSize;
+                image.tempMatrix = image.matrix;
+                image.tempSaturation = image.saturation;
+                image.tempBrightness = image.brightness;
+                image.tempContrast = image.contrast;
+                image.tempSharpness = image.sharpness;
+                image.tempBlurAdvanced = image.blurAdvanced;
                 applyBlur(image.imgElement, image, image.tempBlurRadius);
+                setTool(null);
+                redrawEditorCanvas();
+            });
+
+            saveAdvancedBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.matrix = image.tempMatrix;
+                image.saturation = image.tempSaturation;
+                image.brightness = image.tempBrightness;
+                image.contrast = image.tempContrast;
+                image.sharpness = image.tempSharpness;
+                image.blurAdvanced = image.tempBlurAdvanced;
+                setTool(null);
+                renderImages();
+            });
+
+            discardAdvancedBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.tempMatrix = image.matrix;
+                image.tempSaturation = image.saturation;
+                image.tempBrightness = image.brightness;
+                image.tempContrast = image.contrast;
+                image.tempSharpness = image.sharpness;
+                image.tempBlurAdvanced = image.blurAdvanced;
                 setTool(null);
                 redrawEditorCanvas();
             });
@@ -1297,6 +1972,62 @@
                 editModal.classList.add('hidden');
                 window.removeEventListener('resize', resizeCanvasAndDraw);
                 renderImages();
+            });
+
+            // Next image button
+            nextImageBtn.addEventListener('click', () => {
+                // Salvar as alterações da imagem atual
+                const image = uploadedImages[currentImageIndex];
+                image.captions = JSON.parse(JSON.stringify(image.tempCaptions));
+                image.drawings = JSON.parse(JSON.stringify(image.tempDrawings));
+                image.blurRadius = image.tempBlurRadius;
+                image.backgroundSize = image.tempBackgroundSize;
+                image.zoom = image.tempZoom;
+                image.matrix = image.tempMatrix;
+                image.saturation = image.tempSaturation;
+                image.brightness = image.tempBrightness;
+                image.contrast = image.tempContrast;
+                image.sharpness = image.tempSharpness;
+                image.blurAdvanced = image.tempBlurAdvanced;
+                
+                // Ir para a próxima imagem
+                currentImageIndex = (currentImageIndex + 1) % uploadedImages.length;
+                openEditModal(uploadedImages[currentImageIndex]);
+            });
+
+            // Reset all button
+            resetAllBtn.addEventListener('click', () => {
+                if (confirm('Tem certeza que deseja resetar todas as alterações desta imagem?')) {
+                    const image = uploadedImages[currentImageIndex];
+                    // Restaurar os valores originais
+                    image.crop = { x: 0, y: 0, width: image.imgElement.width, height: image.imgElement.height };
+                    image.zoom = 100;
+                    image.captions = [];
+                    image.drawings = [];
+                    image.blurRadius = DEFAULT_BLUR;
+                    image.backgroundSize = DEFAULT_BG_SIZE;
+                    image.matrix = 0;
+                    image.saturation = 0;
+                    image.brightness = 0;
+                    image.contrast = 0;
+                    image.sharpness = 0;
+                    image.blurAdvanced = 0;
+                    // Recriar a imagem cortada e blurred
+                    image.croppedUrl = image.originalUrl;
+                    applyBlur(image.imgElement, image, DEFAULT_BLUR);
+                    // Fechar o modal e recarregar
+                    editModal.classList.add('hidden');
+                    renderImages();
+                }
+            });
+
+            // Reset caption button
+            resetCaptionBtn.addEventListener('click', () => {
+                if (confirm('Tem certeza que deseja resetar todas as legendas?')) {
+                    const image = uploadedImages[currentImageIndex];
+                    image.tempCaptions = [];
+                    redrawEditorCanvas();
+                }
             });
 
             // Event listener for image upload
@@ -1367,11 +2098,25 @@
                                     backgroundSize: DEFAULT_BG_SIZE,
                                     zoom: 100,
                                     captions: [],
+                                    drawings: [],
+                                    matrix: 0,
+                                    saturation: 0,
+                                    brightness: 0,
+                                    contrast: 0,
+                                    sharpness: 0,
+                                    blurAdvanced: 0,
                                     isRotated: isRotated,
                                     tempCaptions: [],
+                                    tempDrawings: [],
                                     tempBlurRadius: DEFAULT_BLUR,
                                     tempBackgroundSize: DEFAULT_BG_SIZE,
                                     tempZoom: 100,
+                                    tempMatrix: 0,
+                                    tempSaturation: 0,
+                                    tempBrightness: 0,
+                                    tempContrast: 0,
+                                    tempSharpness: 0,
+                                    tempBlurAdvanced: 0,
                                 };
                                 applyBlur(processedImg, newImage, DEFAULT_BLUR);
                                 
@@ -1409,6 +2154,35 @@
                 }
             });
 
+            // Background upload functionality
+            backgroundUploadBtn.addEventListener('click', () => {
+                backgroundUpload.click();
+            });
+
+            backgroundUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file && file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const image = uploadedImages[currentImageIndex];
+                            image.blurredUrl = e.target.result;
+                            redrawEditorCanvas();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Use same photo as background
+            useSamePhotoBtn.addEventListener('click', () => {
+                const image = uploadedImages[currentImageIndex];
+                image.blurredUrl = image.originalUrl;
+                redrawEditorCanvas();
+            });
+
             // Lógica para o novo botão de pré-visualização completa
             fullPreviewBtn.addEventListener('click', () => {
                 if (uploadedImages.length === 0) return;
@@ -1418,9 +2192,10 @@
                 currentPageIndex = 0;
 
                 const orientation = 'landscape';
+                const config = gridConfigs[gridType];
                 const pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
                 const pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
-                const IMAGES_PER_PAGE = 8;
+                const IMAGES_PER_PAGE = config.cols * config.rows;
                 const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
 
                 if (totalPages > 1) {
@@ -1454,18 +2229,18 @@
                             for (let j = startImageIndex; j < endImageIndex; j++) {
                                 drawPromiseChain = drawPromiseChain.then(() => {
                                     const imageInPageIndex = j % IMAGES_PER_PAGE;
-                                    const col = imageInPageIndex % 4;
-                                    const row = Math.floor(imageInPageIndex / 4);
+                                    const col = imageInPageIndex % config.cols;
+                                    const row = Math.floor(imageInPageIndex / config.cols);
 
-                                    const xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
-                                    const yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
+                                    const xPos = config.horizontalSpacing + col * (config.imageWidth + config.horizontalSpacing);
+                                    const yPos = config.verticalSpacing + row * (config.imageHeight + config.verticalSpacing);
 
                                     const compositeCanvas = document.createElement('canvas');
-                                    compositeCanvas.width = IMAGE_WIDTH_PX;
-                                    compositeCanvas.height = IMAGE_HEIGHT_PX;
+                                    compositeCanvas.width = config.imageWidth;
+                                    compositeCanvas.height = config.imageHeight;
                                     const compositeCtx = compositeCanvas.getContext('2d');
 
-                                    return drawCompositeImage(compositeCtx, uploadedImages[j]).then(() => {
+                                    return drawCompositeImage(compositeCtx, uploadedImages[j], config).then(() => {
                                         previewCtx.drawImage(compositeCanvas, xPos, yPos);
                                     });
                                 });
@@ -1492,7 +2267,8 @@
             
             // Navegação entre pranchetas
             prevPageBtn.addEventListener('click', () => {
-                const totalPages = Math.ceil(uploadedImages.length / 8);
+                const config = gridConfigs[gridType];
+                const totalPages = Math.ceil(uploadedImages.length / (config.cols * config.rows));
                 if (currentPageIndex > 0) {
                     currentPageIndex--;
                     pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
@@ -1504,7 +2280,8 @@
             });
 
             nextPageBtn.addEventListener('click', () => {
-                const totalPages = Math.ceil(uploadedImages.length / 8);
+                const config = gridConfigs[gridType];
+                const totalPages = Math.ceil(uploadedImages.length / (config.cols * config.rows));
                 if (currentPageIndex < totalPages - 1) {
                     currentPageIndex++;
                     pageIndicator.textContent = `Página ${currentPageIndex + 1} de ${totalPages}`;
@@ -1517,12 +2294,8 @@
 
             // Common export function
             const exportDocument = (orientation, format) => {
-                let gridCols = 4;
-                let gridRows = 2;
-                let pageTotalWidth = A4_WIDTH_PX_LANDSCAPE;
-                let pageTotalHeight = A4_HEIGHT_PX_LANDSCAPE;
-                
-                const IMAGES_PER_PAGE = gridCols * gridRows;
+                const config = gridConfigs[gridType];
+                const IMAGES_PER_PAGE = config.cols * config.rows;
                 const totalPages = Math.ceil(uploadedImages.length / IMAGES_PER_PAGE);
 
                 loadingOverlay.classList.remove('hidden');
@@ -1535,7 +2308,7 @@
                 const doc = (format === 'pdf') ? new jsPDF({
                     orientation: orientation,
                     unit: 'px',
-                    format: [pageTotalWidth, pageTotalHeight]
+                    format: [A4_WIDTH_PX_LANDSCAPE, A4_HEIGHT_PX_LANDSCAPE]
                 }) : null;
                 
                 let processedImages = 0;
@@ -1553,11 +2326,11 @@
                     }
 
                     const pageCanvas = document.createElement('canvas');
-                    pageCanvas.width = pageTotalWidth;
-                    pageCanvas.height = pageTotalHeight;
+                    pageCanvas.width = A4_WIDTH_PX_LANDSCAPE;
+                    pageCanvas.height = A4_HEIGHT_PX_LANDSCAPE;
                     const pageCtx = pageCanvas.getContext('2d');
                     pageCtx.fillStyle = '#FFFFFF';
-                    pageCtx.fillRect(0, 0, pageTotalWidth, pageTotalHeight);
+                    pageCtx.fillRect(0, 0, A4_WIDTH_PX_LANDSCAPE, A4_HEIGHT_PX_LANDSCAPE);
 
                     const startImageIndex = pageIndex * IMAGES_PER_PAGE;
                     const endImageIndex = Math.min(startImageIndex + IMAGES_PER_PAGE, uploadedImages.length);
@@ -1566,18 +2339,18 @@
                     for (let i = startImageIndex; i < endImageIndex; i++) {
                         drawPromiseChain = drawPromiseChain.then(() => {
                             const imageInPageIndex = i % IMAGES_PER_PAGE;
-                            const col = imageInPageIndex % gridCols;
-                            const row = Math.floor(imageInPageIndex / gridCols);
+                            const col = imageInPageIndex % config.cols;
+                            const row = Math.floor(imageInPageIndex / config.cols);
                             
-                            let xPos = HORIZONTAL_SPACING_PX + col * (IMAGE_WIDTH_PX + HORIZONTAL_SPACING_PX);
-                            let yPos = VERTICAL_SPACING_PX + row * (IMAGE_HEIGHT_PX + VERTICAL_SPACING_PX);
+                            let xPos = config.horizontalSpacing + col * (config.imageWidth + config.horizontalSpacing);
+                            let yPos = config.verticalSpacing + row * (config.imageHeight + config.verticalSpacing);
 
                             const compositeCanvas = document.createElement('canvas');
-                            compositeCanvas.width = IMAGE_WIDTH_PX;
-                            compositeCanvas.height = IMAGE_HEIGHT_PX;
+                            compositeCanvas.width = config.imageWidth;
+                            compositeCanvas.height = config.imageHeight;
                             const compositeCtx = compositeCanvas.getContext('2d');
 
-                            return drawCompositeImage(compositeCtx, uploadedImages[i])
+                            return drawCompositeImage(compositeCtx, uploadedImages[i], config)
                                 .then(() => {
                                     pageCtx.drawImage(compositeCanvas, xPos, yPos);
                                 });
@@ -1588,7 +2361,7 @@
                         const dataUrl = pageCanvas.toDataURL(`image/${format === 'jpg' ? 'jpeg' : 'png'}`, 1.0);
                         if (format === 'pdf') {
                             if (pageIndex > 0) doc.addPage();
-                            doc.addImage(dataUrl, 'PNG', 0, 0, pageTotalWidth, pageTotalHeight);
+                            doc.addImage(dataUrl, 'PNG', 0, 0, A4_WIDTH_PX_LANDSCAPE, A4_HEIGHT_PX_LANDSCAPE);
                         } else {
                             const link = document.createElement('a');
                             link.href = dataUrl;
@@ -1665,10 +2438,236 @@
                 }
             }
 
+            // Funções para o editor de legendas
+            captionColorInput.addEventListener('input', () => {
+                textColorPreview.style.backgroundColor = captionColorInput.value;
+            });
+            
+            captionOutlineColorInput.addEventListener('input', () => {
+                outlineColorPreview.style.backgroundColor = captionOutlineColorInput.value;
+            });
+            
+            // Alinhamento de texto
+            alignmentButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const align = btn.dataset.align;
+                    if (uploadedImages[currentImageIndex].tempCaptions.length > 0 && selectedCaptionIndex >= 0) {
+                        uploadedImages[currentImageIndex].tempCaptions[selectedCaptionIndex].align = align;
+                        redrawEditorCanvas();
+                    }
+                });
+            });
+            
+            // Seleção de tipo de grade
+            gridTypeSelect.addEventListener('change', () => {
+                gridType = gridTypeSelect.value;
+                // Atualizar seleção visual
+                gridOptions.forEach(option => {
+                    if (option.dataset.grid === gridType) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                renderImages();
+            });
+            
+            gridOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    gridType = option.dataset.grid;
+                    gridTypeSelect.value = gridType;
+                    
+                    // Atualizar seleção visual
+                    gridOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    
+                    renderImages();
+                });
+            });
+
+            // Eventos para arrastar legendas
+            editorCanvas.addEventListener('mousedown', (e) => {
+                if (currentTool === 'caption' && uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    const rect = editorCanvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    // Calcular escala
+                    const image = uploadedImages[currentImageIndex];
+                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
+                        image.imgElement.width, 
+                        image.imgElement.height, 
+                        editorCanvas.width, 
+                        editorCanvas.height
+                    );
+                    const scale = drawWidth / image.imgElement.width;
+                    
+                    // Verificar se o clique foi em uma legenda
+                    for (let i = 0; i < image.tempCaptions.length; i++) {
+                        const caption = image.tempCaptions[i];
+                        const xPos = offsetX + caption.x * scale;
+                        const yPos = offsetY + caption.y * scale;
+                        
+                        editorCtx.font = `${caption.size * scale}px ${caption.font}`;
+                        const textWidth = editorCtx.measureText(caption.text).width;
+                        
+                        if (
+                            mouseX >= xPos - 5 && 
+                            mouseX <= xPos + textWidth + 5 && 
+                            mouseY >= yPos - caption.size * scale - 5 && 
+                            mouseY <= yPos + 5
+                        ) {
+                            isDragging = true;
+                            selectedCaptionIndex = i;
+                            dragOffset.x = mouseX - xPos;
+                            dragOffset.y = mouseY - yPos;
+                            
+                            // Atualizar controles com a legenda selecionada
+                            captionTextInput.value = caption.text;
+                            captionColorInput.value = caption.color;
+                            captionOutlineColorInput.value = caption.outlineColor;
+                            captionSizeSlider.value = caption.size;
+                            captionSizeValueText.textContent = `${caption.size} px`;
+                            captionStrokeSlider.value = caption.strokeWidth;
+                            captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
+                            captionFontSelect.value = caption.font;
+                            
+                            redrawEditorCanvas();
+                            break;
+                        }
+                    }
+                }
+            });
+            
+            editorCanvas.addEventListener('mousemove', (e) => {
+                if (isDragging && selectedCaptionIndex >= 0) {
+                    const rect = editorCanvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    
+                    // Calcular escala
+                    const image = uploadedImages[currentImageIndex];
+                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
+                        image.imgElement.width, 
+                        image.imgElement.height, 
+                        editorCanvas.width, 
+                        editorCanvas.height
+                    );
+                    const scale = image.imgElement.width / drawWidth;
+                    
+                    // Atualizar posição da legenda
+                    const caption = image.tempCaptions[selectedCaptionIndex];
+                    caption.x = (mouseX - offsetX - dragOffset.x) * scale;
+                    caption.y = (mouseY - offsetY - dragOffset.y) * scale;
+                    
+                    redrawEditorCanvas();
+                }
+            });
+            
+            editorCanvas.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+            
+            editorCanvas.addEventListener('mouseleave', () => {
+                isDragging = false;
+            });
+            
+            // Eventos de toque para dispositivos móveis
+            editorCanvas.addEventListener('touchstart', (e) => {
+                if (currentTool === 'caption' && uploadedImages[currentImageIndex].tempCaptions.length > 0) {
+                    e.preventDefault();
+                    const rect = editorCanvas.getBoundingClientRect();
+                    const touchX = e.touches[0].clientX - rect.left;
+                    const touchY = e.touches[0].clientY - rect.top;
+                    
+                    // Calcular escala
+                    const image = uploadedImages[currentImageIndex];
+                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
+                        image.imgElement.width, 
+                        image.imgElement.height, 
+                        editorCanvas.width, 
+                        editorCanvas.height
+                    );
+                    const scale = drawWidth / image.imgElement.width;
+                    
+                    // Verificar se o toque foi em uma legenda
+                    for (let i = 0; i < image.tempCaptions.length; i++) {
+                        const caption = image.tempCaptions[i];
+                        const xPos = offsetX + caption.x * scale;
+                        const yPos = offsetY + caption.y * scale;
+                        
+                        editorCtx.font = `${caption.size * scale}px ${caption.font}`;
+                        const textWidth = editorCtx.measureText(caption.text).width;
+                        
+                        if (
+                            touchX >= xPos - 5 && 
+                            touchX <= xPos + textWidth + 5 && 
+                            touchY >= yPos - caption.size * scale - 5 && 
+                            touchY <= yPos + 5
+                        ) {
+                            isDragging = true;
+                            selectedCaptionIndex = i;
+                            dragOffset.x = touchX - xPos;
+                            dragOffset.y = touchY - yPos;
+                            
+                            // Atualizar controles com a legenda selecionada
+                            captionTextInput.value = caption.text;
+                            captionColorInput.value = caption.color;
+                            captionOutlineColorInput.value = caption.outlineColor;
+                            captionSizeSlider.value = caption.size;
+                            captionSizeValueText.textContent = `${caption.size} px`;
+                            captionStrokeSlider.value = caption.strokeWidth;
+                            captionStrokeValueText.textContent = `${caption.strokeWidth} px`;
+                            captionFontSelect.value = caption.font;
+                            
+                            redrawEditorCanvas();
+                            break;
+                        }
+                    }
+                }
+            });
+            
+            editorCanvas.addEventListener('touchmove', (e) => {
+                if (isDragging && selectedCaptionIndex >= 0) {
+                    e.preventDefault();
+                    const rect = editorCanvas.getBoundingClientRect();
+                    const touchX = e.touches[0].clientX - rect.left;
+                    const touchY = e.touches[0].clientY - rect.top;
+                    
+                    // Calcular escala
+                    const image = uploadedImages[currentImageIndex];
+                    const { drawWidth, drawHeight, offsetX, offsetY } = getProportionalContainDimensions(
+                        image.imgElement.width, 
+                        image.imgElement.height, 
+                        editorCanvas.width, 
+                        editorCanvas.height
+                    );
+                    const scale = image.imgElement.width / drawWidth;
+                    
+                    // Atualizar posição da legenda
+                    const caption = image.tempCaptions[selectedCaptionIndex];
+                    caption.x = (touchX - offsetX - dragOffset.x) * scale;
+                    caption.y = (touchY - offsetY - dragOffset.y) * scale;
+                    
+                    redrawEditorCanvas();
+                }
+            });
+            
+            editorCanvas.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+
+            // Implementar Ctrl+Z para desfazer
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                    e.preventDefault();
+                    undoLastAction();
+                }
+            });
+
             // Inicialização da aplicação
             updateExportButtonState();
         };
     </script>
 </body>
 </html>
-
