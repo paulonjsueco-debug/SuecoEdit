@@ -128,49 +128,14 @@
             font-size: 12px;
         }
 
-        /* Carousel Styles */
-        .carousel-container {
-            position: relative;
-            overflow: hidden;
-            max-width: 700px;
-            margin: 0 auto 1.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
-            height: 120px;
-        }
-        .carousel-slide-wrapper {
-            display: flex;
-            transition: transform 0.5s ease;
-            height: 100%;
-        }
-        .carousel-slide {
-            min-width: 100%;
-            flex-shrink: 0;
-            padding: 1rem;
-            text-align: center;
-            background-color: #ffffff;
-            border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .carousel-dot {
-            height: 10px;
-            width: 10px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.6s ease;
-            margin: 0 3px;
-            cursor: pointer;
-        }
+   
         .active-dot {
             background-color: #3b82f6;
         }
 
         @keyframes spin {
             from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            to { transform: rotate(-360deg); }
         }
         .spinner {
             animation: spin 1s linear infinite;
@@ -515,8 +480,9 @@
   </div>
 
         <!-- Seção de Upload com Drag & Drop -->
-        <div id="upload-section" class="mt-6 mb-6 p-8 border-2 border-dashed border-gray-300 rounded-xl text-center bg-white transition-colors duration-300">
-            <div class="flex flex-col items-center justify-center">
+        <div id="upload-section" class="upload-section mt-6 mb-6 p-8 border-2 border-dashed border-gray-300 rounded-xl text-center bg-white transition-all duration-300">
+        
+            <div class="upload-section-content flex flex-col items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
@@ -557,8 +523,63 @@
                             <option value="3x3">3x3 (9 fotos por página)</option>
                         </select>
                     </label>
+
+                    <div class="grid-container">
+  <!-- Horizontal 2x4  NOVO TESTANDO AGORA-->
+  <div class="grid-option" data-grid="2x4">
+    <div class="grid-preview" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);">
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+    </div>
+    <span class="text-sm">2×4 (horizontal)</span>
+  </div>
+
+  <!-- Horizontal 2x2 -->
+  <div class="grid-option" data-grid="2x2-h">
+    <div class="grid-preview" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr);">
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+    </div>
+    <span class="text-sm">2×2 (horizontal)</span>
+  </div>
+
+  <!-- Vertical 2x2 -->
+  <div class="grid-option" data-grid="2x2-v">
+    <div class="grid-preview" style="grid-template-columns: 1fr; grid-template-rows: repeat(4, 1fr);">
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+    </div>
+    <span class="text-sm">2×2 (vertical)</span>
+  </div>
+
+  <!-- Vertical 3x3 -->
+  <div class="grid-option" data-grid="3x3-v">
+    <div class="grid-preview" style="grid-template-columns: 1fr; grid-template-rows: repeat(9, 1fr);">
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+      <div class="grid-preview-cell"></div>
+    </div>
+    <span class="text-sm">3×3 (vertical)</span>
+  </div>
+</div> <!-- ate aqui novooooo-->
                     
-                    <div class="grid-options-container">
+                 <!-- ORIGINAL OLD ONE ------------  <div class="grid-options-container">
                         <div class="grid-option selected" data-grid="2x4">
                             <div class="grid-preview" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr);">
                                 <div class="grid-preview-cell"></div>
@@ -607,7 +628,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> ------------------- -->
 
             <!-- Visualização da Folha A4 em Mosaico -->
             <div class="p-6 bg-white rounded-xl shadow-md">
@@ -2061,6 +2082,7 @@
     </script>
 </body>
 </html>
+
 
 
 
