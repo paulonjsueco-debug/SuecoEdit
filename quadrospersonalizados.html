@@ -327,11 +327,25 @@
             overflow: hidden;
             background-color: #f9fafb;
             max-width: 100%;
+            position: relative;
         }
         .editor-main-preview {
             max-width: 100%;
             max-height: 400px;
             object-fit: contain;
+            position: relative;
+            z-index: 10;
+        }
+        .editor-bg-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.1;
+            filter: blur(5px);
+            z-index: 1;
         }
         .editor-controls {
             display: grid;
@@ -444,6 +458,33 @@
             border-radius: 0.75rem;
             border: 1px solid #e2e8f0;
         }
+        
+        /* Estilos para a prancheta com máscara */
+        .prancheta-mask {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .prancheta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.1;
+            filter: blur(5px);
+            z-index: 1;
+        }
+        .prancheta-img {
+            position: relative;
+            z-index: 2;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -496,7 +537,7 @@
             </div>
         </div>
 
-        <!-- Opções de unidade e exportação reorganizadas -->
+        <!-- Opções de unidade и exportação reorganizadas -->
         <div class="export-options">
             <div class="export-controls">
                 <div class="unit-selector">
@@ -532,6 +573,7 @@
             <h4 class="text-xl font-bold text-gray-800 text-center">Editor de Imagem</h4>
             
             <div class="editor-preview-container">
+                <img id="editor-bg-preview" class="editor-bg-preview" alt="Fundo da prancheta">
                 <img id="editor-main-preview" class="editor-main-preview" alt="Visualização em tempo real">
             </div>
             
@@ -602,6 +644,7 @@
             const thumbnailsContainer = document.getElementById('thumbnails-container');
             const downloadFormatSelect = document.getElementById('download-format-select');
             const editorMainPreview = document.getElementById('editor-main-preview');
+            const editorBgPreview = document.getElementById('editor-bg-preview');
             const closeEditorBtn = document.getElementById('close-editor');
             const viewerModal = document.getElementById('viewer-modal');
             const viewerImage = document.getElementById('viewer-image');
@@ -629,7 +672,7 @@
             const CM_PER_INCH = 2.54;
             
             // Funções para drag and drop
-            ['dragenter', 'dragoover', 'dragleave', 'drop'].forEach(eventName => {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 uploadSection.addEventListener(eventName, preventDefaults, false);
             });
             
@@ -849,7 +892,7 @@
                     frameCard.className = 'frame-card mb-6';
 
                     const pranchetaDiv = document.createElement('div');
-                    pranchetaDiv.className = 'prancheta rounded-lg shadow-md';
+                    pranchetaDiv.className = 'prancheta rounded-lg shadow-md prancheta-mask';
                     
                     let displayWidth = photo.width * ratio;
                     let displayHeight = photo.height * ratio;
@@ -868,11 +911,19 @@
                     const contentWrapper = document.createElement('div');
                     contentWrapper.className = 'export-content w-full h-full relative';
 
+                    // Imagem de fundo com opacidade
+                    const bgImg = document.createElement('img');
+                    bgImg.src = photo.url;
+                    bgImg.alt = 'Fundo da prancheta';
+                    bgImg.className = 'prancheta-bg';
+
+                    // Imagem principal
                     const img = document.createElement('img');
                     img.src = photo.url;
                     img.alt = photo.file.name;
-                    img.className = 'w-full h-full object-contain';
+                    img.className = 'prancheta-img';
 
+                    contentWrapper.appendChild(bgImg);
                     contentWrapper.appendChild(img);
                     pranchetaDiv.appendChild(contentWrapper);
 
@@ -997,6 +1048,19 @@
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, targetWidthPx, targetHeightPx);
                 
+                // Carrega a imagem de fundo
+                const bgImg = new Image();
+                bgImg.src = photo.url;
+                await new Promise(resolve => {
+                    if (bgImg.complete) resolve();
+                    else bgImg.onload = resolve;
+                });
+                
+                // Desenha a imagem de fundo com opacidade
+                ctx.globalAlpha = 0.1;
+                ctx.drawImage(bgImg, 0, 0, targetWidthPx, targetHeightPx);
+                ctx.globalAlpha = 1.0;
+                
                 const img = new Image();
                 img.src = photo.url;
                 
@@ -1067,13 +1131,16 @@
 
             // Função para atualizar a visualização no editor
             function updateEditorPreview(photo) {
+                // Atualiza a imagem de fundo
+                editorBgPreview.src = photo.url;
+                
                 const img = new Image();
                 img.onload = function() {
                     // Cria um canvas temporário para processar a imagem
                     const tempCanvas = document.createElement('canvas');
                     const tempCtx = tempCanvas.getContext('2d');
                     
-                    // Define as dimensões do canvas
+                    // Define as dimensões do canvas como as dimensões originais da imagem
                     tempCanvas.width = img.width;
                     tempCanvas.height = img.height;
                     
