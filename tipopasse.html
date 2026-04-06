@@ -3,454 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuecoEdit - Welcome</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <meta name="theme-color" content="#3b82f6">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Ícones de Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>TipoPasse | Studio Real-Time</title>
+    <link rel="icon" href="favico.png" type="image/png">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
+        :root {
+            --bg: #0f172a;
+            --surface: rgba(30, 41, 59, 0.7);
+            --accent: #3b82f6;
+            --text: #f8fafc;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.9);
+            --accent: #2563eb;
+            --text: #0f172a;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.2s, color 0.2s; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            overflow: hidden;
         }
-        .hero-section {
-            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-            padding: 3rem 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            text-align: center;
+
+        /* Header Compacto */
+        header { 
+            padding: 10px 20px; 
+            background: var(--surface); 
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 10;
         }
-        .icon-gradient-bg {
-            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
+
+        /* Logo como Favicon */
+        .app-logo {
+            height: 30px;
+            width: auto;
+            display: block;
         }
-        
-        /* Estilos para a seção de dicas */
-        .tips-section {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            flex-direction: row;
         }
-        
-        .tips-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .tip-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        /* Sidebar com Scroll Independente */
+        .sidebar {
+            width: 320px;
+            padding: 15px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            text-align: center;
+            gap: 12px;
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
         }
-        
-        .tip-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        
-        .tip-icon {
-            font-size: 1.75rem;
-            color: #3b82f6;
-            margin-bottom: 0.75rem;
-        }
-        
-        .tip-title {
-            font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 0.75rem;
-            font-size: 1.1rem;
-        }
-        
-        .tip-content {
-            color: #4b5563;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-        
-        /* Estilos para os serviços */
-        .services-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-        
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .service-item {
-            cursor: pointer;
-            transform: scale(1);
-            transition: transform 0.3s ease;
+        .sidebar::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        /* Área de Visualização (Preview) Flexível */
+        .preview-workspace {
+            flex: 1;
+            background: rgba(0,0,0,0.05);
             display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .service-item:hover {
-            transform: scale(1.05);
-        }
-        
-        .service-box {
-            background: linear-gradient(to bottom, #60a5fa, #3b82f6);
-            border-radius: 12px;
-            padding: 1.25rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Editor Master (Tamanho Fixo Proporcional 47.921x63.5) */
+        .editor-frame {
+            width: 144px; /* 47.921 * 3 para visualização compacta */
+            height: 190.5px; /* 63.5 * 3 */
+            margin: 0 auto;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            background: #000;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        /* Card de Controles */
+        .control-card {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .label-text { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; display: block; }
+        
+        input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+
+        /* Upload Button */
+        .upload-btn {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 15px;
             text-align: center;
-            width: 100%;
-            aspect-ratio: 1/1;
+            cursor: pointer;
+            position: relative;
+            background: var(--bg);
         }
-        
-        .service-icon {
-            font-size: 1.75rem;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-        
-        .service-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: white;
-        }
-        
-        /* Rodapé */
-        .footer {
-            background: linear-gradient(to bottom, #3b82f6, #2563eb);
-            color: white;
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: auto;
-            width: 100%;
-        }
-        
-        @media (min-width: 480px) {
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.25rem;
-            }
-            
-            .service-box {
-                padding: 1.5rem;
-            }
-            
-            .service-icon {
-                font-size: 2rem;
-            }
-            
-            .service-title {
-                font-size: 0.95rem;
-            }
-        }
-        
-        @media (min-width: 640px) {
-            .tips-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .services-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 1.5rem;
-            }
-            
-            .service-box {
-                padding: 1.75rem;
-            }
-            
-            .service-icon {
-                font-size: 2.25rem;
-            }
-            
-            .service-title {
-                font-size: 1rem;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .services-grid {
-                gap: 2rem;
-            }
-            
-            .service-box {
-                padding: 2rem;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .tips-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .services-grid {
-                max-width: 1000px;
-                margin: 2rem auto;
-            }
-        }
-        
-        @media (min-width: 1280px) {
-            .tips-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        
-        @media (max-width: 360px) {
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.75rem;
-            }
-            
-            .service-box {
-                padding: 1rem;
-            }
-            
-            .service-icon {
-                font-size: 1.5rem;
-            }
-            
-            .service-title {
-                font-size: 0.8rem;
-            }
-            
-            .hero-section {
-                padding: 2rem 1rem;
-            }
-            
-            .hero-section h1 {
-                font-size: 1.75rem;
-            }
+        .upload-btn:hover { border-color: var(--accent); background: rgba(59, 130, 246, 0.1); }
+        .upload-btn input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: auto; padding-top: 10px; }
+        .btn { padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; font-size: 13px; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.98); }
+        .btn-save { background: var(--accent); }
+        .btn-pdf { background: #10b981; }
+
+        /* Responsividade Mobile */
+        @media (max-width: 850px) {
+            .main-container { flex-direction: column; overflow-y: auto; }
+            body { overflow-y: auto; }
+            .sidebar { width: 100%; overflow: visible; border-right: none; border-bottom: 1px solid var(--border); }
+            .preview-workspace { min-height: 400px; padding: 10px; }
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body data-theme="dark">
 
+<header>
+    <img src="favicon.png" alt="SuecoEdit - TipoPasse" class="app-logo" onerror="this.style.display='none';">
+    <button onclick="toggleTheme()" style="background: none; border: 1px solid var(--border); color: var(--text); padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 11px; font-weight: 600;">Trocar Tema</button>
+</header>
 
-    <!-- Cabeçalho -->
-    <div class="w-full hero-section">
- 
-        <div class="flex justify-center items-center gap-3 p-4 bg-transparent mt-[-5px]">
-          <img src="whitefavicon.png" alt="Logo" class="w-8 h-8 md:w-10 md:h-10 object-contain">
-          <h1 class="text-2xl md:text-3xl font-bold text-white">SuecoEdit</h1>
-    </div>
+<div class="main-container">
+    <aside class="sidebar">
+        <div class="upload-btn">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text);">➕ Carregar Imagem</span>
+            <input type="file" id="upload" accept="image/*">
+        </div>
 
+        <div class="control-card">
+            <span class="label-text">Enquadramento Master</span>
+            <div class="editor-frame">
+                <canvas id="cropCanvas"></canvas>
+            </div>
+            <p style="font-size: 9px; color: var(--text-muted); text-align: center; margin-top: 5px;">Arraste a foto acima para ajustar</p>
+        </div>
 
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">Bem-vindo ao SuecoEdit!</h1>
-        <p class="text-base sm:text-lg text-white opacity-90">A sua Gráfica bem na palma das suas mãos 🤩.</p>
-    </div>
-
-    <!-- Seção principal -->
-    <div class="w-full flex flex-col items-center mt-8 px-4">
-        <h2 class="text-2xl sm:text-3xl font-semibold text-blue-800 mb-2 text-center">Vamos Começar 😎</h2>
-        <div class="text-sm sm:text-base text-gray-600 mb-6 text-center">O que gostarias de Criar?</div>
-    </div>
-
-    <!-- Serviços -->
-    <div class="services-container">
-        <div class="services-grid">
-            <!-- Fotos Polaroides -->
-            <div class="service-item" onclick="window.location.href='polaroides.html'">
-                <div class="service-box">
-                    <i class="fas fa-camera service-icon"></i>
-                    <h3 class="service-title">Fotos Polaroides</h3>
-                </div>
+        <div class="control-card">
+            <span class="label-text">Ajustes Finos</span>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 11px; display: flex; justify-content: space-between;">Zoom da Foto <span id="zoom-val" style="color:var(--accent)">100%</span></label>
+                <input type="range" id="zoom-slider" min="0.1" max="2" step="0.001" value="0.5">
             </div>
-
-            <!-- Quadros Personalizados -->
-            <div class="service-item" onclick="window.location.href='quadrospersonalizados.html'">
-                <div class="service-box">
-                    <i class="fas fa-image service-icon"></i>
-                    <h3 class="service-title">Quadros Personalizados</h3>
-                </div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 11px;">Brilho</label>
+                <input type="range" id="brightness" min="-0.4" max="0.4" step="0.01" value="0">
             </div>
-            
-            <!-- Fotos Tipo Passe (agora redireciona para tipopasse.html) -->
-             <div class="service-item" onclick="window.open('tipopasse.html')">
-            <div class="service-box">
-                <i class="fas fa-id-card service-icon"></i>
-            <h3 class="service-title">Fotos Tipo Passe</h3>
-            </div>
-            </div>
-
-            <!-- Converter Formato de Imagem -->
-            <div class="service-item" onclick="showComingSoonModal()">
-                <div class="service-box">
-                    <i class="fas fa-sync-alt service-icon"></i>
-                    <h3 class="service-title">Converter Formato</h3>
-                </div>
-            </div>
-            
-            <!-- Novos serviços adicionados -->
-            <!-- Design de Logotipos -->
-            <div class="service-item" onclick="showComingSoonModal()">
-                <div class="service-box">
-                    <i class="fas fa-pencil-alt service-icon"></i>
-                    <h3 class="service-title">Design de Logotipos</h3>
-                </div>
-            </div>
-            
-            <!-- Cartões de Visita -->
-            <div class="service-item" onclick="showComingSoonModal()">
-                <div class="service-box">
-                    <i class="fas fa-address-card service-icon"></i>
-                    <h3 class="service-title">Cartões de Visita</h3>
-                </div>
-            </div>
-            
-            <!-- Panfletos e Flyers -->
-            <div class="service-item" onclick="showComingSoonModal()">
-                <div class="service-box">
-                    <i class="fas fa-newspaper service-icon"></i>
-                    <h3 class="service-title">Panfletos e Flyers</h3>
-                </div>
-            </div>
-            
-            <!-- Convites Personalizados -->
-            <div class="service-item" onclick="showComingSoonModal()">
-                <div class="service-box">
-                    <i class="fas fa-envelope-open-text service-icon"></i>
-                    <h3 class="service-title">Convites Personalizados</h3>
-                </div>
+            <div>
+                <label style="font-size: 11px;">Saturação</label>
+                <input type="range" id="saturation" min="-0.6" max="0.6" step="0.01" value="0">
             </div>
         </div>
-    </div>
 
-    <!-- Seção de Dicas -->
-    <div class="tips-section">
-        <h2 class="text-xl sm:text-2xl font-semibold text-blue-800 mb-4 text-center">Vantagens do SuecoEdit</h2>
+        <div class="btn-group">
+            <button class="btn btn-save" onclick="exportJPG()">SALVAR JPG</button>
+            <button class="btn btn-pdf" onclick="exportPDF()">GERAR PDF</button>
+        </div>
+    </aside>
+
+    <main class="preview-workspace">
+        <div style="box-shadow: 0 20px 50px rgba(0,0,0,0.3); background: #fff; border: 1px solid #ccc;">
+            <canvas id="a5Canvas"></canvas>
+        </div>
+    </main>
+</div>
+
+<script>
+    const { jsPDF } = window.jspdf;
+    const MM_TO_PX = 11.811; // 300 DPI
+
+    // Medidas Exatas Solicitadas
+    const T_W_MM = 47.921;
+    const T_H_MM = 63.5;
+    const PHOTO_W_PX = T_W_MM * MM_TO_PX;
+    const PHOTO_H_PX = T_H_MM * MM_TO_PX;
+    const A5_W_PX = 210 * MM_TO_PX;
+    const A5_H_PX = 148 * MM_TO_PX;
+
+    // Editor Master (Escalado para a UI 3:1)
+    const uiFactor = 3;
+    const cropCanvas = new fabric.Canvas('cropCanvas', {
+        width: T_W_MM * uiFactor,
+        height: T_H_MM * uiFactor,
+        backgroundColor: '#000',
+        selection: false,
+        stopContextMenu: true
+    });
+
+    // Canvas da Prancheta A5
+    const a5Canvas = new fabric.Canvas('a5Canvas', {
+        width: A5_W_PX,
+        height: A5_H_PX,
+        backgroundColor: '#ffffff',
+        selection: false,
+        renderOnAddRemove: false // Alta performance
+    });
+
+    // Ajuste dinâmico da visualização do papel A5
+    function adjustView() {
+        const workspace = document.querySelector('.preview-workspace');
+        const availableW = workspace.offsetWidth - 40;
+        const availableH = workspace.offsetHeight - 40;
+        const zoom = Math.min(availableW / A5_W_PX, availableH / A5_H_PX);
         
-        <div class="tips-grid">
-            <!-- Dica 1 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-globe"></i>
-                </div>
-                <h3 class="tip-title">Edição em Qualquer Lugar</h3>
-                <p class="tip-content">Trabalhe de casa ou de qualquer lugar com nossa plataforma online.</p>
-            </div>
-            
-            <!-- Dica 2 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-brain"></i>
-                </div>
-                <h3 class="tip-title">Interface Intuitiva</h3>
-                <p class="tip-content">Fácil de usar, mesmo para iniciantes em edição de imagens.</p>
-            </div>
-            
-            <!-- Dica 3 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <h3 class="tip-title">Processo Rápido</h3>
-                <p class="tip-content">Crie e edite projetos em minutos, sem software complexo.</p>
-            </div>
-            
-            <!-- Dica 4 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-medal"></i>
-                </div>
-                <h3 class="tip-title">Qualidade Profissional</h3>
-                <p class="tip-content">Resultados com alta resolução para impressão profissional.</p>
-            </div>
-            
-            <!-- Dica 5 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-palette"></i>
-                </div>
-                <h3 class="tip-title">Diversos Modelos</h3>
-                <p class="tip-content">Templates pré-prontos para polaroides, quadros e mais.</p>
-            </div>
-            
-            <!-- Dica 6 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-sliders-h"></i>
-                </div>
-                <h3 class="tip-title">Personalização Total</h3>
-                <p class="tip-content">Altere textos, cores e elementos conforme sua necessidade.</p>
-            </div>
-            
-            <!-- Dica 7 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-save"></i>
-                </div>
-                <h3 class="tip-title">Salvamento Automático</h3>
-                <p class="tip-content">Seu trabalho é salvo automaticamente, evitando perdas.</p>
-            </div>
-            
-            <!-- Dica 8 -->
-            <div class="tip-card">
-                <div class="tip-icon">
-                    <i class="fas fa-file-export"></i>
-                </div>
-                <h3 class="tip-title">Formatos Variados</h3>
-                <p class="tip-content">Exporte nos formatos JPG, PNG, PDF e muito mais.</p>
-            </div>
-        </div>
-    </div>
+        a5Canvas.setZoom(zoom);
+        a5Canvas.setWidth(A5_W_PX * zoom);
+        a5Canvas.setHeight(A5_H_PX * zoom);
+    }
+    window.addEventListener('resize', adjustView);
+    adjustView();
 
-    <!-- Modal "Em Breve" -->
-    <div id="coming-soon-modal" class="fixed inset-0 bg-gray-800/75 flex items-center justify-center hidden z-50">
-        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm mx-4">
-            <p class="text-xl font-semibold text-gray-800 mb-4">Em Breve</p>
-            <p class="text-gray-600 mb-6">Esta função está em desenvolvimento. Volte em breve para conferir!</p>
-            <button onclick="hideComingSoonModal()" class="bg-blue-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-600 transition-colors duration-300">
-                Fechar
-            </button>
-        </div>
-    </div>
+    let masterImg = null;
 
-    <!-- Rodapé -->
-    <footer class="footer">
-        <p>&copy; 2025 SuecoEdit - Todos os direitos reservados</p>
-        <p class="mt-2">Desenvolvido por <strong>Paulo Sueco</strong></p>
-    </footer>
-
-    <script>
-        // Funções para mostrar/ocultar o modal
-        function showComingSoonModal() {
-            document.getElementById('coming-soon-modal').classList.remove('hidden');
-        }
-
-        function hideComingSoonModal() {
-            document.getElementById('coming-soon-modal').classList.add('hidden');
-        }
-        
-        // Melhorar a interatividade em dispositivos móveis
-        document.addEventListener('DOMContentLoaded', function() {
-            const serviceItems = document.querySelectorAll('.service-item');
-            
-            serviceItems.forEach(item => {
-                item.addEventListener('touchstart', function() {
-                    this.style.transform = 'scale(0.95)';
+    // Carregamento de Imagem
+    document.getElementById('upload').addEventListener('change', function(e) {
+        if(!e.target.files[0]) return;
+        const reader = new FileReader();
+        reader.onload = (f) => {
+            fabric.Image.fromURL(f.target.result, (img) => {
+                cropCanvas.clear();
+                // Ajuste inicial preenchendo a caixa (Aspect Fill)
+                const scale = Math.max(cropCanvas.width / img.width, cropCanvas.height / img.height);
+                img.set({
+                    left: cropCanvas.width/2, top: cropCanvas.height/2,
+                    originX: 'center', originY: 'center',
+                    scaleX: scale, scaleY: scale,
+                    hasControls: false, hasBorders: false,
+                    selectable: true, evented: true // Permite arrastar
                 });
-                
-                item.addEventListener('touchend', function() {
-                    this.style.transform = 'scale(1)';
-                });
+                cropCanvas.add(img);
+                masterImg = img;
+                // Sincroniza o slider de zoom com a escala inicial
+                document.getElementById('zoom-slider').value = scale;
+                updateAppControls(); 
+                renderGrid(); // Primeira renderização
             });
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    });
+
+    // --- SINCRONIZAÇÃO EM TEMPO REAL ---
+
+    // 1. Monitora o ARRASTO da foto no editor
+    cropCanvas.on('object:moving', renderGrid);
+
+    // 2. Monitora o ZOOM (via sliders) ou outras alterações de escala
+    cropCanvas.on('object:scaling', renderGrid);
+
+    // Função que lê os controles e aplica na imagem master
+    function updateAppControls() {
+        if (!masterImg) return;
+        const z = parseFloat(document.getElementById('zoom-slider').value);
+        const b = parseFloat(document.getElementById('brightness').value);
+        const s = parseFloat(document.getElementById('saturation').value);
+
+        // Atualiza valor do zoom na UI
+        document.getElementById('zoom-val').innerText = Math.round((z / (cropCanvas.width / masterImg.width * 0.5)) * 100) + "%";
+
+        // Aplica transformações e filtros
+        masterImg.set({ scaleX: z, scaleY: z });
+        masterImg.setCoords(); // Importante para garantir o centro correto
+
+        masterImg.filters = [];
+        if(b !== 0) masterImg.filters.push(new fabric.Image.filters.Brightness({ brightness: b }));
+        if(s !== 0) masterImg.filters.push(new fabric.Image.filters.Saturation({ saturation: s }));
+        
+        masterImg.applyFilters();
+        cropCanvas.requestRenderAll();
+        renderGrid(); // Atualiza a visualização A5
+    }
+
+    // Vincula sliders à função de atualização
+    document.getElementById('zoom-slider').oninput = updateAppControls;
+    document.getElementById('brightness').oninput = updateAppControls;
+    document.getElementById('saturation').oninput = updateAppControls;
+
+    // --- RENDERIZAÇÃO DO GRID A5 ---
+
+    function renderGrid() {
+        if (!masterImg) return;
+
+        // Exporta o editor master em alta definição (multiplicador para tamanho real 300DPI)
+        const dataUrl = cropCanvas.toDataURL({ 
+            format: 'jpeg', 
+            quality: 1,
+            multiplier: PHOTO_W_PX / cropCanvas.width 
         });
-    </script>
+
+        fabric.Image.fromURL(dataUrl, (img) => {
+            a5Canvas.clear().setBackgroundColor('#fff');
+            
+            const cols = 4, rows = 2;
+            // Cálculo de espaçamento uniforme centralizado
+            const marginX = (A5_W_PX - (cols * PHOTO_W_PX)) / (cols + 1);
+            const marginY = (A5_H_PX - (rows * PHOTO_H_PX)) / (rows + 1);
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    img.clone((cloned) => {
+                        cloned.set({
+                            left: marginX + (c * (PHOTO_W_PX + marginX)),
+                            top: marginY + (r * (PHOTO_H_PX + marginY)),
+                            selectable: false,
+                            evented: false // Performance
+                        });
+                        a5Canvas.add(cloned);
+                    });
+                }
+            }
+            a5Canvas.requestRenderAll(); // Renderiza tudo de uma vez
+        });
+    }
+
+    // --- FUNÇÕES AUXILIARES ---
+
+    function toggleTheme() {
+        const b = document.body;
+        const current = b.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        b.setAttribute('data-theme', next);
+        document.querySelector('.theme-switch').innerText = next === 'dark' ? 'Modo Light' : 'Modo Dark';
+    }
+
+    function exportJPG() {
+        if(!masterImg) return;
+        const d = a5Canvas.toDataURL({ format: 'jpeg', quality: 1, multiplier: 1/a5Canvas.getZoom() });
+        const l = document.createElement('a'); l.download = 'TipoPasse_A5.jpg'; l.href = d; l.click();
+    }
+
+    function exportPDF() {
+        if(!masterImg) return;
+        const d = a5Canvas.toDataURL({ format: 'jpeg', quality: 1, multiplier: 1/a5Canvas.getZoom() });
+        const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a5' });
+        pdf.addImage(d, 'JPEG', 0, 0, 210, 148);
+        pdf.save("TipoPasse_A5.pdf");
+    }
+</script>
 </body>
 </html>
