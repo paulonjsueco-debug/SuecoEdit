@@ -20,7 +20,7 @@
         .mask-line { position: absolute; background-color: rgba(255, 255, 255, 0.7); z-index: 11; }
         .mask-line.vertical { width: 2px; height: 100%; }
         .mask-line.horizontal { width: 100%; height: 2px; }
-        .preview-canvas-wrapper { position: relative; background-color: #e2e8f0; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .preview-canvas-wrapper { position: relative; background-color: #e2e8f0; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; }
         .grid-option { border: 2px solid #e5e7eb; border-radius: 12px; padding: 12px; cursor: pointer; transition: all 0.2s; background: white; text-align: center; }
         .grid-option.selected { border-color: #3b82f6; background-color: #eff6ff; box-shadow: 0 4px 10px rgba(59,130,246,0.2); }
         .grid-preview { display: grid; gap: 4px; width: 80px; height: 80px; margin: 0 auto 8px auto; }
@@ -37,6 +37,10 @@
         .filter-slider { width: 100%; margin: 8px 0; }
         .filter-label { display: flex; justify-content: space-between; font-size: 0.85rem; }
         .text-control-group { margin-bottom: 12px; }
+        .preview-nav { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .preview-nav button { background-color: #e2e8f0; padding: 0.25rem 1rem; border-radius: 9999px; font-weight: bold; transition: 0.2s; }
+        .preview-nav button:hover:not(:disabled) { background-color: #cbd5e1; }
+        .preview-nav button:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -73,7 +77,7 @@
         </div>
         <div id="image-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8"></div>
 
-        <!-- Opções de Layout e Pré-visualização -->
+        <!-- Opções de Layout e Pré-visualização com navegação -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white p-5 rounded-xl shadow">
                 <h2 class="text-lg font-bold text-blue-800 mb-3">Layout da Página</h2>
@@ -104,7 +108,12 @@
             </div>
             <div class="bg-white p-5 rounded-xl shadow">
                 <h2 class="text-lg font-bold text-blue-800 mb-3">Pré-visualização</h2>
-                <div id="preview-gallery" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div class="preview-nav">
+                    <button id="prev-page-preview" disabled>« Anterior</button>
+                    <span id="page-counter" class="font-semibold">Página 1 de 1</span>
+                    <button id="next-page-preview" disabled>Próxima »</button>
+                </div>
+                <div id="preview-gallery" class="flex justify-center items-center min-h-[200px]"></div>
             </div>
         </div>
 
@@ -129,7 +138,6 @@
                     </div>
                 </div>
                 <div class="w-full lg:w-80 p-4 overflow-y-auto border-t lg:border-t-0 lg:border-l border-gray-200">
-                    <!-- Controles de Zoom -->
                     <div id="zoom-controls" class="hidden">
                         <h3 class="font-bold text-lg">Zoom</h3>
                         <input type="range" id="zoom-slider" min="50" max="300" value="100" class="w-full my-2">
@@ -137,7 +145,6 @@
                         <div class="flex gap-2 mt-3"><button id="zoom-reset-btn" class="bg-gray-200 px-3 py-1 rounded">Redefinir</button></div>
                         <div class="flex justify-end gap-2 mt-4"><button id="discard-zoom-btn" class="bg-gray-400 text-white px-4 py-1 rounded">Descartar</button><button id="save-zoom-btn" class="bg-blue-600 text-white px-4 py-1 rounded">Salvar</button></div>
                     </div>
-                    <!-- Controles de Fundo (desfoque e tamanho) -->
                     <div id="background-controls" class="hidden">
                         <h3 class="font-bold text-lg">Fundo (2x maior)</h3>
                         <button id="background-upload-btn" class="bg-gray-200 w-full py-1 rounded mt-1">Carregar foto de fundo</button>
@@ -146,7 +153,6 @@
                         <label class="block mt-2">Tamanho do fundo: <span id="background-size-value">200%</span><input type="range" id="background-size-slider" min="100" max="300" value="200" class="w-full"></label>
                         <div class="flex justify-end gap-2 mt-4"><button id="discard-background-btn" class="bg-gray-400 text-white px-4 py-1 rounded">Descartar</button><button id="save-background-btn" class="bg-blue-600 text-white px-4 py-1 rounded">Salvar</button></div>
                     </div>
-                    <!-- Controles de Filtros (Luminosidade, Saturação, Contraste) -->
                     <div id="filters-controls" class="hidden">
                         <h3 class="font-bold text-lg">Ajustes de Imagem</h3>
                         <div class="filter-label"><span>Luminosidade</span><span id="brightness-value">50</span></div>
@@ -157,7 +163,6 @@
                         <input type="range" id="contrast-slider" min="0" max="100" value="50" class="filter-slider">
                         <div class="flex justify-end gap-2 mt-4"><button id="discard-filters-btn" class="bg-gray-400 text-white px-4 py-1 rounded">Descartar</button><button id="save-filters-btn" class="bg-blue-600 text-white px-4 py-1 rounded">Salvar</button></div>
                     </div>
-                    <!-- Controles de Texto (Legenda) -->
                     <div id="text-controls" class="hidden">
                         <h3 class="font-bold text-lg">Legenda</h3>
                         <div class="text-control-group">
@@ -214,12 +219,9 @@
     <script>
         window.onload = function() {
             const { jsPDF } = window.jspdf;
-            
-            // Dimensões A4 em 300 DPI
             const A4_LANDSCAPE_W = 3508, A4_LANDSCAPE_H = 2480;
             const A4_PORTRAIT_W = 2480, A4_PORTRAIT_H = 3508;
             
-            // Função para obter configurações de grid baseado no tipo e orientação
             function getGridConfig(gridType) {
                 if (gridType === '2x4') {
                     const imgW = 832.32, imgH = 1177.2;
@@ -228,13 +230,10 @@
                     return { cols: 4, rows: 2, imgW, imgH, hSpace, vSpace, pageW: A4_LANDSCAPE_W, pageH: A4_LANDSCAPE_H, orientation: 'landscape' };
                 } 
                 else if (gridType === '2x2') {
-                    // Modo retrato: 2 colunas, 2 linhas em página vertical
-                    const margin = 60; // espaçamento uniforme
+                    const margin = 60;
                     const imgW = (A4_PORTRAIT_W - 3 * margin) / 2;
                     const imgH = (A4_PORTRAIT_H - 3 * margin) / 2;
-                    const hSpace = margin;
-                    const vSpace = margin;
-                    return { cols: 2, rows: 2, imgW, imgH, hSpace, vSpace, pageW: A4_PORTRAIT_W, pageH: A4_PORTRAIT_H, orientation: 'portrait' };
+                    return { cols: 2, rows: 2, imgW, imgH, hSpace: margin, vSpace: margin, pageW: A4_PORTRAIT_W, pageH: A4_PORTRAIT_H, orientation: 'portrait' };
                 }
                 else if (gridType === '1x2') {
                     const imgW = 1664.64, imgH = 2354.4;
@@ -242,11 +241,8 @@
                     const vSpace = (A4_LANDSCAPE_H - imgH) / 2;
                     return { cols: 2, rows: 1, imgW, imgH, hSpace, vSpace, pageW: A4_LANDSCAPE_W, pageH: A4_LANDSCAPE_H, orientation: 'landscape' };
                 }
-                else { // 1x1
-                    // Modo retrato: foto ocupa toda a página
-                    const imgW = A4_PORTRAIT_W;
-                    const imgH = A4_PORTRAIT_H;
-                    return { cols: 1, rows: 1, imgW, imgH, hSpace: 0, vSpace: 0, pageW: A4_PORTRAIT_W, pageH: A4_PORTRAIT_H, orientation: 'portrait' };
+                else {
+                    return { cols: 1, rows: 1, imgW: A4_PORTRAIT_W, imgH: A4_PORTRAIT_H, hSpace: 0, vSpace: 0, pageW: A4_PORTRAIT_W, pageH: A4_PORTRAIT_H, orientation: 'portrait' };
                 }
             }
             
@@ -260,36 +256,27 @@
             let maskOverlay = document.getElementById('mask-overlay');
             
             // Elementos DOM
-            let blurSlider, blurVal, bgSizeSlider, bgSizeVal, zoomSlider, zoomVal;
-            let brightnessSlider, brightnessVal, saturationSlider, saturationVal, contrastSlider, contrastVal;
-            let bgUploadBtn, useSameBtn, saveBgBtn, discardBgBtn, saveZoomBtn, discardZoomBtn, resetZoomBtn;
-            let saveFiltersBtn, discardFiltersBtn;
-            let captionTextInput, textColorPicker, strokeColorPicker, strokeWidthSlider, strokeWidthSpan;
-            let addCaptionBtn, removeCaptionBtn, saveTextBtn, discardTextBtn;
-            let nextBtn, prevBtn, resetAllBtn, backBtn, toolZoom, toolBg, toolFilters, toolText;
-            
-            // Inicializar referências
-            blurSlider = document.getElementById('blur-slider'); blurVal = document.getElementById('blur-value');
-            bgSizeSlider = document.getElementById('background-size-slider'); bgSizeVal = document.getElementById('background-size-value');
-            zoomSlider = document.getElementById('zoom-slider'); zoomVal = document.getElementById('zoom-value');
-            brightnessSlider = document.getElementById('brightness-slider'); brightnessVal = document.getElementById('brightness-value');
-            saturationSlider = document.getElementById('saturation-slider'); saturationVal = document.getElementById('saturation-value');
-            contrastSlider = document.getElementById('contrast-slider'); contrastVal = document.getElementById('contrast-value');
-            captionTextInput = document.getElementById('caption-text');
-            textColorPicker = document.getElementById('text-color');
-            strokeColorPicker = document.getElementById('stroke-color');
-            strokeWidthSlider = document.getElementById('stroke-width');
-            strokeWidthSpan = document.getElementById('stroke-width-value');
-            addCaptionBtn = document.getElementById('add-caption-btn');
-            removeCaptionBtn = document.getElementById('remove-caption-btn');
-            saveTextBtn = document.getElementById('save-text-btn');
-            discardTextBtn = document.getElementById('discard-text-btn');
-            bgUploadBtn = document.getElementById('background-upload-btn'); useSameBtn = document.getElementById('use-same-photo-btn');
-            saveBgBtn = document.getElementById('save-background-btn'); discardBgBtn = document.getElementById('discard-background-btn');
-            saveZoomBtn = document.getElementById('save-zoom-btn'); discardZoomBtn = document.getElementById('discard-zoom-btn'); resetZoomBtn = document.getElementById('zoom-reset-btn');
-            saveFiltersBtn = document.getElementById('save-filters-btn'); discardFiltersBtn = document.getElementById('discard-filters-btn');
-            nextBtn = document.getElementById('next-image-btn'); prevBtn = document.getElementById('prev-image-btn'); resetAllBtn = document.getElementById('reset-all-btn'); backBtn = document.getElementById('back-btn');
-            toolZoom = document.getElementById('tool-zoom-btn'); toolBg = document.getElementById('tool-background-btn'); toolFilters = document.getElementById('tool-filters-btn'); toolText = document.getElementById('tool-text-btn');
+            let blurSlider = document.getElementById('blur-slider'), blurVal = document.getElementById('blur-value');
+            let bgSizeSlider = document.getElementById('background-size-slider'), bgSizeVal = document.getElementById('background-size-value');
+            let zoomSlider = document.getElementById('zoom-slider'), zoomVal = document.getElementById('zoom-value');
+            let brightnessSlider = document.getElementById('brightness-slider'), brightnessVal = document.getElementById('brightness-value');
+            let saturationSlider = document.getElementById('saturation-slider'), saturationVal = document.getElementById('saturation-value');
+            let contrastSlider = document.getElementById('contrast-slider'), contrastVal = document.getElementById('contrast-value');
+            let captionTextInput = document.getElementById('caption-text');
+            let textColorPicker = document.getElementById('text-color');
+            let strokeColorPicker = document.getElementById('stroke-color');
+            let strokeWidthSlider = document.getElementById('stroke-width');
+            let strokeWidthSpan = document.getElementById('stroke-width-value');
+            let addCaptionBtn = document.getElementById('add-caption-btn');
+            let removeCaptionBtn = document.getElementById('remove-caption-btn');
+            let saveTextBtn = document.getElementById('save-text-btn');
+            let discardTextBtn = document.getElementById('discard-text-btn');
+            let bgUploadBtn = document.getElementById('background-upload-btn'), useSameBtn = document.getElementById('use-same-photo-btn');
+            let saveBgBtn = document.getElementById('save-background-btn'), discardBgBtn = document.getElementById('discard-background-btn');
+            let saveZoomBtn = document.getElementById('save-zoom-btn'), discardZoomBtn = document.getElementById('discard-zoom-btn'), resetZoomBtn = document.getElementById('zoom-reset-btn');
+            let saveFiltersBtn = document.getElementById('save-filters-btn'), discardFiltersBtn = document.getElementById('discard-filters-btn');
+            let nextBtn = document.getElementById('next-image-btn'), prevBtn = document.getElementById('prev-image-btn'), resetAllBtn = document.getElementById('reset-all-btn'), backBtn = document.getElementById('back-btn');
+            let toolZoom = document.getElementById('tool-zoom-btn'), toolBg = document.getElementById('tool-background-btn'), toolFilters = document.getElementById('tool-filters-btn'), toolText = document.getElementById('tool-text-btn');
             
             // Funções auxiliares
             function getContainFit(imgW, imgH, boxW, boxH) {
@@ -310,7 +297,6 @@
                     bgImg.onload = check;
                     if (!imgObj.blurredUrl) loaded++; 
                     function drawNow() {
-                        // Fundo
                         if (imgObj.blurRadius > 0 && bgImg.complete && bgImg.naturalWidth) {
                             let { dw, dh, dx, dy } = getContainFit(bgImg.width, bgImg.height, slotW, slotH);
                             let bgScale = (imgObj.backgroundSize || 200) / 100;
@@ -323,7 +309,6 @@
                             ctx.drawImage(bgImg, offX, offY, scaledW, scaledH);
                             ctx.restore();
                         }
-                        // Imagem principal
                         let { dw, dh, dx, dy } = getContainFit(mainImg.width, mainImg.height, slotW, slotH);
                         let zoom = (imgObj.zoom || 100) / 100;
                         let zoomW = dw * zoom;
@@ -339,8 +324,6 @@
                         ctx.filter = `brightness(${bFactor}) contrast(${cFactor}) saturate(${sFactor})`;
                         ctx.drawImage(mainImg, offX, offY, zoomW, zoomH);
                         ctx.filter = 'none';
-                        
-                        // Legenda
                         if (imgObj.caption && imgObj.caption.text && imgObj.caption.text.trim() !== "") {
                             const { x: capX, y: capY } = imgObj.caption.position;
                             const posX = capX * slotW;
@@ -394,7 +377,65 @@
                 });
             }
             
-            // Renderização da galeria e preview
+            // Renderização da galeria e preview com navegação
+            let currentPreviewPage = 0;
+            let totalPreviewPages = 0;
+            
+            async function renderCurrentPreviewPage() {
+                const previewDiv = document.getElementById('preview-gallery');
+                previewDiv.innerHTML = '';
+                if (uploadedImages.length === 0) {
+                    previewDiv.innerHTML = '<p class="text-gray-500 text-center">Nenhuma imagem carregada.</p>';
+                    document.getElementById('prev-page-preview').disabled = true;
+                    document.getElementById('next-page-preview').disabled = true;
+                    document.getElementById('page-counter').innerText = 'Página 0 de 0';
+                    return;
+                }
+                const cfg = currentConfig;
+                const perPage = cfg.cols * cfg.rows;
+                totalPreviewPages = Math.ceil(uploadedImages.length / perPage);
+                if (currentPreviewPage >= totalPreviewPages) currentPreviewPage = totalPreviewPages - 1;
+                if (currentPreviewPage < 0) currentPreviewPage = 0;
+                document.getElementById('page-counter').innerText = `Página ${currentPreviewPage+1} de ${totalPreviewPages}`;
+                document.getElementById('prev-page-preview').disabled = (currentPreviewPage === 0);
+                document.getElementById('next-page-preview').disabled = (currentPreviewPage === totalPreviewPages - 1);
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'preview-canvas-wrapper';
+                wrapper.style.aspectRatio = `${cfg.pageW} / ${cfg.pageH}`;
+                const canvas = document.createElement('canvas');
+                const scale = 6;
+                canvas.width = cfg.pageW / scale;
+                canvas.height = cfg.pageH / scale;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                const start = currentPreviewPage * perPage;
+                const end = Math.min(start + perPage, uploadedImages.length);
+                const promises = [];
+                for (let i = start; i < end; i++) {
+                    const idxInPage = i - start;
+                    const col = idxInPage % cfg.cols;
+                    const row = Math.floor(idxInPage / cfg.cols);
+                    const x = (cfg.hSpace + col * (cfg.imgW + cfg.hSpace)) / scale;
+                    const y = (cfg.vSpace + row * (cfg.imgH + cfg.vSpace)) / scale;
+                    const slotCanvas = document.createElement('canvas');
+                    slotCanvas.width = cfg.imgW;
+                    slotCanvas.height = cfg.imgH;
+                    const slotCtx = slotCanvas.getContext('2d');
+                    const promise = drawComposite(slotCtx, uploadedImages[i], cfg.imgW, cfg.imgH).then(() => {
+                        ctx.drawImage(slotCanvas, x, y, cfg.imgW/scale, cfg.imgH/scale);
+                    });
+                    promises.push(promise);
+                }
+                await Promise.all(promises);
+                const imgPreview = new Image();
+                imgPreview.src = canvas.toDataURL();
+                imgPreview.className = 'w-full h-full object-contain';
+                wrapper.appendChild(imgPreview);
+                previewDiv.appendChild(wrapper);
+            }
+            
             function renderGallery() {
                 let gallery = document.getElementById('image-gallery');
                 gallery.innerHTML = '';
@@ -411,56 +452,9 @@
                 addBtn.innerHTML = '+';
                 addBtn.onclick = () => document.getElementById('image-upload').click();
                 gallery.appendChild(addBtn);
-                renderPreviewPages();
+                renderCurrentPreviewPage();
                 updateExportButtons();
                 document.getElementById('upload-section').classList.toggle('hidden', uploadedImages.length > 0);
-            }
-            
-            function renderPreviewPages() {
-                let previewDiv = document.getElementById('preview-gallery');
-                previewDiv.innerHTML = '';
-                let cfg = currentConfig;
-                let perPage = cfg.cols * cfg.rows;
-                let pages = Math.ceil(uploadedImages.length / perPage);
-                for (let p = 0; p < pages; p++) {
-                    let wrapper = document.createElement('div');
-                    wrapper.className = 'preview-canvas-wrapper';
-                    // Ajustar aspect ratio conforme orientação
-                    if (cfg.orientation === 'portrait') {
-                        wrapper.style.aspectRatio = `${cfg.pageW} / ${cfg.pageH}`;
-                    } else {
-                        wrapper.style.aspectRatio = `${cfg.pageW} / ${cfg.pageH}`;
-                    }
-                    let canvas = document.createElement('canvas');
-                    let scale = 8;
-                    canvas.width = cfg.pageW / scale;
-                    canvas.height = cfg.pageH / scale;
-                    let ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-                    let start = p * perPage;
-                    let end = Math.min(start+perPage, uploadedImages.length);
-                    let promises = [];
-                    for (let i = start; i < end; i++) {
-                        let idxInPage = i - start;
-                        let col = idxInPage % cfg.cols;
-                        let row = Math.floor(idxInPage / cfg.cols);
-                        let x = cfg.hSpace + col * (cfg.imgW + cfg.hSpace);
-                        let y = cfg.vSpace + row * (cfg.imgH + cfg.vSpace);
-                        let slotCanvas = document.createElement('canvas');
-                        slotCanvas.width = cfg.imgW; slotCanvas.height = cfg.imgH;
-                        let slotCtx = slotCanvas.getContext('2d');
-                        let prom = drawComposite(slotCtx, uploadedImages[i], cfg.imgW, cfg.imgH).then(() => {
-                            ctx.drawImage(slotCanvas, x/scale, y/scale, cfg.imgW/scale, cfg.imgH/scale);
-                        });
-                        promises.push(prom);
-                    }
-                    Promise.all(promises).then(() => {
-                        let imgPreview = new Image(); imgPreview.src = canvas.toDataURL();
-                        imgPreview.className = 'w-full h-full object-contain';
-                        wrapper.appendChild(imgPreview);
-                        previewDiv.appendChild(wrapper);
-                    });
-                }
             }
             
             function updateExportButtons() {
@@ -470,7 +464,7 @@
                 document.getElementById('full-preview-btn').disabled = disabled;
             }
             
-            // Modal de edição (mesmo código, apenas ajusta máscara de linhas com base na orientação)
+            // Modal de edição (funcionalidade completa, incluindo arraste de texto)
             let currentImageObj = null;
             let editorResizeHandler = null;
             
@@ -557,7 +551,6 @@
                 editorResizeHandler = () => drawEditor();
                 window.addEventListener('resize', editorResizeHandler);
                 
-                // Arrastar texto
                 let isDraggingText = false;
                 let dragStartX = 0, dragStartY = 0;
                 function onMouseDown(e) {
@@ -601,7 +594,6 @@
                 window.addEventListener('mousemove', onMouseMove);
                 window.addEventListener('mouseup', onMouseUp);
                 
-                // Salvar texto
                 saveTextBtn.onclick = () => {
                     img.caption = JSON.parse(JSON.stringify(img.tempCaption));
                     renderGallery();
@@ -646,7 +638,6 @@
                     window.removeEventListener('resize', editorResizeHandler);
                 }
                 
-                // Eventos das ferramentas
                 toolZoom.onclick = () => { currentTool='zoom'; document.querySelectorAll('#zoom-controls, #background-controls, #filters-controls, #text-controls').forEach(el=>el.classList.add('hidden')); document.getElementById('zoom-controls').classList.remove('hidden'); };
                 toolBg.onclick = () => { currentTool='bg'; document.getElementById('background-controls').classList.remove('hidden'); document.getElementById('zoom-controls').classList.add('hidden'); document.getElementById('filters-controls').classList.add('hidden'); document.getElementById('text-controls').classList.add('hidden'); drawEditor(); };
                 toolFilters.onclick = () => { currentTool='filters'; document.getElementById('filters-controls').classList.remove('hidden'); document.getElementById('zoom-controls').classList.add('hidden'); document.getElementById('background-controls').classList.add('hidden'); document.getElementById('text-controls').classList.add('hidden'); drawEditor(); };
@@ -699,7 +690,7 @@
                 backBtn.onclick = () => { editModal.classList.add('hidden'); cleanup(); renderGallery(); };
             }
             
-            // Upload com rotação automática
+            // Upload de imagens
             document.getElementById('image-upload').addEventListener('change', async (e) => {
                 let files = Array.from(e.target.files);
                 if(!files.length) return;
@@ -735,10 +726,10 @@
             
             document.getElementById('clear-all-btn').onclick = () => { if(confirm('Remover todas?')) { uploadedImages=[]; renderGallery(); } };
             
-            // Atualiza configuração ao mudar o grid
             function setGrid(gridType) {
                 currentGrid = gridType;
                 currentConfig = getGridConfig(currentGrid);
+                currentPreviewPage = 0;
                 renderGallery();
             }
             
@@ -750,7 +741,10 @@
                 this.classList.add('selected');
             }));
             
-            // Exportação com nome único e orientação correta
+            document.getElementById('prev-page-preview').onclick = () => { if (currentPreviewPage > 0) { currentPreviewPage--; renderCurrentPreviewPage(); } };
+            document.getElementById('next-page-preview').onclick = () => { if (currentPreviewPage < totalPreviewPages-1) { currentPreviewPage++; renderCurrentPreviewPage(); } };
+            
+            // Exportação com nome único
             function getTimestampFilename(base, ext, page = null) {
                 const now = new Date();
                 const dateStr = now.toISOString().slice(0,19).replace(/:/g, '-');
